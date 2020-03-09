@@ -34,6 +34,8 @@ public class RenderHardHerobrine extends RenderLiving<EntityHardHerobrine>{
         super.preRenderCallback(herobrine, partialTickTime);
         float scale = herobrine.getScale();
         GlStateManager.scale(scale, scale, scale);
+        if(herobrine.getDeathTicks() > 0)
+            GlStateManager.scale(4,4,4);
     }
 
     /**

@@ -421,9 +421,11 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
             setAnimation(ANIMATION_DEATH);
         }
 
-        if (deathTicks >= 170 && deathTicks % 10 == 0 ) {
-            spawnLightningInCircle(7, this, 15);
-        }
+        if (deathTicks >= 170 && deathTicks % 10 == 0 )
+            deathCircles(10, this, 15, "lightning");
+
+        if(deathTicks % 10 == 0)
+            deathCircles(13, this, 0, "explode");
 
         if (deathTicks == 200)
             setDead();
@@ -437,7 +439,6 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
     public void onDeath(DamageSource cause)
     {
         super.onDeath(cause);
-
         if (cause.getTrueSource() instanceof EntityPlayer)
         {
             EntityPlayer entityPlayer = (EntityPlayer)cause.getTrueSource();
@@ -459,20 +460,33 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
     }
 
     /**
-     * Using trig, we spawn a circle of lighting
+     * Handles all circle - related death events
      * An explanation of what this is doing can be found here:
-     * @param r The radius of the circle
-     * @param entity The entity which should have the lightning spawned around it
-     * @param frequency The higher this number, the less lightning bolts are spawned
+     * @param r the radius of the circle
+     * @param entity the entity which should have the lightning spawned around it
+     * @param frequency the higher this number, the less lightning bolts are spawned
+     * @param event what specific death event we are performing
      * */
-    private void spawnLightningInCircle(int r, EntityLivingBase entity, int frequency)
+    private void deathCircles(int r, EntityLivingBase entity, int frequency, String event)
     {
-        for(int theta = 0; theta <= 360; theta += frequency)
+        if(event.equals("lightning"))
         {
-            double x = Math.cos(theta) * r;
-            double z = Math.sin(theta) * r;
-            EntityLightningBolt lightningBolt = new EntityLightningBolt(world, entity.posX + x, entity.posY, entity.posZ + z, false);
-            world.addWeatherEffect(lightningBolt);
+            for(int theta = 0; theta <= 360; theta += frequency)
+            {
+                double x = Math.cos(theta) * r;
+                double z = Math.sin(theta) * r;
+                EntityLightningBolt lightningBolt = new EntityLightningBolt(world, entity.posX + x, entity.posY, entity.posZ + z, false);
+                world.addWeatherEffect(lightningBolt);
+            }
+        }
+        else if(event.equals("explode"))
+        {
+            int theta = rand.nextInt(360);
+
+            double x = Math.cos(theta) * r * rand.nextDouble();
+            double z = Math.sin(theta) * r * rand.nextDouble();
+
+            world.newExplosion(this, posX + x, posY, posZ + z,3, false, false);
         }
     }
 }
