@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "herobrinemod:items/hardest_sword"
+  }
+}
