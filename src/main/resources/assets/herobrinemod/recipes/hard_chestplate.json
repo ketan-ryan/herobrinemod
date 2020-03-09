@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "o d",
+    "ood",
+    "ddd"
+  ],
+  "key":
+  {
+    "d":
+    {
+      "item": "minecraft:diamond"
+    },
+    "o":
+    {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "result":
+  {
+    "item": "herobrinemod:hard_chestplate",
+    "count": 1
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "ooo",
+    "oho",
+    "ooo"
+  ],
+  "key":
+  {
+    "h":
+    {
+      "item": "herobrinemod:hard_helmet"
+    },
+    "o":
+    {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "result":
+  {
+    "item": "herobrinemod:harder_helmet",
+    "count": 1
+  }
+}

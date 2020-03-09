@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "ooo",
+    "oho",
+    "ooo"
+  ],
+  "key":
+  {
+    "h":
+    {
+      "item": "herobrinemod:hard_chestplate"
+    },
+    "o":
+    {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "result":
+  {
+    "item": "herobrinemod:harder_chestplate",
+    "count": 1
+  }
+}

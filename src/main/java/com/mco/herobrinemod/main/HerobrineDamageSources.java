@@ -1,0 +1,13 @@
+package com.mco.herobrinemod.main;
+
+import net.minecraft.util.DamageSource;
+
+public class HerobrineDamageSources extends DamageSource {
+
+    public HerobrineDamageSources(String name){
+        super(name);
+    }
+
+    public static DamageSource HARD_HEROBRINE = new HerobrineDamageSources("hard_herobrine");
+
+}

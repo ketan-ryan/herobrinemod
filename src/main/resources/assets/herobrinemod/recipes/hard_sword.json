@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "o",
+    "d",
+    "s"
+  ],
+  "key":
+  {
+    "d":
+    {
+      "item": "minecraft:diamond"
+    },
+    "o":
+    {
+      "item": "minecraft:obsidian"
+    },
+    "s":
+    {
+      "item": "minecraft:stick"
+    }
+  },
+  "result":
+  {
+    "item": "herobrinemod:hard_sword",
+    "count": 1
+  }
+}

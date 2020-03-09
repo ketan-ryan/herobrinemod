@@ -1,0 +1,16 @@
+entity.herobrine.name=Herobrine (Phase 1)
+entity.hard_herobrine.name=Herobrine (Phase 2)
+
+item.hard_sword.name=Enhanced Sword
+item.hard_helmet.name=Enhanced Helmet
+item.hard_chestplate.name=Enhanced Chestplate
+item.hard_leggings.name=Enhanced Leggings
+item.hard_boots.name=Enhanced Boots
+
+item.harder_sword.name=Twice Enhanced Sword
+item.harder_helmet.name=Twice Enhanced Helmet
+item.harder_chestplate.name=Twice Enhanced Chestplate
+item.harder_leggings.name=Twice Enhanced Leggings
+item.harder_boots.name=Twice Enhanced Boots
+
+death.attack.hard_herobrine=%1$s was slain by the bane of Minecraft

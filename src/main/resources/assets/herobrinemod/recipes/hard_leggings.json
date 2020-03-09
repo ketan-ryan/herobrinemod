@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "doo",
+    "d o",
+    "d d"
+  ],
+  "key":
+  {
+    "d":
+    {
+      "item": "minecraft:diamond"
+    },
+    "o":
+    {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "result":
+  {
+    "item": "herobrinemod:hard_leggings",
+    "count": 1
+  }
+}

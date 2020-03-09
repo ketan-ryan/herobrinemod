@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "ood",
+    "d d"
+  ],
+  "key":
+  {
+    "d":
+    {
+      "item": "minecraft:diamond"
+    },
+    "o":
+    {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "result":
+  {
+    "item": "herobrinemod:hard_helmet",
+    "count": 1
+  }
+}

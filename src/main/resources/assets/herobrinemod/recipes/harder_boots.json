@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "ooo",
+    "oho",
+    "ooo"
+  ],
+  "key":
+  {
+    "h":
+    {
+      "item": "herobrinemod:hard_boots"
+    },
+    "o":
+    {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "result":
+  {
+    "item": "herobrinemod:harder_boots",
+    "count": 1
+  }
+}
