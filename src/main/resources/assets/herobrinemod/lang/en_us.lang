@@ -13,4 +13,16 @@ item.harder_chestplate.name=Twice Enhanced Chestplate
 item.harder_leggings.name=Twice Enhanced Leggings
 item.harder_boots.name=Twice Enhanced Boots
 
+item.halfharder_sword.name=Thrice Enhanced Sword
+item.halfharder_helmet.name=Thrice Enhanced Helmet
+item.halfharder_chestplate.name=Thrice Enhanced Chestplate
+item.halfharder_leggings.name=Thrice Enhanced Leggings
+item.halfharder_boots.name=Thrice Enhanced Boots
+
+item.hardest_sword.name=Fully Enhanced Sword
+item.hardest_helmet.name=Fully Enhanced Helmet
+item.hardest_chestplate.name=Fully Enhanced Chestplate
+item.hardest_leggings.name=Fully Enhanced Leggings
+item.hardest_boots.name=Fully Enhanced Boots
+
 death.attack.hard_herobrine=%1$s was slain by the bane of Minecraft
