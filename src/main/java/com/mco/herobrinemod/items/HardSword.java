@@ -28,6 +28,16 @@ public class HardSword extends ItemSword {
 
     @Override
     public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
+        if(target != null && attacker != null && stack.getDisplayName().equals("Fully Enhanced Sword")){
+            if(target instanceof EntityHerobrine || target instanceof EntityHardHerobrine){
+                target.setHealth(target.getHealth() - material.getAttackDamage());
+            }
+        }
+        if(target != null && attacker != null && stack.getDisplayName().equals("Thrice Enhanced Sword")){
+            if(target instanceof EntityHerobrine || target instanceof EntityHardHerobrine){
+                target.setHealth(target.getHealth() - material.getAttackDamage());
+            }
+        }
         if(target != null && attacker != null && stack.getDisplayName().equals("Twice Enhanced Sword")){
             if(target instanceof EntityHerobrine || target instanceof EntityHardHerobrine){
                   target.setHealth(target.getHealth() - material.getAttackDamage());
@@ -48,8 +58,13 @@ public class HardSword extends ItemSword {
         if(stack.getItem().equals(MainItems.hard_sword))
             tooltip.add(TextFormatting.DARK_PURPLE + "This weapon has been enhanced to combat Herobrine");
 
-        if(stack.getItem().equals(MainItems.harder_sword))
+        else if(stack.getItem().equals(MainItems.harder_sword))
             tooltip.add(TextFormatting.DARK_PURPLE + "This weapon has been twice enhanced to combat Herobrine");
 
+        else if(stack.getItem().equals(MainItems.halfharder_sword))
+            tooltip.add(TextFormatting.DARK_PURPLE + "This weapon has been thrice enhanced to combat Herobrine");
+
+        else if(stack.getItem().equals(MainItems.hardest_sword))
+            tooltip.add(TextFormatting.DARK_PURPLE + "This is the ultimate weapon for combating Herobrine");
     }
 }

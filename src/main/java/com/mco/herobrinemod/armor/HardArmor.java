@@ -39,5 +39,20 @@ public class HardArmor extends ItemArmor {
             player.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, 2, 1));
             player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 2, 1));
         }
+        else if(isWearingFullSet(player, MainItems.halfharder_helmet, MainItems.halfharder_chestplate, MainItems.halfharder_leggings, MainItems.halfharder_boots)){
+            player.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, 2, 2));
+            player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 2, 1));
+            player.addPotionEffect(new PotionEffect(MobEffects.FIRE_RESISTANCE, 2, 3));
+            player.addPotionEffect(new PotionEffect(MobEffects.STRENGTH, 2, 0));
+            player.addPotionEffect(new PotionEffect(MobEffects.ABSORPTION, 2, 1));
+        }
+        else if(isWearingFullSet(player, MainItems.hardest_helmet, MainItems.hardest_chestplate, MainItems.hardest_leggings, MainItems.hardest_boots)){
+            player.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, 2, 3));
+            player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 2, 3));
+            player.addPotionEffect(new PotionEffect(MobEffects.FIRE_RESISTANCE, 2, 4));
+            player.addPotionEffect(new PotionEffect(MobEffects.STRENGTH, 2, 1));
+            player.addPotionEffect(new PotionEffect(MobEffects.ABSORPTION, 2, 3));
+            player.capabilities.allowFlying = true;
+        }
     }
 }
