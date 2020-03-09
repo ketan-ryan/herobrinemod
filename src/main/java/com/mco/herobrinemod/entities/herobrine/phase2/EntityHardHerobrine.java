@@ -421,11 +421,8 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
             setAnimation(ANIMATION_DEATH);
         }
 
-        if (deathTicks >= 170 && deathTicks % 10 == 0) {
-            for (int c = 0; c < 360; c += 15) {
-                EntityLightningBolt lightningBolt = new EntityLightningBolt(world, posX + Math.cos(Math.toRadians(c)), posY, posZ + Math.sin(Math.toRadians(c)), false);
-                world.spawnEntity(lightningBolt);
-            }
+        if (deathTicks >= 170 && deathTicks % 10 == 0 ) {
+            spawnLightningInCircle(7, this, 15);
         }
 
         if (deathTicks == 200)
@@ -458,6 +455,24 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
             int i = EntityXPOrb.getXPSplit(p_184668_1_);
             p_184668_1_ -= i;
             this.world.spawnEntity(new EntityXPOrb(this.world, this.posX, this.posY, this.posZ, i));
+        }
+    }
+
+    /**
+     * Using trig, we spawn a circle of lighting
+     * An explanation of what this is doing can be found here:
+     * @param r The radius of the circle
+     * @param entity The entity which should have the lightning spawned around it
+     * @param frequency The higher this number, the less lightning bolts are spawned
+     * */
+    private void spawnLightningInCircle(int r, EntityLivingBase entity, int frequency)
+    {
+        for(int theta = 0; theta <= 360; theta += frequency)
+        {
+            double x = Math.cos(theta) * r;
+            double z = Math.sin(theta) * r;
+            EntityLightningBolt lightningBolt = new EntityLightningBolt(world, entity.posX + x, entity.posY, entity.posZ + z, false);
+            world.addWeatherEffect(lightningBolt);
         }
     }
 }
