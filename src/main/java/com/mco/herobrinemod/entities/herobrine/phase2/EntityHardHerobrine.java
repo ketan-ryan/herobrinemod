@@ -424,6 +424,8 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
         if (deathTicks >= 170 && deathTicks % 10 == 0 )
             deathCircles(10, this, 15, "lightning");
 
+        deathCircles(20, this, 0, "fireball");
+
         if(deathTicks % 10 == 0)
             deathCircles(13, this, 0, "explode");
 
@@ -487,6 +489,17 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
             double z = Math.sin(theta) * r * rand.nextDouble();
 
             world.newExplosion(this, posX + x, posY, posZ + z,3, false, false);
+        }
+        else if(event.equals("fireball"))
+        {
+            int theta = rand.nextInt(360);
+
+            double x = Math.cos(theta) * r * rand.nextDouble();
+            double z = Math.sin(theta) * r * rand.nextDouble();
+
+            EntityLargeFireball fireball = new EntityLargeFireball(world, this, 0, -1, 0);
+            fireball.setPosition(posX + x, posY + 50, posZ + z);
+            world.spawnEntity(fireball);
         }
     }
 }
