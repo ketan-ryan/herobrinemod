@@ -3,6 +3,7 @@ package com.mco.herobrinemod.entities.herobrine.phase2;
 import com.google.common.base.Predicate;
 import com.mco.herobrinemod.entities.herobrine.phase1.EntityHerobrine;
 import com.mco.herobrinemod.entities.herobrine.phase2.ghast.EntityCorruptedGhast;
+import com.mco.herobrinemod.main.MainItems;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationAI;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
@@ -10,6 +11,7 @@ import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.effect.EntityLightningBolt;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityIronGolem;
@@ -41,9 +43,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemHandlerHelper;
+import sun.applet.Main;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, IMob , IAnimatedEntity
 {
@@ -441,13 +447,34 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
     public void onDeath(DamageSource cause)
     {
         super.onDeath(cause);
+        ItemStack helmet = new ItemStack(MainItems.halfharder_helmet);
+        ItemStack chestplate = new ItemStack(MainItems.halfharder_chestplate);
+        ItemStack legs = new ItemStack(MainItems.halfharder_leggings);
+        ItemStack boots = new ItemStack(MainItems.halfharder_boots);
+        ItemStack sword = new ItemStack(MainItems.halfharder_sword);
+
+        ItemStack[] drops = {helmet, chestplate, legs, boots, sword};
+
         if (cause.getTrueSource() instanceof EntityPlayer)
         {
+            System.out.println(true);
             EntityPlayer entityPlayer = (EntityPlayer)cause.getTrueSource();
-            ItemStack loot = new ItemStack(Items.DIAMOND_SWORD);
 
-            if(!loot.isEmpty())
-                ItemHandlerHelper.giveItemToPlayer(entityPlayer, loot);
+            for(ItemStack tempDrops: drops)
+            {
+                ItemHandlerHelper.giveItemToPlayer(entityPlayer, tempDrops);
+            }
+        }
+        else
+        {
+            for(ItemStack temp: drops)
+            {
+                if(!world.isRemote)
+                {
+                    EntityItem item = new EntityItem(world, posX, posY, posZ, temp);
+                    world.spawnEntity(item);
+                }
+            }
         }
     }
 
