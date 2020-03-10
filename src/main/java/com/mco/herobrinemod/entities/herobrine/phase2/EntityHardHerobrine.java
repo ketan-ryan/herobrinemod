@@ -51,7 +51,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, IMob , IAnimatedEntity
+public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, IMob, IAnimatedEntity
 {
     private final BossInfoServer bossInfo = (BossInfoServer)(new BossInfoServer(this.getDisplayName(), BossInfo.Color.WHITE,
             BossInfo.Overlay.PROGRESS)).setDarkenSky(true);
