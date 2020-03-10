@@ -457,7 +457,6 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
 
         if (cause.getTrueSource() instanceof EntityPlayer)
         {
-            System.out.println(true);
             EntityPlayer entityPlayer = (EntityPlayer)cause.getTrueSource();
 
             for(ItemStack tempDrops: drops)

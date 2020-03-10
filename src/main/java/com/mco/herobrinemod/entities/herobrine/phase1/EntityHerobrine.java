@@ -57,7 +57,7 @@ public class EntityHerobrine extends EntityMob implements IRangedAttackMob, IMob
 
     public int deathTicks;
     //If this entity is being spawned from a phase 2 herobrine
-    private boolean secondSpawn = false;
+    private boolean secondSpawn;
 
     /** Selector used to determine the entities a wither boss should attack. */
     private static final Predicate<Entity> NOT_UNDEAD = new Predicate<Entity>()
@@ -75,6 +75,7 @@ public class EntityHerobrine extends EntityMob implements IRangedAttackMob, IMob
         this.isImmuneToFire = true;
         this.setSize(0.6F, 1.95F);
         this.experienceValue = 250;
+        this.secondSpawn = false;
     }
 
     public EntityHerobrine(World world, boolean secondSpawn) {
@@ -166,6 +167,8 @@ public class EntityHerobrine extends EntityMob implements IRangedAttackMob, IMob
     @Override
     public void onLivingUpdate() {
         super.onLivingUpdate();
+        if(!world.isRemote)
+            System.out.println("second spawn? " + getSecondSpawn());
 
         if(getAttackTarget()==null && !world.isRemote) {
             if (getAttackTarget() == null) {
@@ -340,7 +343,16 @@ public class EntityHerobrine extends EntityMob implements IRangedAttackMob, IMob
         onDeathAIUpdate();
         deathTicks++;
 
-        if(!getSecondSpawn()) {
+        boolean s;
+        if(!world.isRemote){
+            s = secondSpawn;
+        }
+        else
+            s = false;
+
+        if(!s)
+        {
+            System.out.println("run animations");
             if (getAnimation() == NO_ANIMATION && currentAnim == null)
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_DEATH);
 
@@ -368,13 +380,13 @@ public class EntityHerobrine extends EntityMob implements IRangedAttackMob, IMob
                 hardHerobrine.setLocationAndAngles(posX, posY, posZ, 0, 0);
                 hardHerobrine.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.DIAMOND_SWORD));
                 world.spawnEntity(hardHerobrine);
-                System.out.println(hardHerobrine);
             }
 
             if (deathTicks == 200)
                 setDead();
         }
-        setDead();
+        else
+            setDead();
     }
 
     private void dropExperience(int p_184668_1_)
