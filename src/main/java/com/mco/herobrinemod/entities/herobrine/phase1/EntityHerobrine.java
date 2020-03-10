@@ -167,8 +167,6 @@ public class EntityHerobrine extends EntityMob implements IRangedAttackMob, IMob
     @Override
     public void onLivingUpdate() {
         super.onLivingUpdate();
-        if(!world.isRemote)
-            System.out.println("second spawn? " + getSecondSpawn());
 
         if(getAttackTarget()==null && !world.isRemote) {
             if (getAttackTarget() == null) {
@@ -352,7 +350,6 @@ public class EntityHerobrine extends EntityMob implements IRangedAttackMob, IMob
 
         if(!s)
         {
-            System.out.println("run animations");
             if (getAnimation() == NO_ANIMATION && currentAnim == null)
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_DEATH);
 

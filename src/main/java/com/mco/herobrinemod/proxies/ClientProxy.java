@@ -6,6 +6,7 @@ import com.mco.herobrinemod.entities.herobrine.phase2.EntityHardHerobrine;
 import com.mco.herobrinemod.entities.herobrine.phase2.RenderHardHerobrine;
 import com.mco.herobrinemod.entities.herobrine.phase2.ghast.EntityCorruptedGhast;
 import com.mco.herobrinemod.entities.herobrine.phase2.ghast.RenderCorruptedGhast;
+import com.mco.herobrinemod.config.HerobrineConfig;
 import com.mco.herobrinemod.main.MainItems;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;

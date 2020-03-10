@@ -3,6 +3,7 @@ package com.mco.herobrinemod.entities.herobrine.phase2;
 import com.google.common.base.Predicate;
 import com.mco.herobrinemod.entities.herobrine.phase1.EntityHerobrine;
 import com.mco.herobrinemod.entities.herobrine.phase2.ghast.EntityCorruptedGhast;
+import com.mco.herobrinemod.config.HerobrineConfig;
 import com.mco.herobrinemod.main.MainItems;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationAI;
@@ -13,7 +14,6 @@ import net.minecraft.entity.ai.*;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
-import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.IMob;
@@ -26,7 +26,6 @@ import net.minecraft.entity.projectile.EntitySmallFireball;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -43,13 +42,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemHandlerHelper;
-import sun.applet.Main;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, IMob, IAnimatedEntity
 {
@@ -63,9 +58,10 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
     private Animation animation = NO_ANIMATION;
     private int animationTick;
 
-    public static final Animation ANIMATION_DEATH = Animation.create(200);
+    public static final Animation ANIMATION_DEATH_FULL = Animation.create(200);
+    public static final Animation ANIMATION_DEATH = Animation.create(100);
 
-    private static final Animation[] ANIMATIONS = {ANIMATION_DEATH};
+    private static final Animation[] ANIMATIONS = {ANIMATION_DEATH, ANIMATION_DEATH_FULL};
 
     public AnimationAI currentAnim;
 
@@ -411,38 +407,53 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
         onDeathAIUpdate();
         deathTicks++;
 
-        if (getAnimation() == NO_ANIMATION && currentAnim == null)
-            AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_DEATH);
+        if (getAnimation() == NO_ANIMATION && currentAnim == null) {
+            if (HerobrineConfig.enableFight)
+                AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_DEATH);
+            else
+                AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_DEATH_FULL);
+        }
 
         boolean flag = this.world.getGameRules().getBoolean("doMobLoot");
         int i = 250;
 
         if (!this.world.isRemote) {
             if (this.deathTicks > 15 && this.deathTicks % 5 == 0 && flag) {
-                this.dropExperience(250);
+                this.dropExperience(i);
             }
         }
 
-        if (deathTicks == 1) {
-            setAnimation(ANIMATION_DEATH);
+        if (!HerobrineConfig.enableFight)
+        {
+            if (deathTicks >= 170 && deathTicks % 10 == 0)
+                deathCircles(10, this, 15, "lightning");
+
+            deathCircles(20, this, 0, "fireball");
+
+            if (deathTicks % 10 == 0)
+                deathCircles(13, this, 0, "explode");
+
+            if (deathTicks == 200)
+                setDead();
         }
+        else if(deathTicks <= 100){
 
-        if (deathTicks >= 170 && deathTicks % 10 == 0 )
-            deathCircles(10, this, 15, "lightning");
+            if(deathTicks < 80)
+                deathCircles(20, this, 0, "fireball");
 
-        deathCircles(20, this, 0, "fireball");
+            if (deathTicks % 10 == 0)
+                deathCircles(13, this, 0, "explode");
 
-        if(deathTicks % 10 == 0)
-            deathCircles(13, this, 0, "explode");
-
-        if (deathTicks == 200)
-            setDead();
+            if (deathTicks == 150)
+                setDead();
+        }
     }
-
 
     /**
      * If killed by player, puts loot directly in player's inventory so it doesn't get destroyed by death sequence
      * Else, drops loot on ground like it normally would
+     * If phase 3 enabled, drops fully enhanced set
+     * Otherwise, drops thrice enhanced
      * */
     public void onDeath(DamageSource cause)
     {
@@ -453,25 +464,57 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
         ItemStack boots = new ItemStack(MainItems.halfharder_boots);
         ItemStack sword = new ItemStack(MainItems.halfharder_sword);
 
-        ItemStack[] drops = {helmet, chestplate, legs, boots, sword};
+        ItemStack[] halfDrops = {helmet, chestplate, legs, boots, sword};
+
+        ItemStack hHelmet = new ItemStack(MainItems.hardest_helmet);
+        ItemStack hChestplate = new ItemStack(MainItems.hardest_chestplate);
+        ItemStack hLeggings = new ItemStack(MainItems.hardest_leggings);
+        ItemStack hBoots = new ItemStack(MainItems.hardest_boots);
+        ItemStack hSword = new ItemStack(MainItems.hardest_sword);
+
+        ItemStack[] hardestDrops = {hHelmet, hChestplate, hLeggings, hBoots, hSword};
 
         if (cause.getTrueSource() instanceof EntityPlayer)
         {
             EntityPlayer entityPlayer = (EntityPlayer)cause.getTrueSource();
 
-            for(ItemStack tempDrops: drops)
+            if(HerobrineConfig.enableFight)
             {
-                ItemHandlerHelper.giveItemToPlayer(entityPlayer, tempDrops);
+                for(ItemStack tempDrops: hardestDrops)
+                {
+                    ItemHandlerHelper.giveItemToPlayer(entityPlayer, tempDrops);
+                }
+            }
+            else
+            {
+                for(ItemStack tempDrops: halfDrops)
+                {
+                    ItemHandlerHelper.giveItemToPlayer(entityPlayer, tempDrops);
+                }
             }
         }
-        else
+        else if(world.getGameRules().getBoolean("doMobLoot"))
         {
-            for(ItemStack temp: drops)
+            if(HerobrineConfig.enableFight)
             {
-                if(!world.isRemote)
+                for(ItemStack temp: hardestDrops)
                 {
-                    EntityItem item = new EntityItem(world, posX, posY, posZ, temp);
-                    world.spawnEntity(item);
+                    if(!world.isRemote)
+                    {
+                        EntityItem item = new EntityItem(world, posX, posY, posZ, temp);
+                        world.spawnEntity(item);
+                    }
+                }
+            }
+            else
+            {
+                for(ItemStack temp: halfDrops)
+                {
+                    if(!world.isRemote)
+                    {
+                        EntityItem item = new EntityItem(world, posX, posY, posZ, temp);
+                        world.spawnEntity(item);
+                    }
                 }
             }
         }

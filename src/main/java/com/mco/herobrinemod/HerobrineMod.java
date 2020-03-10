@@ -1,5 +1,6 @@
 package com.mco.herobrinemod;
 
+import com.mco.herobrinemod.config.HerobrineConfig;
 import com.mco.herobrinemod.main.MainEntities;
 import com.mco.herobrinemod.main.MainItems;
 import com.mco.herobrinemod.proxies.CommonProxy;
@@ -18,12 +19,14 @@ import org.apache.logging.log4j.Logger;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-@Mod(modid = HerobrineMod.MODID, name = HerobrineMod.NAME, version = HerobrineMod.VERSION, dependencies = "required-after:llibrary@[1.7.14,)")
+@Mod(modid = HerobrineMod.MODID, name = HerobrineMod.NAME, version = HerobrineMod.VERSION,
+        dependencies = "required-after:llibrary@[1.7.14,)")
 public class HerobrineMod
 {
     public static final String MODID = "herobrinemod";
     public static final String NAME = "The Hard Herobrine Mod";
     public static final String VERSION = "1.0";
+    public static final String GUI_FACTORY = "com.mco.herobrinemod.config.HerobrineConfigGuiFactory";
 
     private static Logger logger;
 

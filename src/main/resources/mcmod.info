@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
+  "modid": "herobrinemod",
+  "name": "The Herobrine Mod",
+  "description": "A completely different look at Herobrine and his difficulty",
+  "version": "1.0.0",
+  "mcversion": "1.12.2",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["TheMCOverlordYT"],
+  "credits": "",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []

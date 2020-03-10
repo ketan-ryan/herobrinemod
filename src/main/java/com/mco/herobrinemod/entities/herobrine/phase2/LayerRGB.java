@@ -1,6 +1,7 @@
 package com.mco.herobrinemod.entities.herobrine.phase2;
 
 import com.mco.herobrinemod.HerobrineMod;
+import com.mco.herobrinemod.config.HerobrineConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -24,11 +25,11 @@ public class LayerRGB<T extends EntityHardHerobrine> implements LayerRenderer<T>
     {
         int ticks = entitylivingbaseIn.getDeathTicks();
 
-        boolean f1 = ticks >= 20 && ticks <= 21;
-        boolean f2 = ticks >= 50 && ticks <= 51;
-        boolean f3 = ticks >= 80 && ticks <= 81;
+        boolean f1 = ticks >= 100 && ticks <= 101;
+        boolean f2 = ticks >= 110 && ticks <= 111;
+        boolean f3 = ticks >= 120 && ticks <= 121;
 
-        if(f1 || f2 || f3) {
+        if(f1 || f2 || f3 && HerobrineConfig.enableFight) {
             this.herobrineRenderer.bindTexture(HEROBRINE_GLOW);
             GlStateManager.enableBlend();
             GlStateManager.disableAlpha();
