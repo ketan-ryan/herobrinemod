@@ -10,7 +10,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Config(modid = HerobrineMod.MODID)
 public class HerobrineConfig
 {
-    @Config.Name("Is Phase 3 Enabled")
     @Config.Comment("Whether or not to enable the third phase of the Herobrine fight")
     @Config.RequiresWorldRestart
     public static boolean enableFight = true;

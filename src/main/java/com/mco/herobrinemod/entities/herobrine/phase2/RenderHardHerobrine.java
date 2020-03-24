@@ -1,5 +1,6 @@
 package com.mco.herobrinemod.entities.herobrine.phase2;
 
+import com.mco.herobrinemod.config.HerobrineConfig;
 import com.mco.herobrinemod.entities.util.AdvancedLibLayerHeldItem;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
@@ -34,8 +35,12 @@ public class RenderHardHerobrine extends RenderLiving<EntityHardHerobrine>{
         super.preRenderCallback(herobrine, partialTickTime);
         float scale = herobrine.getScale();
         GlStateManager.scale(scale, scale, scale);
+
         if(herobrine.getDeathTicks() > 0)
             GlStateManager.scale(4,4,4);
+
+        if(HerobrineConfig.enableFight && (herobrine.getDeathTicks() == 100 || herobrine.getDeathTicks() == 120 || herobrine.getDeathTicks() == 140))
+            GlStateManager.scale(1.1, 1.1, 1.1);
     }
 
     /**

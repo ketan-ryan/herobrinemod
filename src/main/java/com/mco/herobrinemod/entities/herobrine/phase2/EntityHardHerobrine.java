@@ -436,18 +436,19 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
             if (deathTicks == 200)
                 setDead();
         }
-        else if(deathTicks <= 100){
-
+        else
+        {
             if(deathTicks < 80)
                 deathCircles(20, this, 0, "fireball");
 
-            if (deathTicks % 10 == 0)
+            if (deathTicks % 10 == 0 && deathTicks < 100)
                 deathCircles(13, this, 0, "explode");
 
             if (deathTicks == 150)
                 setDead();
         }
     }
+
 
     /**
      * If killed by player, puts loot directly in player's inventory so it doesn't get destroyed by death sequence

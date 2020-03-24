@@ -29,7 +29,8 @@ public class ModelHardHerobrine extends ModelHumanoid {
         setRotationAngles(f, f1, f2, f3, f4, f5, herobrine);
 
         animator.setAnimation(herobrine.ANIMATION_DEATH);
-
+        animator.startKeyframe(10);
+            //Head back, arms back, roaring at sky
 
     }
 }

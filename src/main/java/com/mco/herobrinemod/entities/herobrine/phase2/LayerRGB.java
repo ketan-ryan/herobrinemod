@@ -26,8 +26,8 @@ public class LayerRGB<T extends EntityHardHerobrine> implements LayerRenderer<T>
         int ticks = entitylivingbaseIn.getDeathTicks();
 
         boolean f1 = ticks >= 100 && ticks <= 101;
-        boolean f2 = ticks >= 110 && ticks <= 111;
-        boolean f3 = ticks >= 120 && ticks <= 121;
+        boolean f2 = ticks >= 120 && ticks <= 121;
+        boolean f3 = ticks >= 140 && ticks <= 141;
 
         if(f1 || f2 || f3 && HerobrineConfig.enableFight) {
             this.herobrineRenderer.bindTexture(HEROBRINE_GLOW);
