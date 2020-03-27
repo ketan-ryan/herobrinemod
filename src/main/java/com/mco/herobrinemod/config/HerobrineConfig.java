@@ -11,7 +11,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class HerobrineConfig
 {
     @Config.Comment("Whether or not to enable the third phase of the Herobrine fight")
-    @Config.RequiresWorldRestart
     public static boolean enableFight = true;
 
     @Config.Comment("If true, disables a part of the fight that may trigger epilepsy")

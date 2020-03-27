@@ -1,6 +1,5 @@
 package com.mco.herobrinemod;
 
-import com.mco.herobrinemod.config.HerobrineConfig;
 import com.mco.herobrinemod.main.MainEntities;
 import com.mco.herobrinemod.main.MainItems;
 import com.mco.herobrinemod.proxies.CommonProxy;
@@ -14,7 +13,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -26,9 +24,6 @@ public class HerobrineMod
     public static final String MODID = "herobrinemod";
     public static final String NAME = "The Hard Herobrine Mod";
     public static final String VERSION = "1.0";
-    public static final String GUI_FACTORY = "com.mco.herobrinemod.config.HerobrineConfigGuiFactory";
-
-    private static Logger logger;
 
     @SidedProxy(clientSide = "com.mco.herobrinemod.proxies.ClientProxy", serverSide = "com.mco.herobrinemod.proxies.CommonProxy")
     public static CommonProxy proxy;
@@ -63,7 +58,8 @@ public class HerobrineMod
     {
         proxy.preInit(event);
 
-        setPrivateFinalValue(RangedAttribute.class, (RangedAttribute) SharedMonsterAttributes.MAX_HEALTH, Integer.MAX_VALUE, "maximumValue", "field_111118_b");
+        setPrivateFinalValue(RangedAttribute.class, (RangedAttribute) SharedMonsterAttributes.MAX_HEALTH, Integer.MAX_VALUE,
+                "maximumValue", "field_111118_b");
         MainEntities.registerEntity();
         MainItems.preInit();
     }
