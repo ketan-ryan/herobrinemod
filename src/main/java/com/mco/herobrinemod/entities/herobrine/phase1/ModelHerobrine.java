@@ -25,8 +25,7 @@ public class ModelHerobrine extends ModelHumanoid {
 
         animator.setAnimation(herobrine.ANIMATION_DEATH);
         animator.startKeyframe(30);
-            animator.rotate(Chest, 1.75F, 0F, 0F);
-            animator.rotate(Chest, -0.5F, 0F, 0F);
+            animator.rotate(Chest, 1.25F, 0F, 0F);
             animator.move(Chest, 0F, 8F, 0F);
 
             animator.rotate(RLegA, -1.7F, 0F, 0F);
@@ -43,8 +42,7 @@ public class ModelHerobrine extends ModelHumanoid {
         animator.startKeyframe(45);
             animator.rotate(Head, -1.1F, 0F, 0F);
 
-            animator.rotate(Chest, 1.75F, 0F, 0F);
-            animator.rotate(Chest, -0.5F, 0F, 0F);
+            animator.rotate(Chest, 1.25F, 0F, 0F);
             animator.move(Chest, 0F, 8F, 0F);
 
             animator.rotate(RLegA, -1.7F, 0F, 0F);

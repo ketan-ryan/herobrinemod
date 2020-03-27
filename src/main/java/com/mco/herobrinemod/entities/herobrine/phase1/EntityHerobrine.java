@@ -341,14 +341,14 @@ public class EntityHerobrine extends EntityMob implements IRangedAttackMob, IMob
         onDeathAIUpdate();
         deathTicks++;
 
-        boolean s;
+        boolean second;
         if(!world.isRemote){
-            s = secondSpawn;
+            second = secondSpawn;
         }
         else
-            s = false;
+            second = false;
 
-        if(!s)
+        if(!second)
         {
             if (getAnimation() == NO_ANIMATION && currentAnim == null)
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_DEATH);

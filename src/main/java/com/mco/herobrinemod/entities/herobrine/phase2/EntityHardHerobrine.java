@@ -66,7 +66,6 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
     public AnimationAI currentAnim;
 
     private int deathTicks;
-    private int blazeTicks = 0;
     private boolean hasSpawned = false;
 
        /** Selector used to determine the entities a wither boss should attack. */
@@ -188,15 +187,14 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
         if (getHealth() >= getMaxHealth() / 2)
             this.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, Integer.MAX_VALUE, 0));
 
-/*        if(getAnimation() != NO_ANIMATION)
+        if(getAnimation() != NO_ANIMATION)
         {
             animationTick++;
             if(world.isRemote && animationTick >= animation.getDuration())
             {
                 setAnimation(NO_ANIMATION);
             }
-        }*/
-
+        }
 
         if (getAttackTarget() != null && !world.isRemote && deathTicks == 0) {
 
@@ -208,7 +206,6 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
                 attackWithBlazeFireballs(getAttackTarget());
                 attackWithBlazeFireballs(getAttackTarget());
                 attackWithBlazeFireballs(getAttackTarget());
-
             }
 
             if(rand.nextInt(50) == 1){
@@ -234,6 +231,7 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
         if(getHealth() <= getMaxHealth() / 2 && !getHasSpawned() && !world.isRemote){
             EntityHerobrine herobrine = new EntityHerobrine(world, true);
             herobrine.setLocationAndAngles(posX, posY, posZ, 0, 0);
+            world.spawnEntity(herobrine);
             world.spawnEntity(herobrine);
             setHasSpawned(true);
         }
@@ -393,13 +391,21 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
 
     public Animation getDeathAnimation()
     {
-        return ANIMATION_DEATH;
+        if(HerobrineConfig.enableFight)
+            return ANIMATION_DEATH;
+
+        return ANIMATION_DEATH_FULL;
     }
 
     protected void onDeathAIUpdate()
     {
-        if(getAnimation() != ANIMATION_DEATH)
-            AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_DEATH);
+        if(HerobrineConfig.enableFight) {
+            if (getAnimation() != ANIMATION_DEATH)
+                AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_DEATH);
+        }
+        else
+            if(getAnimation() != ANIMATION_DEATH_FULL)
+                AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_DEATH_FULL);
     }
 
     @Override
@@ -409,8 +415,10 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
 
         if (getAnimation() == NO_ANIMATION && currentAnim == null) {
             if (HerobrineConfig.enableFight)
+                //If the fight is enabled, play the death sequence with the chromatic aberration
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_DEATH);
             else
+                //Otherwise, play the full death animation
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_DEATH_FULL);
         }
 
@@ -425,6 +433,9 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
 
         if (!HerobrineConfig.enableFight)
         {
+            if(deathTicks == 1)
+                setAnimation(ANIMATION_DEATH_FULL);
+
             if (deathTicks >= 170 && deathTicks % 10 == 0)
                 deathCircles(10, this, 15, "lightning");
 
@@ -438,6 +449,9 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
         }
         else
         {
+            if(deathTicks == 1)
+                setAnimation(ANIMATION_DEATH);
+
             if(deathTicks < 80)
                 deathCircles(20, this, 0, "fireball");
 

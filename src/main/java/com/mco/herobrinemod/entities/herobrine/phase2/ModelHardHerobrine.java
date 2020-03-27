@@ -28,9 +28,60 @@ public class ModelHardHerobrine extends ModelHumanoid {
         animator.update(herobrine);
         setRotationAngles(f, f1, f2, f3, f4, f5, herobrine);
 
-        animator.setAnimation(herobrine.ANIMATION_DEATH);
-        animator.startKeyframe(10);
-            //Head back, arms back, roaring at sky
+        animator.setAnimation(herobrine.ANIMATION_DEATH_FULL);
+        animator.startKeyframe(50);
+            animator.rotate(Head, -.75F, 0F, 0F);
 
+            animator.rotate(LArmA, -1F, 0.5F, 0F);
+            animator.rotate(LArmB, -1F, 0F, 0F);
+
+            animator.rotate(RArmA, -1F, -0.5F, 0F);
+            animator.rotate(RArmB, -1F, 0F, 0F);
+        animator.endKeyframe();
+        animator.startKeyframe(30);
+            animator.rotate(Head, -.75F, 0F, 0F);
+
+            animator.rotate(LArmA, -1F, 0.5F, 0F);
+            animator.rotate(LArmB, -1F, 0F, 0F);
+
+            animator.rotate(RArmA, -1F, -0.5F, 0F);
+            animator.rotate(RArmB, -1F, 0F, 0F);
+
+            animator.rotate(Chest, 0.25F, 0F, 0F);
+            animator.move(Chest, 0F, 6F, 0F);
+
+            animator.rotate(LLegA, -0.5F, 0F, 0F);
+            animator.rotate(LLegB, 1.5F, 0F, 0F);
+            animator.rotate(RLegA, -0.5F, 0F, 0F);
+            animator.rotate(RLegB, 1.5F, 0F, 0F);
+        animator.endKeyframe();
+        animator.startKeyframe(30);
+            animator.rotate(Chest, 1F, 0F, 0F);
+            animator.move(Chest, 0F, 12F, 0F);
+
+            animator.rotate(LLegA, -0.5F, 0F, 0F);
+            animator.rotate(LLegB, 1.5F, 0F, 0F);
+            animator.rotate(RLegA, -0.5F, 0F, 0F);
+            animator.rotate(RLegB, 1.5F, 0F, 0F);
+
+            animator.rotate(LArmA, -0.8F, 0F, 0F);
+            animator.rotate(RArmA, -0.8F, 0F, 0F);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(30);
+        animator.startKeyframe(30);
+            animator.rotate(Head, -.75F, 0F, 0F);
+
+            animator.rotate(Chest, 1F, 0F, 0F);
+            animator.move(Chest, 0F, 12F, 0F);
+
+            animator.rotate(LLegA, -0.5F, 0F, 0F);
+            animator.rotate(LLegB, 1.5F, 0F, 0F);
+            animator.rotate(RLegA, -0.5F, 0F, 0F);
+            animator.rotate(RLegB, 1.5F, 0F, 0F);
+
+            animator.rotate(LArmA, -0.8F, 0F, 0F);
+            animator.rotate(RArmA, -0.8F, 0F, 0F);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(30);
     }
 }
