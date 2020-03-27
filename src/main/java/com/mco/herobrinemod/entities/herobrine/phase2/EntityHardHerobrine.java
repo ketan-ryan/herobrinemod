@@ -59,7 +59,7 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
     private int animationTick;
 
     public static final Animation ANIMATION_DEATH_FULL = Animation.create(200);
-    public static final Animation ANIMATION_DEATH = Animation.create(100);
+    public static final Animation ANIMATION_DEATH = Animation.create(200);
 
     private static final Animation[] ANIMATIONS = {ANIMATION_DEATH, ANIMATION_DEATH_FULL};
 
@@ -231,8 +231,7 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
         if(getHealth() <= getMaxHealth() / 2 && !getHasSpawned() && !world.isRemote){
             EntityHerobrine herobrine = new EntityHerobrine(world, true);
             herobrine.setLocationAndAngles(posX, posY, posZ, 0, 0);
-            world.spawnEntity(herobrine);
-            world.spawnEntity(herobrine);
+//            world.spawnEntity(herobrine);
             setHasSpawned(true);
         }
 
@@ -426,7 +425,7 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
         int i = 250;
 
         if (!this.world.isRemote) {
-            if (this.deathTicks > 15 && this.deathTicks % 5 == 0 && flag) {
+            if (this.deathTicks > 15 && this.deathTicks % 7 == 0 && flag) {
                 this.dropExperience(i);
             }
         }
@@ -451,14 +450,14 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
         {
             if(deathTicks == 1)
                 setAnimation(ANIMATION_DEATH);
+//
+//            if(deathTicks < 80)
+//                deathCircles(20, this, 0, "fireball");
+//
+//            if (deathTicks % 10 == 0 && deathTicks < 100)
+//                deathCircles(13, this, 0, "explode");
 
-            if(deathTicks < 80)
-                deathCircles(20, this, 0, "fireball");
-
-            if (deathTicks % 10 == 0 && deathTicks < 100)
-                deathCircles(13, this, 0, "explode");
-
-            if (deathTicks == 150)
+            if (deathTicks == 300)
                 setDead();
         }
     }
@@ -535,12 +534,12 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
         }
     }
 
-    private void dropExperience(int p_184668_1_)
+    private void dropExperience(int time)
     {
-        while (p_184668_1_ > 0)
+        while (time > 0)
         {
-            int i = EntityXPOrb.getXPSplit(p_184668_1_);
-            p_184668_1_ -= i;
+            int i = EntityXPOrb.getXPSplit(time);
+            time -= i;
             this.world.spawnEntity(new EntityXPOrb(this.world, this.posX, this.posY, this.posZ, i));
         }
     }
