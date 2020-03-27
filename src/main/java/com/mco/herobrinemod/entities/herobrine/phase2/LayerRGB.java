@@ -29,7 +29,7 @@ public class LayerRGB<T extends EntityHardHerobrine> implements LayerRenderer<T>
         boolean f2 = ticks >= 120 && ticks <= 121;
         boolean f3 = ticks >= 140 && ticks <= 141;
 
-        if(f1 || f2 || f3 && HerobrineConfig.enableFight) {
+        if((f1 || f2 || f3) && HerobrineConfig.enableFight) {
             this.herobrineRenderer.bindTexture(HEROBRINE_GLOW);
             GlStateManager.enableBlend();
             GlStateManager.disableAlpha();
