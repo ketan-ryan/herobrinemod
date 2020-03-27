@@ -25,15 +25,15 @@ public class LayerRGB<T extends EntityHardHerobrine> implements LayerRenderer<T>
     {
         int ticks = entitylivingbaseIn.getDeathTicks();
 
-        boolean f1 = ticks >= 100 && ticks <= 101;
-        boolean f2 = ticks >= 120 && ticks <= 121;
-        boolean f3 = ticks >= 140 && ticks <= 141;
-        boolean f4 = ticks >= 145 && ticks <= 150 && ticks % 5 == 0;
-        boolean f5 = ticks >= 151 && ticks <= 156 && ticks % 4 == 0;
-        boolean f6 = ticks >= 156 && ticks <= 162 && ticks % 3 == 0;
-        boolean f7 = ticks >= 163 && ticks <= 190 && ticks % 2 == 0;
+        boolean b1 = ticks >= 100 && ticks <= 101;
+        boolean b2 = ticks >= 120 && ticks <= 121;
+        boolean b3 = ticks >= 140 && ticks <= 141;
+        boolean b4 = ticks >= 145 && ticks <= 150 && ticks % 5 == 0;
+        boolean b5 = ticks >= 151 && ticks <= 156 && ticks % 4 == 0;
+        boolean b6 = ticks >= 156 && ticks <= 162 && ticks % 3 == 0;
+        boolean b7 = ticks >= 163 && ticks <= 190 && ticks % 2 == 0;
 
-        boolean shouldPulse = f1 || f2 || f3 || f4 || f5 || f6 || f7;
+        boolean shouldPulse = (b1 || b2 || b3 || b4 || b5 || b6 || b7) && !HerobrineConfig.disableEpilepsy;
 
         if(shouldPulse && HerobrineConfig.enableFight) {
             this.herobrineRenderer.bindTexture(HEROBRINE_GLOW);

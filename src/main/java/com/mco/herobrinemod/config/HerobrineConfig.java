@@ -14,6 +14,9 @@ public class HerobrineConfig
     @Config.RequiresWorldRestart
     public static boolean enableFight = true;
 
+    @Config.Comment("If true, disables a part of the fight that may trigger epilepsy")
+    public static boolean disableEpilepsy = false;
+
     @Mod.EventBusSubscriber(modid = HerobrineMod.MODID)
     private static class EventHandler {
 

@@ -450,12 +450,12 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
         {
             if(deathTicks == 1)
                 setAnimation(ANIMATION_DEATH);
-//
-//            if(deathTicks < 80)
-//                deathCircles(20, this, 0, "fireball");
-//
-//            if (deathTicks % 10 == 0 && deathTicks < 100)
-//                deathCircles(13, this, 0, "explode");
+
+            if(deathTicks < 80)
+                deathCircles(20, this, 0, "fireball");
+
+            if (deathTicks % 10 == 0 && deathTicks < 100)
+                deathCircles(13, this, 0, "explode");
 
             if (deathTicks == 300)
                 setDead();

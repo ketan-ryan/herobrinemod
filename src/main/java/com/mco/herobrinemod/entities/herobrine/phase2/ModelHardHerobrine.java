@@ -1,5 +1,6 @@
 package com.mco.herobrinemod.entities.herobrine.phase2;
 
+import com.mco.herobrinemod.config.HerobrineConfig;
 import com.mco.herobrinemod.entities.herobrine.ModelHumanoid;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.client.renderer.GlStateManager;
@@ -28,7 +29,7 @@ public class ModelHardHerobrine extends ModelHumanoid {
         boolean b6 = ticks >= 156 && ticks <= 162 && ticks % 3 == 0;
         boolean b7 = ticks >= 163 && ticks <= 190 && ticks % 2 == 0;
 
-        boolean shouldPulse = b1 || b2 || b3 || b4 || b5 || b6 || b7;
+        boolean shouldPulse = (b1 || b2 || b3 || b4 || b5 || b6 || b7) && !HerobrineConfig.disableEpilepsy;
 
         if((herobrine.getAnimation() == herobrine.ANIMATION_DEATH && !shouldPulse) || ticks == 0 || ticks >= 190)
             this.Chest.render(f5);
@@ -49,7 +50,7 @@ public class ModelHardHerobrine extends ModelHumanoid {
         boolean b6 = ticks >= 156 && ticks <= 162 && ticks % 3 == 0;
         boolean b7 = ticks >= 163 && ticks <= 190 && ticks % 2 == 0;
 
-        boolean shouldPulse = b1 || b2 || b3 || b4 || b5 || b6 || b7;
+        boolean shouldPulse = (b1 || b2 || b3 || b4 || b5 || b6 || b7) && !HerobrineConfig.disableEpilepsy;
 
         if(herobrine.getAnimation() == herobrine.ANIMATION_DEATH && shouldPulse)
             this.Chest.render(f5);
