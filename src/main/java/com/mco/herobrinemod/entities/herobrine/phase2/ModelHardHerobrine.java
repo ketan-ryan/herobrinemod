@@ -82,7 +82,7 @@ public class ModelHardHerobrine extends ModelHumanoid {
             animator.rotate(RLegA, -0.5F, 0F, 0F);
             animator.rotate(RLegB, 1.5F, 0F, 0F);
         animator.endKeyframe();
-        animator.startKeyframe(30);
+        animator.startKeyframe(15);
             animator.rotate(Chest, 1F, 0F, 0F);
             animator.move(Chest, 0F, 12F, 0F);
 
@@ -109,8 +109,36 @@ public class ModelHardHerobrine extends ModelHumanoid {
             animator.rotate(LArmA, -0.8F, 0F, 0F);
             animator.rotate(RArmA, -0.8F, 0F, 0F);
         animator.endKeyframe();
-        animator.setStaticKeyframe(20);
-        animator.resetKeyframe(1);
+        animator.setStaticKeyframe(40);
+        animator.resetKeyframe(30);
+        animator.startKeyframe(40);
+            animator.rotate(Head, 0.75F, 0F, 0F);
+
+            animator.rotate(LArmA, -0.5F, -0.5F, 0F);
+            animator.rotate(LArmB, -0.75F, -0.25F, 0F);
+            animator.rotate(RArmA, -0.5F, 0.5F, 0F);
+            animator.rotate(RArmB, -0.75F, 0.25F, 0F);
+
+            animator.rotate(RLegA, -1.5F, 0F, 0F);
+            animator.rotate(RLegB, 1F, -0F, 0F);
+            animator.rotate(LLegA, -1.5F, 0F, 0F);
+            animator.rotate(LLegB, 1F, 0F, 0F);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(80);
+        animator.startKeyframe(5);
+            animator.rotate(Head, -0.75F, 0F, 0F);
+
+            animator.rotate(LArmA, 0.5F, -0.5F, 0F);
+            animator.rotate(LArmB, 0.75F, -0.25F, 0F);
+            animator.rotate(RArmA, 0.5F, 0.5F, 0F);
+            animator.rotate(RArmB, 0.75F, 0.25F, 0F);
+
+            animator.rotate(RLegA, 1.5F, 0F, 0F);
+            animator.rotate(RLegB, -1F, -0F, 0F);
+            animator.rotate(LLegA, 1.5F, 0F, 0F);
+            animator.rotate(LLegB, -1F, 0F, 0F);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(5);
 
         animator.setAnimation(herobrine.ANIMATION_DEATH_FULL);
         animator.startKeyframe(50);

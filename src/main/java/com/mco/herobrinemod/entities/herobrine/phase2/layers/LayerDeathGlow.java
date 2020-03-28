@@ -12,9 +12,10 @@ import java.util.Random;
 
 public class LayerDeathGlow<T extends EntityHardHerobrine> implements LayerRenderer<T>
 {
+    private int up;
     public void doRenderLayer(EntityHardHerobrine entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
-        if (entitylivingbaseIn.getDeathTicks() > 232)
+        if (entitylivingbaseIn.getDeathTicks() > 233)
         {
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
@@ -31,7 +32,14 @@ public class LayerDeathGlow<T extends EntityHardHerobrine> implements LayerRende
             GlStateManager.disableTexture2D();
             GlStateManager.shadeModel(7425);
             GlStateManager.enableBlend();
-            GlStateManager.scale(.07F, .07F, .07F);
+            if(entitylivingbaseIn.getDeathTicks() < 350){
+                GlStateManager.scale(.07F, .07F, .07F);
+                up = 0;
+            }
+            else if(entitylivingbaseIn.getDeathTicks() > 350 && entitylivingbaseIn.getDeathTicks() < 355){
+                up += .005;
+                GlStateManager.scale(.07F + up, .07F + up, .07F + up);
+            }
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
             GlStateManager.disableAlpha();
             GlStateManager.enableCull();

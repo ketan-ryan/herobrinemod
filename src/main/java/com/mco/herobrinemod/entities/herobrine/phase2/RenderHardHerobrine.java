@@ -66,16 +66,17 @@ public class RenderHardHerobrine extends RenderLiving<EntityHardHerobrine>{
         if(ticks == 1)
             GlStateManager.scale(6,6,6);
 
-        if (ticks > 232) {
+        if (ticks > 232 && ticks < 350) {
             f += .005;
 
             if(6 - f > 2.5F)
                 GlStateManager.scale(6 - f, 6 - f, 6 - f);
-            else
-                GlStateManager.scale(2.5F, 2.5F, 2.5F);
 
-            GlStateManager.rotate(2500*f, 0, 1, 0);
+            GlStateManager.rotate(2500*f / (float)(1/(Math.exp((float)ticks/2000))), 0, 1, 0);
         }
+
+        if(ticks == 352)
+            GlStateManager.scale(6F, 6F, 6F);
     }
 
     /**

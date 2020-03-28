@@ -466,7 +466,12 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
             if(deathTicks == 222)
                 deathText(false);
 
-            if (deathTicks == 400)
+            if(deathTicks == 352)
+            {
+                world.newExplosion(this, posX , posY, posZ ,70, false, true);
+            }
+
+            if (deathTicks == 353)
                 setDead();
         }
     }
