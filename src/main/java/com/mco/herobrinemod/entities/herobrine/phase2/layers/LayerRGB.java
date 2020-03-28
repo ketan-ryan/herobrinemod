@@ -1,7 +1,9 @@
-package com.mco.herobrinemod.entities.herobrine.phase2;
+package com.mco.herobrinemod.entities.herobrine.phase2.layers;
 
 import com.mco.herobrinemod.HerobrineMod;
 import com.mco.herobrinemod.config.HerobrineConfig;
+import com.mco.herobrinemod.entities.herobrine.phase2.EntityHardHerobrine;
+import com.mco.herobrinemod.entities.herobrine.phase2.RenderHardHerobrine;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;

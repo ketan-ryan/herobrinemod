@@ -1,4 +1,4 @@
-package com.mco.herobrinemod.entities.herobrine.phase2;
+package com.mco.herobrinemod.entities.herobrine.phase2.layers;
 
 import com.mco.herobrinemod.HerobrineMod;
 import net.minecraft.client.Minecraft;

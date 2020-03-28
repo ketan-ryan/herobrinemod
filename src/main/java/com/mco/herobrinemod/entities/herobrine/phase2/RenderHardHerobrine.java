@@ -1,6 +1,8 @@
 package com.mco.herobrinemod.entities.herobrine.phase2;
 
 import com.mco.herobrinemod.config.HerobrineConfig;
+import com.mco.herobrinemod.entities.herobrine.phase2.layers.LayerHardEyes;
+import com.mco.herobrinemod.entities.herobrine.phase2.layers.LayerRGB;
 import com.mco.herobrinemod.entities.util.AdvancedLibLayerHeldItem;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
