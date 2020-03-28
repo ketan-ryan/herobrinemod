@@ -1,6 +1,7 @@
 package com.mco.herobrinemod.entities.herobrine.phase2;
 
 import com.mco.herobrinemod.config.HerobrineConfig;
+import com.mco.herobrinemod.entities.herobrine.phase2.layers.LayerDeathGlow;
 import com.mco.herobrinemod.entities.herobrine.phase2.layers.LayerHardEyes;
 import com.mco.herobrinemod.entities.herobrine.phase2.layers.LayerRGB;
 import com.mco.herobrinemod.entities.util.AdvancedLibLayerHeldItem;
@@ -23,6 +24,7 @@ public class RenderHardHerobrine extends RenderLiving<EntityHardHerobrine>{
         this.addLayer(new AdvancedLibLayerHeldItem(this));
         this.addLayer(new LayerHardEyes<>(this));
         this.addLayer(new LayerRGB<>(this));
+        this.addLayer(new LayerDeathGlow<>());
     }
 
     /**
