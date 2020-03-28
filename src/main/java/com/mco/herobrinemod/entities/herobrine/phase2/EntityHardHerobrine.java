@@ -31,6 +31,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -41,6 +42,7 @@ import net.minecraft.world.BossInfo;
 import net.minecraft.world.BossInfoServer;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -61,7 +63,7 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
     private int animationTick;
 
     public static final Animation ANIMATION_DEATH_FULL = Animation.create(200);
-    public static final Animation ANIMATION_DEATH = Animation.create(300);
+    public static final Animation ANIMATION_DEATH = Animation.create(400);
 
     private static final Animation[] ANIMATIONS = {ANIMATION_DEATH, ANIMATION_DEATH_FULL};
 
@@ -453,18 +455,18 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
             if(deathTicks == 1)
                 setAnimation(ANIMATION_DEATH);
 
-            if(deathTicks < 170)
+/*            if(deathTicks < 170)
                 deathCircles(20, this, 0, "fireball");
 
             if (deathTicks % 10 == 0 && deathTicks < 190)
-                deathCircles(13, this, 0, "explode");
+                deathCircles(13, this, 0, "explode");*/
 
             if(deathTicks == 192)
                 deathText(true);
-            if(deathTicks == 242)
+            if(deathTicks == 232)
                 deathText(false);
 
-            if (deathTicks == 300)
+            if (deathTicks == 400)
                 setDead();
         }
     }
@@ -476,9 +478,7 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
      * */
     private void deathText(boolean first)
     {
-        List<EntityPlayer> list = this.world.<EntityPlayer>getEntitiesWithinAABB(EntityPlayer.class,
-                this.getEntityBoundingBox().expand(32.0D, 32.0D, 32.0D));
-        for (EntityPlayer player : list)
+        for (EntityPlayer player : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers())
         {
             if (player != null && !world.isRemote)
             {
