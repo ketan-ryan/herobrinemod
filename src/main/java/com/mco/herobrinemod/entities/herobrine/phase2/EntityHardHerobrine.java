@@ -35,6 +35,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.BossInfo;
 import net.minecraft.world.BossInfoServer;
 import net.minecraft.world.DifficultyInstance;
@@ -59,7 +61,7 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
     private int animationTick;
 
     public static final Animation ANIMATION_DEATH_FULL = Animation.create(200);
-    public static final Animation ANIMATION_DEATH = Animation.create(200);
+    public static final Animation ANIMATION_DEATH = Animation.create(300);
 
     private static final Animation[] ANIMATIONS = {ANIMATION_DEATH, ANIMATION_DEATH_FULL};
 
@@ -451,17 +453,50 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
             if(deathTicks == 1)
                 setAnimation(ANIMATION_DEATH);
 
-            if(deathTicks < 80)
+            if(deathTicks < 170)
                 deathCircles(20, this, 0, "fireball");
 
-            if (deathTicks % 10 == 0 && deathTicks < 100)
+            if (deathTicks % 10 == 0 && deathTicks < 190)
                 deathCircles(13, this, 0, "explode");
+
+            if(deathTicks == 192)
+                deathText(true);
+            if(deathTicks == 242)
+                deathText(false);
 
             if (deathTicks == 300)
                 setDead();
         }
     }
 
+    /***
+     * A simple method to handle the death messages that show in the chat when Phase 2 is killed without cluttering
+     * {@link #onDeathUpdate()}
+     * @param first Handles what chat message to send
+     * */
+    private void deathText(boolean first)
+    {
+        List<EntityPlayer> list = this.world.<EntityPlayer>getEntitiesWithinAABB(EntityPlayer.class,
+                this.getEntityBoundingBox().expand(32.0D, 32.0D, 32.0D));
+        for (EntityPlayer player : list)
+        {
+            if (player != null && !world.isRemote)
+            {
+                if(first)
+                {
+                    player.sendMessage(new TextComponentString(TextFormatting.OBFUSCATED +
+                            "1234567891011121314151617181920"));
+                    player.sendMessage(new TextComponentString(TextFormatting.BOLD + "YOU HAVE MADE A GRAVE MISTAKE."));
+                }
+                else
+                {
+                    player.sendMessage(new TextComponentString(TextFormatting.BOLD + "UNFORTUNATELY, IT WILL BE YOUR LAST."));
+                    player.sendMessage(new TextComponentString(TextFormatting.OBFUSCATED +
+                            "1234567891011121314151617181920"));
+                }
+            }
+        }
+    }
 
     /**
      * If killed by player, puts loot directly in player's inventory so it doesn't get destroyed by death sequence
