@@ -1,10 +1,11 @@
 package com.mco.herobrinemod.entities.herobrine.phase3;
 
-import net.minecraft.client.particle.ParticleRedstone;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -12,48 +13,58 @@ public class EntityHardestHerobrine extends EntityMob
 {
     public EntityHardestHerobrine(World world){
         super(world);
-        setSize(1, 2);
+        setSize(15, 60);
     }
 
     @Override
     public void onLivingUpdate() {
         super.onLivingUpdate();
 
-        rotationPitch = 45;
+        rotationPitch = 37;
 
         laser();
-        System.out.println(getLookVec());
     }
 
-    private void laser() {
-        if (!world.isRemote) {
-            Vec3d initialVec = this.getPositionEyes(1);
-            BlockPos secondPos = new BlockPos(getLookVec());
+    private void laser()
+    {
+        Vec3d initialVec = this.getPositionEyes(1);
+        RayTraceResult rayTrace = this.rayTrace(200,1);
+        Vec3d lookFar = rayTrace.hitVec;
+        BlockPos secondPos = new BlockPos(lookFar);
 
+        if (world.getBlockState(secondPos).getMaterial() == Material.AIR &&
+                Blocks.FIRE.canPlaceBlockAt(world, secondPos) && !world.isRemote)
             world.setBlockState(secondPos, Blocks.FIRE.getDefaultState());
 
-            double diffX = secondPos.getX() - initialVec.x;
-            double diffY = secondPos.getY() - initialVec.y;
-            double diffZ = secondPos.getZ() - initialVec.z;
+        double diffX = secondPos.getX() - initialVec.x;
+        double diffY = secondPos.getY() - initialVec.y;
+        double diffZ = secondPos.getZ() - initialVec.z;
 
-            int length = (int) Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2) + Math.pow(diffZ, 2));
+        double length = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2) + Math.pow(diffZ, 2));
+        for (int i = 0; i < length; i++)
+        {
+            double factorX = diffX * (i/32.0);
+            double factorY = diffY * (i/32.0);
+            double factorZ = diffZ * (i/32.0);
 
-            for (int i = 0; i < length; i++) {
-                double factorX = diffX * i;
-                double factorY = diffY * i;
-                double factorZ = diffZ * i;
+            Vec3d factorVec = new Vec3d(factorX, factorY, factorZ);
+            Vec3d slopeVec = initialVec.add(factorVec);
 
-                Vec3d factorVec = new Vec3d(factorX, factorY, factorZ);
-                Vec3d slopeVec = initialVec.add(factorVec);
+            BlockPos slopePos = new BlockPos(slopeVec);
+            if(ticksExisted % 10 == 0)
+                world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, slopePos.getX(), slopePos.getY(), slopePos.getZ(),
+                    0,0,0);
 
-                BlockPos slopePos = new BlockPos(slopeVec);
-
-                world.spawnParticle(EnumParticleTypes.REDSTONE, slopePos.getX(), slopePos.getY(), slopePos.getZ(),
-                        0,0,0);
-
-                if (!world.isAirBlock(slopePos))
-                    world.setBlockToAir(slopePos);
-            }
         }
+    }
+
+    @Override
+    public boolean isNonBoss() {
+        return false;
+    }
+
+    @Override
+    protected boolean canDespawn() {
+        return false;
     }
 }

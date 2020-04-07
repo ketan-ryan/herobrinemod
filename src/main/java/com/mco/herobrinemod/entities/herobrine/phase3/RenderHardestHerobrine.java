@@ -32,7 +32,7 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
     @Override
     protected void preRenderCallback(EntityHardestHerobrine entitylivingbaseIn, float partialTickTime) {
         super.preRenderCallback(entitylivingbaseIn, partialTickTime);
-        GlStateManager.scale(10F, 10F, 10F);
+        GlStateManager.scale(30F, 30F, 30F);
     }
 
     /**
