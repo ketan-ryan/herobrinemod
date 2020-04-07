@@ -71,8 +71,7 @@ public class RenderHardHerobrine extends RenderLiving<EntityHardHerobrine>{
 
             if(6 - f > 2.5F)
                 GlStateManager.scale(6 - f, 6 - f, 6 - f);
-            GlStateManager.rotate((float)(Math.exp(ticks-300)/4), 0, 1, 0);
-            System.out.println((float)(Math.exp(ticks-300))/4);
+            GlStateManager.rotate((float)(Math.pow((ticks-232)/6.0, 3)), 0, 1, 0);
         }
 
         if(ticks == 352)
