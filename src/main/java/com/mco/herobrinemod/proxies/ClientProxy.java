@@ -6,6 +6,8 @@ import com.mco.herobrinemod.entities.herobrine.phase2.EntityHardHerobrine;
 import com.mco.herobrinemod.entities.herobrine.phase2.RenderHardHerobrine;
 import com.mco.herobrinemod.entities.herobrine.phase2.ghast.EntityCorruptedGhast;
 import com.mco.herobrinemod.entities.herobrine.phase2.ghast.RenderCorruptedGhast;
+import com.mco.herobrinemod.entities.herobrine.phase3.EntityHardestHerobrine;
+import com.mco.herobrinemod.entities.herobrine.phase3.RenderHardestHerobrine;
 import com.mco.herobrinemod.main.MainItems;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -18,6 +20,8 @@ public class ClientProxy extends CommonProxy {
     public void preInit(FMLPreInitializationEvent event){
         RenderingRegistry.registerEntityRenderingHandler(EntityHerobrine.class, RenderHerobrine.FACTORY);
         RenderingRegistry.registerEntityRenderingHandler(EntityHardHerobrine.class, RenderHardHerobrine.FACTORY);
+        RenderingRegistry.registerEntityRenderingHandler(EntityHardestHerobrine.class, RenderHardestHerobrine.FACTORY);
+
         RenderingRegistry.registerEntityRenderingHandler(EntityCorruptedGhast.class, RenderCorruptedGhast.FACTORY);
     }
 

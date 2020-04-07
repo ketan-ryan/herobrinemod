@@ -1,6 +1,5 @@
 package com.mco.herobrinemod.entities.herobrine.phase2;
 
-import com.mco.herobrinemod.config.HerobrineConfig;
 import com.mco.herobrinemod.entities.herobrine.ModelHumanoid;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.client.renderer.GlStateManager;
