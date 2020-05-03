@@ -16,8 +16,7 @@ import org.lwjgl.opengl.GL11;
 public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
 {
     private static ResourceLocation TEXTURE = new ResourceLocation("herobrinemod:textures/entities/herobrine.png");
-    public static final ResourceLocation BEAM_TEXTURES = new ResourceLocation("textures/entity/beacon_beam.png");
-    public static final ResourceLocation ENDERCRYSTAL_BEAM_TEXTURES = new ResourceLocation("textures/entity/endercrystal/endercrystal_beam.png");
+    public static final ResourceLocation BEAM_TEXTURES = new ResourceLocation("herobrinemod:textures/entities/laser.png");
 
     private static final double RADIUS = 1.7;
     private static final double HEIGHT = 20;
