@@ -177,7 +177,7 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
         super.onLivingUpdate();
 
         this.rotationPitch = 38;
-        laser();
+        laser(1);
         EntityLaser laser = new EntityLaser(world, this, posX, posY, posZ,
                 (float)((rotationYawHead + 90) * Math.PI / 180), (float)(-rotationPitch * Math.PI / 180), 100);
     //    if(ticksExisted % 100 == 0)
@@ -194,7 +194,7 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
     }
 
     @Nullable
-    private Vec3d laser()
+    private void laser(int offset)
     {
         Vec3d initialVec = startPos = this.getPositionEyes(1);
         //Get the block or entity within 200 blocks of the start vec
@@ -252,7 +252,6 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
             }
         }
         this.endPos = lookFar;
-        return lookFar;
     }
 
     public Vec3d getStartPos(){
