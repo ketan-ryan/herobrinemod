@@ -4,6 +4,7 @@ import com.mco.herobrinemod.entities.herobrine.phase1.EntityHerobrine;
 import com.mco.herobrinemod.entities.herobrine.phase2.EntityHardHerobrine;
 import com.mco.herobrinemod.entities.herobrine.phase2.ghast.EntityCorruptedGhast;
 import com.mco.herobrinemod.entities.herobrine.phase3.EntityHardestHerobrine;
+import com.mco.herobrinemod.entities.herobrine.phase3.laser.EntityLaser;
 
 public class MainEntities {
 
@@ -14,6 +15,7 @@ public class MainEntities {
         LibEntityRegistry.registerEntity("hardest_herobrine", EntityHardestHerobrine.class, 0x00000, 0x00000);
 
         LibEntityRegistry.registerEntityEggless("corrupted_ghast", EntityCorruptedGhast.class);
+        LibEntityRegistry.registerEntityEggless("entity_laser", EntityLaser.class);
     }
 
 }
