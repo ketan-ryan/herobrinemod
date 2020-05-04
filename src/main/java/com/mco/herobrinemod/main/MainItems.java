@@ -2,6 +2,7 @@ package com.mco.herobrinemod.main;
 
 import com.mco.herobrinemod.HerobrineMod;
 import com.mco.herobrinemod.armor.HardArmor;
+import com.mco.herobrinemod.items.HardSpawner;
 import com.mco.herobrinemod.items.HardSword;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -42,6 +43,8 @@ public class MainItems {
     public static Item harder_sword;
     public static Item halfharder_sword;
     public static Item hardest_sword;
+
+    public static Item hard_spawner;
 
     public static ItemArmor.ArmorMaterial hard_material = EnumHelper.addArmorMaterial(HerobrineMod.MODID + ":" + "hard_armor",
             HerobrineMod.MODID + ":" + "hard",40, new int[]{7, 11, 14, 7}, 18, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 8.0F);
@@ -86,6 +89,8 @@ public class MainItems {
         hardest_chestplate = new HardArmor(hardest_material, EntityEquipmentSlot.CHEST, "hardest_chestplate", "hardest_chestplate");
         hardest_leggings = new HardArmor(hardest_material, EntityEquipmentSlot.LEGS, "hardest_leggings", "hardest_leggings");
         hardest_boots = new HardArmor(hardest_material, EntityEquipmentSlot.FEET, "hardest_boots", "hardest_boots");
+
+        hard_spawner = new HardSpawner("hard_spawner");
     }
 
     /**
@@ -121,6 +126,8 @@ public class MainItems {
         event.getRegistry().register(hardest_boots);
 
         event.getRegistry().register(hardest_sword);
+
+        event.getRegistry().register(hard_spawner);
     }
 
     public static void registerRenders()
@@ -148,6 +155,8 @@ public class MainItems {
         registerRender(hardest_helmet);
         registerRender(hardest_chestplate);
         registerRender(hardest_boots);
+
+        registerRender(hard_spawner);
     }
 
     public static void registerRender(Item item)

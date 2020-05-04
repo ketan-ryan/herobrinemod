@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "ooo",
+    "oso",
+    "ooo"
+  ],
+  "key":
+  {
+    "o":
+    {
+      "item": "minecraft:obsidian"
+    },
+    "s":
+    {
+      "item": "minecraft:nether_star"
+    }
+  },
+  "result":
+  {
+    "item": "herobrinemod:hard_spawner",
+    "count": 1
+  }
+}
