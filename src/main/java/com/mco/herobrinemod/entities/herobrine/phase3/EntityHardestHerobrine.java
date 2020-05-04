@@ -1,11 +1,9 @@
 package com.mco.herobrinemod.entities.herobrine.phase3;
 
 import com.mco.herobrinemod.entities.herobrine.phase3.ai.AILaser;
-import com.mco.herobrinemod.entities.herobrine.phase3.laser.EntityLaser;
 import com.mco.herobrinemod.main.HerobrineDamageSources;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationAI;
-import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -43,7 +41,8 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
 
     public AnimationAI currentAnim;
 
-    private static final DataParameter<Integer> BEAM_LENGTH = EntityDataManager.createKey(EntityHardestHerobrine.class, DataSerializers.VARINT);
+    private static final DataParameter<Float> YAW = EntityDataManager.createKey(EntityHardestHerobrine.class, DataSerializers.FLOAT);
+    private static final DataParameter<Float> PITCH = EntityDataManager.createKey(EntityHardestHerobrine.class, DataSerializers.FLOAT);
 
     public EntityHardestHerobrine(World world){
         super(world);
@@ -65,27 +64,33 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
     @Override
     protected void entityInit() {
         super.entityInit();
-        getDataManager().register(BEAM_LENGTH, 0);
+        getDataManager().register(YAW, 0F);
+        getDataManager().register(PITCH, 0F);
+    }
+/*
+    public float getYaw(){
+        return getDataManager().get(YAW);
     }
 
-    public void setBeamLength(int length){
-        dataManager.set(BEAM_LENGTH, length);
+    public void setYaw(float yaw){
+        getDataManager().register(YAW, yaw);
     }
 
-    public int getBeamLength(){
-        return dataManager.get(BEAM_LENGTH);
+    public float getPitch()
+    {
+        return getDataManager().get(PITCH);
     }
+
+    public void setPitch(float pitch){
+        getDataManager().set(PITCH, pitch);
+    }*/
 
     @Override
     public void writeEntityToNBT(NBTTagCompound compound) {
-        super.writeEntityToNBT(compound);
-        compound.setInteger("Beam Length", getBeamLength());
     }
 
     @Override
     public void readEntityFromNBT(NBTTagCompound compound) {
-        super.readEntityFromNBT(compound);
-        setBeamLength(compound.getInteger("Beam Length"));
     }
 
     @Override
@@ -178,10 +183,7 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
 
         this.rotationPitch = 38;
         laser(1);
-        EntityLaser laser = new EntityLaser(world, this, posX, posY, posZ,
-                (float)((rotationYawHead + 90) * Math.PI / 180), (float)(-rotationPitch * Math.PI / 180), 100);
-    //    if(ticksExisted % 100 == 0)
-         //   world.spawnEntity(laser);
+
 /*        if(getAnimation() != NO_ANIMATION){
             animationTick++;
             if(world.isRemote && animationTick >= animation.getDuration())

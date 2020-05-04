@@ -19,10 +19,8 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
     public static final ResourceLocation BEAM_TEXTURES = new ResourceLocation("herobrinemod:textures/entities/laser.png");
 
     private static final double RADIUS = 1.7;
-    private static final double HEIGHT = 20;
 
     public static final RenderHardestHerobrine.Factory FACTORY =  new RenderHardestHerobrine.Factory();
-    private float f = 0.0F;
 
     public RenderHardestHerobrine(RenderManager renderManagerIn)
     {
@@ -51,6 +49,7 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
     public void doRender(EntityHardestHerobrine herobrine, double x, double y, double z, float entityYaw, float partialTicks)
     {
         super.doRender(herobrine, x, y, z, entityYaw, partialTicks);
+
         GlStateManager.alphaFunc(516, 0.1F);
         this.bindTexture(BEAM_TEXTURES);
         if(herobrine.getStartPos() != null && herobrine.getEndPos() != null)
@@ -59,26 +58,28 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
             double totalWorldTime = herobrine.world.getWorldTime();
             double texScale = 10.0D;
             double r = 10.5D;
-            renderLaser(x - 3.8, y - 0.5, z, partialTicks, herobrine.posX, herobrine.posY, herobrine.posZ,
+            renderLaser(x - 3.8, y + 9, z, partialTicks, herobrine.posX, herobrine.posY, herobrine.posZ,
                     herobrine.ticksExisted, herobrine.getEndPos().x, herobrine.getEndPos().y, herobrine.getEndPos().z,
-                    height, texScale, r, herobrine.renderYawOffset, herobrine.rotationPitch);
-            renderLaser(x + 3.8, y - 0.5, z, partialTicks, herobrine.posX, herobrine.posY, herobrine.posZ,
+                    height, texScale);
+
+            renderLaser(x + 3.8, y + 9, z, partialTicks, herobrine.posX, herobrine.posY, herobrine.posZ,
                     herobrine.ticksExisted, herobrine.getEndPos().x, herobrine.getEndPos().y, herobrine.getEndPos().z,
-                    height, texScale, r, herobrine.renderYawOffset, herobrine.rotationPitch);
+                    height, texScale);
         }
     }
 
-    private void renderLaser(double x, double y, double z, float partialTicks, double newX, double newY,
-                              double newZ, int ticksExisted, double blockX, double blockY, double blockZ, double height,
-                              double textureScale, double radius, double yaw, double pitch) {
+    private void renderLaser(double x, double y, double z, float partialTicks, double newX, double newY, double newZ,
+                             int ticksExisted, double blockX, double blockY, double blockZ, double height, double textureScale) {
 
         float f = (float)(blockX - newX);
         float f1 = (float)(blockY - 1.0D - newY);
         float f2 = (float)(blockZ - newZ);
-        float length = MathHelper.sqrt(f * f + f1 * f1 + f2 * f2);
+        float length = MathHelper.sqrt(f * f + f1 * f1 + f2 * f2) + 5;
 
         GlStateManager.pushMatrix();
-        GlStateManager.disableLighting();
+        GlStateManager.glTexParameteri(3553, 10242, 10497);
+        GlStateManager.glTexParameteri(3553, 10243, 10497);
+        GlStateManager.enableLighting();
         GlStateManager.disableCull();
         GlStateManager.disableBlend();
         GlStateManager.depthMask(true);
@@ -86,21 +87,19 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buf = tessellator.getBuffer();
-        buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
 
-        buf.pos(-RADIUS + x, height + y, + z).tex(0, 0).endVertex();
-        buf.pos(-RADIUS + x, height + y, length + z).tex(0, 1).endVertex();
-        buf.pos(RADIUS + x, height + y, length + z).tex(1, 0).endVertex();
-        buf.pos(RADIUS + x, height + y,  z).tex(1, 1).endVertex();
+        buf.pos(-RADIUS + x, height + y, + z).tex(0, 0).lightmap(0,240).color(255, 255, 255, 255).endVertex();
+        buf.pos(-RADIUS + x, height+y, length + z).tex(0, 1).lightmap(0,240).color(255, 255, 255, 255).endVertex();
+        buf.pos(RADIUS + x, height+y, length + z).tex(1, 0).lightmap(0, 240).color(255, 255, 255, 255).endVertex();
+        buf.pos(RADIUS + x, height + y,  z).tex(1, 1).lightmap(0, 240).color(255, 255, 255, 255).endVertex();
 
         tessellator.draw();
+
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.depthMask(false);
-
-        GlStateManager.enableLighting();
-        GlStateManager.enableTexture2D();
-        GlStateManager.depthMask(true);
+        GlStateManager.disableBlend();
         GlStateManager.popMatrix();
     }
 
