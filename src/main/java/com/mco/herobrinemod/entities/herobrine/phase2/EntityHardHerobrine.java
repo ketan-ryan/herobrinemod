@@ -62,10 +62,10 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
     private Animation animation = NO_ANIMATION;
     private int animationTick;
 
-    public static final Animation ANIMATION_DEATH_FULL = Animation.create(200);
-    public static final Animation ANIMATION_DEATH = Animation.create(400);
+    public final Animation ANIMATION_DEATH_FULL = Animation.create(200);
+    public final Animation ANIMATION_DEATH = Animation.create(400);
 
-    private static final Animation[] ANIMATIONS = {ANIMATION_DEATH, ANIMATION_DEATH_FULL};
+    private final Animation[] ANIMATIONS = {ANIMATION_DEATH, ANIMATION_DEATH_FULL};
 
     public AnimationAI currentAnim;
 

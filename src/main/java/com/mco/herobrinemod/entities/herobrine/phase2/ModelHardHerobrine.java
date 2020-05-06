@@ -32,6 +32,8 @@ public class ModelHardHerobrine extends ModelHumanoid {
 
         if((herobrine.getAnimation() == herobrine.ANIMATION_DEATH && !shouldPulse) || ticks == 0 || ticks >= 190)
             this.Chest.render(f5);
+        else if(herobrine.getAnimation() == herobrine.ANIMATION_DEATH_FULL)
+            this.Chest.render(f5);
     }
 
     public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5)
