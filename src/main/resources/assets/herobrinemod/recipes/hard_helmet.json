@@ -3,13 +3,17 @@
   "pattern":
   [
     "ood",
-    "d d"
+    "dhd"
   ],
   "key":
   {
     "d":
     {
       "item": "minecraft:diamond"
+    },
+    "h":
+    {
+      "item": "minecraft:diamond_helmet"
     },
     "o":
     {

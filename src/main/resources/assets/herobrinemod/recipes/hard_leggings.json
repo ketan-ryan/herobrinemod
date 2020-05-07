@@ -3,7 +3,7 @@
   "pattern":
   [
     "doo",
-    "d o",
+    "dlo",
     "d d"
   ],
   "key":
@@ -11,6 +11,10 @@
     "d":
     {
       "item": "minecraft:diamond"
+    },
+    "l":
+    {
+      "item": "minecraft:diamond_leggings"
     },
     "o":
     {

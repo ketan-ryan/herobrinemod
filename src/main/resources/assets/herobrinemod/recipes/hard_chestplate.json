@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "pattern":
   [
-    "o d",
+    "ocd",
     "ood",
     "ddd"
   ],
@@ -11,6 +11,10 @@
     "d":
     {
       "item": "minecraft:diamond"
+    },
+    "c":
+    {
+      "item": "minecraft:diamond_chestplate"
     },
     "o":
     {
