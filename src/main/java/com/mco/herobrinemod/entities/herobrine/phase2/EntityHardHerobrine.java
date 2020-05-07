@@ -103,6 +103,7 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
         this.applyEntityAI();
     }
 
+    @SuppressWarnings("unchecked")
     protected void applyEntityAI()
     {
         this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, false));
@@ -121,21 +122,21 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
 
     public void setScale(float scale)
     {
-        this.getDataManager().set(SCALE, Float.valueOf(scale));
+        this.getDataManager().set(SCALE, scale);
     }
 
-    public void setHasSpawned(boolean spawned){
+    private void setHasSpawned(boolean spawned){
         hasSpawned = spawned;
     }
 
     @SideOnly(Side.CLIENT)
     public float getScale()
     {
-        return ((Float)this.getDataManager().get(SCALE)).floatValue();
+        return (this.getDataManager().get(SCALE));
     }
 
     @SideOnly(Side.CLIENT)
-    public boolean getHasSpawned(){
+    private boolean getHasSpawned(){
         return hasSpawned;
     }
 
@@ -149,7 +150,7 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(66.0D);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
         this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(12.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(6.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(8.0D);
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(1500);
     }
 
@@ -178,13 +179,12 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
     public void onLivingUpdate() {
         super.onLivingUpdate();
 
-        if(getAttackTarget() == null && !world.isRemote) {
-            if (getAttackTarget() == null) {
-                List<EntityPlayer> list = this.world.<EntityPlayer>getEntitiesWithinAABB(EntityPlayer.class, this.getEntityBoundingBox().expand(64.0D, 64.0D, 64.0D));
-                for (EntityPlayer entity : list) {
-                    if (entity != null && !entity.isCreative())
-                        setAttackTarget(entity);
-                }
+        if(getAttackTarget() == null && !world.isRemote)
+        {
+            List<EntityPlayer> list = this.world.<EntityPlayer>getEntitiesWithinAABB(EntityPlayer.class, this.getEntityBoundingBox().expand(64.0D, 64.0D, 64.0D));
+            for (EntityPlayer entity : list) {
+                if (entity != null && !entity.isCreative())
+                    setAttackTarget(entity);
             }
         }
 
@@ -235,7 +235,7 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
         if(getHealth() <= getMaxHealth() / 2 && !getHasSpawned() && !world.isRemote){
             EntityHerobrine herobrine = new EntityHerobrine(world, true);
             herobrine.setLocationAndAngles(posX, posY, posZ, 0, 0);
-//            world.spawnEntity(herobrine);
+            world.spawnEntity(herobrine);
             setHasSpawned(true);
         }
 
