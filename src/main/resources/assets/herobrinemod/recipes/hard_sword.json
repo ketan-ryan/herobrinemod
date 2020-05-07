@@ -3,14 +3,14 @@
   "pattern":
   [
     "o",
-    "d",
+    "w",
     "s"
   ],
   "key":
   {
-    "d":
+    "w":
     {
-      "item": "minecraft:diamond"
+      "item": "minecraft:diamond_sword"
     },
     "o":
     {
