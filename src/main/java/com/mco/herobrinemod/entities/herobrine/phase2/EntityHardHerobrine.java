@@ -1,9 +1,10 @@
 package com.mco.herobrinemod.entities.herobrine.phase2;
 
 import com.google.common.base.Predicate;
-import com.mco.herobrinemod.entities.herobrine.phase1.EntityHerobrine;
-import com.mco.herobrinemod.entities.herobrine.phase2.ghast.EntityCorruptedGhast;
 import com.mco.herobrinemod.config.HerobrineConfig;
+import com.mco.herobrinemod.entities.herobrine.phase1.EntityHerobrine;
+import com.mco.herobrinemod.entities.herobrine.phase2.ai.AIShootFireballs;
+import com.mco.herobrinemod.entities.herobrine.phase2.ghast.EntityCorruptedGhast;
 import com.mco.herobrinemod.main.MainItems;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationAI;
@@ -31,11 +32,8 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.BossInfo;
@@ -50,7 +48,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, IMob, IAnimatedEntity
+public class EntityHardHerobrine extends EntityMob implements IMob, IAnimatedEntity
 {
     private final BossInfoServer bossInfo = (BossInfoServer)(new BossInfoServer(this.getDisplayName(), BossInfo.Color.WHITE,
             BossInfo.Overlay.PROGRESS)).setDarkenSky(true);
@@ -64,8 +62,9 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
 
     public final Animation ANIMATION_DEATH_FULL = Animation.create(200);
     public final Animation ANIMATION_DEATH = Animation.create(400);
+    public final Animation ANIMATION_SHOOT = Animation.create(40);
 
-    private final Animation[] ANIMATIONS = {ANIMATION_DEATH, ANIMATION_DEATH_FULL};
+    private final Animation[] ANIMATIONS = {ANIMATION_SHOOT, ANIMATION_DEATH, ANIMATION_DEATH_FULL};
 
     public AnimationAI currentAnim;
 
@@ -90,6 +89,7 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
         this.isImmuneToFire = true;
         this.setSize(4F, 12F);
         experienceValue = 250;
+        tasks.addTask(0, new AIShootFireballs(this, ANIMATION_SHOOT));
     }
 
     protected void initEntityAI()
@@ -200,12 +200,8 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
             }
         }
 
-        if (getAttackTarget() != null && !world.isRemote && deathTicks == 0) {
-
-            if (rand.nextInt(40) == 1) {
-                attackEntityWithRangedAttack(getAttackTarget(), 0);
-            }
-
+        if (getAttackTarget() != null && !world.isRemote && deathTicks == 0)
+        {
             if (rand.nextInt(30) == 1 ) {
                 attackWithBlazeFireballs(getAttackTarget());
                 attackWithBlazeFireballs(getAttackTarget());
@@ -292,40 +288,9 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
      * Removes the given player from the list of players tracking this entity. See {@link net.minecraft.entity.Entity#addTrackingPlayer} for
      * more information on tracking.
      */
-    public void removeTrackingPlayer(EntityPlayerMP player)
-    {
+    public void removeTrackingPlayer(EntityPlayerMP player) {
         super.removeTrackingPlayer(player);
         this.bossInfo.removePlayer(player);
-    }
-
-    @Override
-    public void setSwingingArms(boolean swingingArms) {}
-
-    @Override
-    public void attackEntityWithRangedAttack(EntityLivingBase target, float unused) {
-        double d1 = 4.0D;
-        Vec3d vec3d = this.getLook(1.0F);
-        double d2 = target.posX - (this.posX + vec3d.x * 4.0D);
-        double d3;
-        if(getScale() == 6)
-            d3 = target.getEntityBoundingBox().minY + (double)(target.height / 2.0F) - (0.5D + this.posY*2 + (double)(this.height / 2.0F));
-        else
-            d3 = target.getEntityBoundingBox().minY + (double)(target.height / 2.0F) - (0.5D + this.posY*1 + (double)(this.height / 2.0F));
-
-        double d4 = target.posZ - (this.posZ + vec3d.z * 4.0D);
-        world.playEvent((EntityPlayer)null, 1016, new BlockPos(this), 0);
-        EntityLargeFireball entitylargefireball = new EntityLargeFireball(world, this, d2, d3, d4);
-        entitylargefireball.explosionPower = 1;
-        entitylargefireball.posX = this.posX;
-        if(getScale() == 6)
-            entitylargefireball.posY = this.posY + (double)(this.height / 2.0F) + 5.0D;
-        else if (getScale() == 3)
-            entitylargefireball.posY = this.posY + (double)(this.height / 2.0F) + 0.0D;
-        else if (getScale() == 1.5)
-            entitylargefireball.posY = this.posY + (double)(this.height / 2.0F) - 3.0D;
-        entitylargefireball.posZ = this.posZ;
-
-        world.spawnEntity(entitylargefireball);
     }
 
     public void attackWithBlazeFireballs(EntityLivingBase target){
