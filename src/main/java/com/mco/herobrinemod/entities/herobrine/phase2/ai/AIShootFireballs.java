@@ -15,19 +15,18 @@ public class AIShootFireballs extends AnimationAI<EntityHardHerobrine>
     private Animation animation;
     private EntityLivingBase target;
     protected EntityHardHerobrine herobrine;
-    private EntityLaser laser;
 
     public AIShootFireballs(EntityHardHerobrine herobrine, Animation animation){
         super(herobrine);
         setMutexBits(8);
-        herobrine = herobrine;
-        animation = animation;
-        target = herobrine.getAttackTarget();
+        this.herobrine = herobrine;
+        this.animation = animation;
+        this.target = herobrine.getAttackTarget();
     }
 
     @Override
     public Animation getAnimation() {
-        return animation;
+        return this.animation;
     }
 
     @Override
@@ -39,7 +38,7 @@ public class AIShootFireballs extends AnimationAI<EntityHardHerobrine>
     public void startExecuting() {
         super.startExecuting();
         herobrine.currentAnim = this;
-        target = entity.getAttackTarget();
+        target = herobrine.getAttackTarget();
     }
 
     @Override
@@ -83,5 +82,6 @@ public class AIShootFireballs extends AnimationAI<EntityHardHerobrine>
     @Override
     public void resetTask() {
         super.resetTask();
+        herobrine.currentAnim = null;
     }
 }

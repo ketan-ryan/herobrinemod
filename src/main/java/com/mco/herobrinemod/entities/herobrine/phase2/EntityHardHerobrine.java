@@ -57,7 +57,7 @@ public class EntityHardHerobrine extends EntityMob implements IMob, IAnimatedEnt
 
     private static final DataParameter<Float> SCALE = EntityDataManager.<Float>createKey(EntityHardHerobrine.class, DataSerializers.FLOAT);
 
-    private Animation animation = NO_ANIMATION;
+    public static  Animation animation = NO_ANIMATION;
     private int animationTick;
 
     public final Animation ANIMATION_DEATH_FULL = Animation.create(200);
@@ -85,17 +85,17 @@ public class EntityHardHerobrine extends EntityMob implements IMob, IAnimatedEnt
     public EntityHardHerobrine(World world){
         super(world);
 
+        tasks.addTask(1, new AIShootFireballs(this, ANIMATION_SHOOT));
         setScale(6);
         this.isImmuneToFire = true;
         this.setSize(4F, 12F);
         experienceValue = 250;
-        tasks.addTask(0, new AIShootFireballs(this, ANIMATION_SHOOT));
     }
 
     protected void initEntityAI()
     {
         this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new EntityAIHardHerobrineAttack(this, 2, true));
+    //    this.tasks.addTask(1, new EntityAIHardHerobrineAttack(this, 2, true));
         this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 64.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
         this.targetTasks.addTask(2, new EntityAIHurtByTarget(this, false, new Class[0]));
@@ -200,7 +200,23 @@ public class EntityHardHerobrine extends EntityMob implements IMob, IAnimatedEnt
             }
         }
 
-        if (getAttackTarget() != null && !world.isRemote && deathTicks == 0)
+
+        if(getAnimation() == NO_ANIMATION && getAttackTarget() != null && currentAnim == null
+                && getAnimation() != ANIMATION_DEATH && getAnimation() != ANIMATION_DEATH_FULL) {
+            //Go thru list of anims + some pad so he can move and choose randomly
+            switch(1)
+            {
+                case 1:
+                    AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_SHOOT);
+                    System.out.println("shoot");
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+/*        if (getAttackTarget() != null && !world.isRemote && deathTicks == 0)
         {
             if (rand.nextInt(30) == 1 ) {
                 attackWithBlazeFireballs(getAttackTarget());
@@ -221,7 +237,7 @@ public class EntityHardHerobrine extends EntityMob implements IMob, IAnimatedEnt
                         getAttackTarget().posY + rand.nextInt(5), getAttackTarget().posZ + rand.nextInt(5), 0, 0);
                 world.spawnEntity(ghast);
             }
-        }
+        }*/
 
         if (getHealth() <= getMaxHealth() / 2 && getHealth() > getMaxHealth() / 4){
             setScale(3);

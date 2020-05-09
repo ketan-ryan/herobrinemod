@@ -196,5 +196,13 @@ public class ModelHardHerobrine extends ModelHumanoid {
             animator.rotate(RArmA, -0.8F, 0F, 0F);
         animator.endKeyframe();
         animator.setStaticKeyframe(30);
+
+        //Fireball shoot
+        animator.setAnimation(herobrine.ANIMATION_SHOOT);
+        animator.startKeyframe(20);
+            animator.rotate(RArmA, -0.85F, 0F, 0F);
+            animator.rotate(RArmB, -0.35F, 0F, 0F);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(20);
     }
 }
