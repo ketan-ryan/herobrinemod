@@ -3,6 +3,7 @@ package com.mco.herobrinemod.entities.herobrine.phase2;
 import com.google.common.base.Predicate;
 import com.mco.herobrinemod.config.HerobrineConfig;
 import com.mco.herobrinemod.entities.herobrine.phase1.EntityHerobrine;
+import com.mco.herobrinemod.entities.herobrine.phase2.ai.AIBreatheFire;
 import com.mco.herobrinemod.entities.herobrine.phase2.ai.AIShootFireballs;
 import com.mco.herobrinemod.entities.herobrine.phase2.ghast.EntityCorruptedGhast;
 import com.mco.herobrinemod.main.MainItems;
@@ -62,10 +63,11 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
     private int animationTick;
 
     public final Animation ANIMATION_SHOOT = Animation.create(40);
+    public final Animation ANIMATION_FIRE = Animation.create(80);
     public final Animation ANIMATION_DEATH_FULL = Animation.create(200);
     public final Animation ANIMATION_DEATH = Animation.create(400);
 
-    private final Animation[] ANIMATIONS = {ANIMATION_SHOOT, ANIMATION_DEATH, ANIMATION_DEATH_FULL};
+    private final Animation[] ANIMATIONS = {ANIMATION_SHOOT, ANIMATION_FIRE, ANIMATION_DEATH, ANIMATION_DEATH_FULL};
 
     public AnimationAI currentAnim;
 
@@ -87,6 +89,7 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
         super(world);
 
         tasks.addTask(1, new AIShootFireballs(this, ANIMATION_SHOOT));
+        tasks.addTask(1, new AIBreatheFire(this, ANIMATION_FIRE));
 
         this.tasks.addTask(1, new EntityAIWatchClosest(this, EntityPlayer.class, 64.0F));
    //     this.tasks.addTask(1, new EntityAIHardHerobrineAttack(this, 2, true));
@@ -181,7 +184,7 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
             switch(1)
             {
                 case 1:
-                    AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_SHOOT);
+                    AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_FIRE);
                     break;
 
                 default:
