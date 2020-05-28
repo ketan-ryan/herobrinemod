@@ -47,8 +47,9 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Random;
 
-public class EntityHardHerobrine extends EntityMob implements IMob, IAnimatedEntity
+public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, IMob
 {
     private final BossInfoServer bossInfo = (BossInfoServer)(new BossInfoServer(this.getDisplayName(), BossInfo.Color.WHITE,
             BossInfo.Overlay.PROGRESS)).setDarkenSky(true);
@@ -57,12 +58,12 @@ public class EntityHardHerobrine extends EntityMob implements IMob, IAnimatedEnt
 
     private static final DataParameter<Float> SCALE = EntityDataManager.<Float>createKey(EntityHardHerobrine.class, DataSerializers.FLOAT);
 
-    public static  Animation animation = NO_ANIMATION;
+    public Animation animation = NO_ANIMATION;
     private int animationTick;
 
+    public final Animation ANIMATION_SHOOT = Animation.create(40);
     public final Animation ANIMATION_DEATH_FULL = Animation.create(200);
     public final Animation ANIMATION_DEATH = Animation.create(400);
-    public final Animation ANIMATION_SHOOT = Animation.create(40);
 
     private final Animation[] ANIMATIONS = {ANIMATION_SHOOT, ANIMATION_DEATH, ANIMATION_DEATH_FULL};
 
@@ -86,32 +87,17 @@ public class EntityHardHerobrine extends EntityMob implements IMob, IAnimatedEnt
         super(world);
 
         tasks.addTask(1, new AIShootFireballs(this, ANIMATION_SHOOT));
+
+        this.tasks.addTask(1, new EntityAIWatchClosest(this, EntityPlayer.class, 64.0F));
+   //     this.tasks.addTask(1, new EntityAIHardHerobrineAttack(this, 2, true));
+        this.tasks.addTask(2, new EntityAILookIdle(this));
+        this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
+        this.targetTasks.addTask(4, new EntityAINearestAttackableTarget<>(this, EntityPlayer.class, false));
+
         setScale(6);
         this.isImmuneToFire = true;
         this.setSize(4F, 12F);
         experienceValue = 250;
-    }
-
-    protected void initEntityAI()
-    {
-        this.tasks.addTask(0, new EntityAISwimming(this));
-    //    this.tasks.addTask(1, new EntityAIHardHerobrineAttack(this, 2, true));
-        this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 64.0F));
-        this.tasks.addTask(8, new EntityAILookIdle(this));
-        this.targetTasks.addTask(2, new EntityAIHurtByTarget(this, false, new Class[0]));
-
-        this.applyEntityAI();
-    }
-
-    @SuppressWarnings("unchecked")
-    protected void applyEntityAI()
-    {
-        this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, false));
-        this.targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityVillager.class, false));
-        this.targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityIronGolem.class, false));
-        this.targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityTameable.class, false));
-        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityMob.class, false));
-        this.targetTasks.addTask(6, new EntityAINearestAttackableTarget(this, EntityLivingBase.class, false));
     }
 
     @Override
@@ -179,42 +165,30 @@ public class EntityHardHerobrine extends EntityMob implements IMob, IAnimatedEnt
     public void onLivingUpdate() {
         super.onLivingUpdate();
 
-        if(getAttackTarget() == null && !world.isRemote)
-        {
-            List<EntityPlayer> list = this.world.<EntityPlayer>getEntitiesWithinAABB(EntityPlayer.class, this.getEntityBoundingBox().expand(64.0D, 64.0D, 64.0D));
-            for (EntityPlayer entity : list) {
-                if (entity != null && !entity.isCreative())
-                    setAttackTarget(entity);
-            }
-        }
-
         if (getHealth() >= getMaxHealth() / 2)
             this.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, Integer.MAX_VALUE, 0));
 
-        if(getAnimation() != NO_ANIMATION)
-        {
+        if(getAnimation() != NO_ANIMATION){
             animationTick++;
             if(world.isRemote && animationTick >= animation.getDuration())
-            {
                 setAnimation(NO_ANIMATION);
-            }
         }
 
 
-        if(getAnimation() == NO_ANIMATION && getAttackTarget() != null && currentAnim == null
-                && getAnimation() != ANIMATION_DEATH && getAnimation() != ANIMATION_DEATH_FULL) {
+        if(getAttackTarget() != null && currentAnim == null && getAnimation() == NO_ANIMATION &&
+                getAnimation() != ANIMATION_DEATH && getAnimation() != ANIMATION_DEATH_FULL) {
             //Go thru list of anims + some pad so he can move and choose randomly
             switch(1)
             {
                 case 1:
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_SHOOT);
-                    System.out.println("shoot");
                     break;
 
                 default:
                     break;
             }
         }
+
 
 /*        if (getAttackTarget() != null && !world.isRemote && deathTicks == 0)
         {
@@ -335,53 +309,32 @@ public class EntityHardHerobrine extends EntityMob implements IMob, IAnimatedEnt
     }
 
     @Override
-    public int getAnimationTick()
-    {
-        return animationTick;
+    public int getAnimationTick() {
+        return this.animationTick;
     }
 
     @Override
-    public void setAnimationTick(int tick)
-    {
-        animationTick = tick;
+    public void setAnimationTick(int animationTick) {
+        this.animationTick = animationTick;
     }
 
     @Override
-    public Animation getAnimation()
-    {
+    public Animation getAnimation() {
         return this.animation;
     }
 
     @Override
-    public void setAnimation(Animation animation)
-    {
-        if(animation == NO_ANIMATION)
-        {
-            onAnimationFinish(this.animation);
-            setAnimationTick(0);
-        }
-
+    public void setAnimation(Animation animation) {
         this.animation = animation;
+        setAnimationTick(0);
     }
 
     @Override
-    public Animation[] getAnimations()
-    {
+    public Animation[] getAnimations() {
         return ANIMATIONS;
     }
 
-    protected void onAnimationFinish(Animation animation)
-    {}
-
-    public Animation getDeathAnimation()
-    {
-        if(HerobrineConfig.enableFight)
-            return ANIMATION_DEATH;
-
-        return ANIMATION_DEATH_FULL;
-    }
-
-    protected void onDeathAIUpdate()
+    private void onDeathAIUpdate()
     {
         if(HerobrineConfig.enableFight) {
             if (getAnimation() != ANIMATION_DEATH)
