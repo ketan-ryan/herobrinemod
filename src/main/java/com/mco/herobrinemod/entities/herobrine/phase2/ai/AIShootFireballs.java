@@ -47,9 +47,13 @@ public class AIShootFireballs extends AnimationAI<EntityHardHerobrine>
     {
         super.updateTask();
 
-        if(herobrine.getAnimationTick() == 21 && target != null)
+        if(target != null)
         {
-            shootFireball(target);
+            if (herobrine.getAnimationTick() < 10)
+                herobrine.faceEntity(target, 30, 30);
+
+            if (herobrine.getAnimationTick() > 10 && herobrine.getAnimationTick() < 60 && herobrine.getAnimationTick() % 5 == 0)
+                shootFireball(target);
         }
     }
 
@@ -62,14 +66,14 @@ public class AIShootFireballs extends AnimationAI<EntityHardHerobrine>
         herobrine.world.playEvent((EntityPlayer)null, 1016, new BlockPos(this.herobrine), 0);
         EntityLargeFireball entitylargefireball = new EntityLargeFireball(herobrine.world, this.herobrine, d2, d3, d4);
         entitylargefireball.explosionPower = (int)herobrine.getScale();
-        entitylargefireball.posX = this.herobrine.posX + vec3d.x * 4.0D;
+        entitylargefireball.posX = this.herobrine.posX + vec3d.x * herobrine.getScale();
         if(herobrine.getScale() == 6)
             entitylargefireball.posY = herobrine.posY + (double)(herobrine.height / 2.0F) + 1.0D;
         else if (herobrine.getScale() == 3)
             entitylargefireball.posY = herobrine.posY + (double)(herobrine.height / 2.0F) - 2.0D;
         else if (herobrine.getScale() == 1.5)
             entitylargefireball.posY = herobrine.posY + (double)(herobrine.height / 2.0F) - 5.0D;
-        entitylargefireball.posZ = this.herobrine.posZ + vec3d.z * 4.0D;
+        entitylargefireball.posZ = 2 + this.herobrine.posZ + vec3d.z * 4.0D;
         herobrine.world.spawnEntity(entitylargefireball);
     }
 

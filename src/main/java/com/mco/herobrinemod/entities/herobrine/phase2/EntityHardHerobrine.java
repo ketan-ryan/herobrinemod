@@ -5,6 +5,7 @@ import com.mco.herobrinemod.config.HerobrineConfig;
 import com.mco.herobrinemod.entities.herobrine.phase1.EntityHerobrine;
 import com.mco.herobrinemod.entities.herobrine.phase2.ai.AIBreatheFire;
 import com.mco.herobrinemod.entities.herobrine.phase2.ai.AIShootFireballs;
+import com.mco.herobrinemod.entities.herobrine.phase2.ai.AISwordSlice;
 import com.mco.herobrinemod.entities.herobrine.phase2.ghast.EntityCorruptedGhast;
 import com.mco.herobrinemod.main.MainItems;
 import net.ilexiconn.llibrary.server.animation.Animation;
@@ -62,12 +63,13 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
     public Animation animation = NO_ANIMATION;
     private int animationTick;
 
-    public final Animation ANIMATION_SHOOT = Animation.create(40);
+    public final Animation ANIMATION_SHOOT = Animation.create(70);
     public final Animation ANIMATION_FIRE = Animation.create(80);
+    public final Animation ANIMATION_SWORD = Animation.create(60);
     public final Animation ANIMATION_DEATH_FULL = Animation.create(200);
     public final Animation ANIMATION_DEATH = Animation.create(400);
 
-    private final Animation[] ANIMATIONS = {ANIMATION_SHOOT, ANIMATION_FIRE, ANIMATION_DEATH, ANIMATION_DEATH_FULL};
+    private final Animation[] ANIMATIONS = {ANIMATION_SHOOT, ANIMATION_FIRE, ANIMATION_SWORD, ANIMATION_DEATH, ANIMATION_DEATH_FULL};
 
     public AnimationAI currentAnim;
 
@@ -90,9 +92,9 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
 
         tasks.addTask(1, new AIShootFireballs(this, ANIMATION_SHOOT));
         tasks.addTask(1, new AIBreatheFire(this, ANIMATION_FIRE));
+        tasks.addTask(1, new AISwordSlice(this, ANIMATION_SWORD));
 
         this.tasks.addTask(1, new EntityAIWatchClosest(this, EntityPlayer.class, 64.0F));
-   //     this.tasks.addTask(1, new EntityAIHardHerobrineAttack(this, 2, true));
         this.tasks.addTask(2, new EntityAILookIdle(this));
         this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
         this.targetTasks.addTask(4, new EntityAINearestAttackableTarget<>(this, EntityPlayer.class, false));
@@ -177,14 +179,13 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
                 setAnimation(NO_ANIMATION);
         }
 
-
+        //Go thru list of anims + some pad so he can move and choose randomly
         if(getAttackTarget() != null && currentAnim == null && getAnimation() == NO_ANIMATION &&
                 getAnimation() != ANIMATION_DEATH && getAnimation() != ANIMATION_DEATH_FULL) {
-            //Go thru list of anims + some pad so he can move and choose randomly
             switch(1)
             {
                 case 1:
-                    AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_FIRE);
+                    AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_SHOOT);
                     break;
 
                 default:
@@ -284,31 +285,6 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
     public void removeTrackingPlayer(EntityPlayerMP player) {
         super.removeTrackingPlayer(player);
         this.bossInfo.removePlayer(player);
-    }
-
-    public void attackWithBlazeFireballs(EntityLivingBase target){
-
-        double d0 = this.getDistanceSq(target);
-        double d1 = target.posX - this.posX;
-        double d2;
-        if(getScale() == 6)
-            d2 = target.getEntityBoundingBox().minY + (double)(target.height / 2.0F) - (this.posY*2 + (double)(this.height / 2.0F));
-        else
-            d2 = target.getEntityBoundingBox().minY + (double)(target.height / 2.0F) - (this.posY + (double)(this.height / 2.0F));
-        double d3 = target.posZ - this.posZ;
-        float f = MathHelper.sqrt(MathHelper.sqrt(d0)) * 0.05F;
-
-        for (int i = 0; i < 7; ++i)
-        {
-            EntitySmallFireball entitysmallfireball = new EntitySmallFireball(this.world, this, d1 + this.getRNG().nextGaussian() * (double)f, d2, d3 + this.getRNG().nextGaussian() * (double)f);
-            if(getScale() == 6)
-                entitysmallfireball.posY = this.posY + (double)(this.height / 2.0F) + 5.0D;
-            else if (getScale() == 3)
-                entitysmallfireball.posY = this.posY + (double)(this.height / 2.0F) + 0.0D;
-            else if (getScale() == 1.5)
-                entitysmallfireball.posY = this.posY + (double)(this.height / 2.0F) - 3.0D;
-            this.world.spawnEntity(entitysmallfireball);
-        }
     }
 
     @Override

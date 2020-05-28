@@ -203,7 +203,7 @@ public class ModelHardHerobrine extends ModelHumanoid {
             animator.rotate(RArmA, -0.85F, 0F, 0F);
             animator.rotate(RArmB, -0.35F, 0F, 0F);
         animator.endKeyframe();
-        animator.setStaticKeyframe(20);
+        animator.setStaticKeyframe(50);
 
         //Fire breath
         animator.setAnimation(herobrine.ANIMATION_FIRE);
@@ -221,6 +221,12 @@ public class ModelHardHerobrine extends ModelHumanoid {
         animator.startKeyframe(20);
             animator.rotate(Head, 0F, 0.25F, 0F);
             doFirebreathRotations();
+        animator.endKeyframe();
+
+        //Sword slice
+        animator.setAnimation(herobrine.ANIMATION_SWORD);
+        animator.startKeyframe(10);
+            animator.rotate(LLegA, -1F, 0F, 0F);
         animator.endKeyframe();
     }
 
