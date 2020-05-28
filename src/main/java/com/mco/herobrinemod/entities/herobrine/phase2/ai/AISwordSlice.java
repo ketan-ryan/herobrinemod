@@ -44,12 +44,8 @@ public class AISwordSlice extends AnimationAI<EntityHardHerobrine>
         super.updateTask();
 
         if(target != null){
-            if(herobrine.getAnimationTick() == 20)
-                target.attackEntityFrom(HerobrineDamageSources.HARD_HEROBRINE, 10);
-            else if(herobrine.getAnimationTick() == 30)
-                target.attackEntityFrom(HerobrineDamageSources.HARD_HEROBRINE, 10);
-            else if(herobrine.getAnimationTick() == 45)
-                target.attackEntityFrom(HerobrineDamageSources.HARD_HEROBRINE, 15);
+            if(herobrine.getDistance(target) <= herobrine.getScale()*2 && herobrine.getAnimationTick() == 21)
+                target.attackEntityFrom(HerobrineDamageSources.HARD_SWORD, 7F);
         }
     }
 

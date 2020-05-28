@@ -28,3 +28,4 @@ item.hardest_boots.name=Fully Enhanced Boots
 item.hard_spawner.name=Herobrine Spawn Item
 
 death.attack.hard_herobrine=%1$s was slain by the bane of Minecraft
+death.attack.hard_sword=%1$s was cut in half

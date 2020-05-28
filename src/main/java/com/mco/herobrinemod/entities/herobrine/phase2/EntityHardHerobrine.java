@@ -185,7 +185,7 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
             switch(1)
             {
                 case 1:
-                    AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_SHOOT);
+                    AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_SWORD);
                     break;
 
                 default:

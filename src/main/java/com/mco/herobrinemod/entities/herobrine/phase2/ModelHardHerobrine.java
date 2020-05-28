@@ -225,8 +225,27 @@ public class ModelHardHerobrine extends ModelHumanoid {
 
         //Sword slice
         animator.setAnimation(herobrine.ANIMATION_SWORD);
-        animator.startKeyframe(10);
-            animator.rotate(LLegA, -1F, 0F, 0F);
+        animator.startKeyframe(20);
+            animator.rotate(LArmA, -1F, 0F, 0F);
+            animator.rotate(Chest, -0.25F, 0F, 0F);
+
+            animator.rotate(LLegA, -0.25F, 0F, 0.05F);
+            animator.rotate(LLegB, 0.4F, 0F, 0F);
+
+            animator.rotate(RLegA, 0.25F, 0F, -0.05F);
+            animator.rotate(RLegB, 0.4F, 0F, 0F);
+        animator.endKeyframe();
+        animator.startKeyframe(8);
+            animator.rotate(LArmA, -0.25F, 0F, -0.5F);
+            animator.rotate(LArmB, 0F, 0F, -0.25F);
+
+            animator.rotate(Chest, 0.25F, 0F, 0F);
+
+            animator.rotate(LLegA, 0.25F, 0F, 0.05F);
+            animator.rotate(LLegB, 0.4F, 0F, 0F);
+
+            animator.rotate(RLegA, -0.4F, 0F, -0.05F);
+            animator.rotate(RLegB, 0.2F, 0F, 0F);
         animator.endKeyframe();
     }
 
