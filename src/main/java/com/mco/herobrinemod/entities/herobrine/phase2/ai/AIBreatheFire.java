@@ -71,9 +71,9 @@ public class AIBreatheFire extends AnimationAI<EntityHardHerobrine>
             if(herobrine.getScale() == 6)
                 entitysmallfireball.posY = herobrine.posY + (double)(herobrine.height / 2.0F) + 3.5D;
             else if (herobrine.getScale() == 3)
-                entitysmallfireball.posY = herobrine.posY + (double)(herobrine.height / 2.0F) + 0.0D;
+                entitysmallfireball.posY = herobrine.posY + (double)(herobrine.height / 2.0F) - 1.0D;
             else if (herobrine.getScale() == 1.5)
-                entitysmallfireball.posY = herobrine.posY + (double)(herobrine.height / 2.0F) - 3.0D;
+                entitysmallfireball.posY = herobrine.posY + (double)(herobrine.height / 2.0F) - 4.0D;
             herobrine.world.spawnEntity(entitysmallfireball);
         }
     }
