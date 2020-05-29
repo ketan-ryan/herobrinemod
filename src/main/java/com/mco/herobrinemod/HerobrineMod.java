@@ -23,7 +23,7 @@ public class HerobrineMod
 {
     public static final String MODID = "herobrinemod";
     public static final String NAME = "The Hard Herobrine Mod";
-    public static final String VERSION = "0.5.0";
+    public static final String VERSION = "0.6.0";
 
     @SidedProxy(clientSide = "com.mco.herobrinemod.proxies.ClientProxy", serverSide = "com.mco.herobrinemod.proxies.CommonProxy")
     public static CommonProxy proxy;
