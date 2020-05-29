@@ -247,6 +247,23 @@ public class ModelHardHerobrine extends ModelHumanoid {
             animator.rotate(RLegA, -0.4F, 0F, -0.05F);
             animator.rotate(RLegB, 0.2F, 0F, 0F);
         animator.endKeyframe();
+
+        //Lightning
+        animator.setAnimation(herobrine.ANIMATION_LIGHTNING);
+        animator.startKeyframe(30);
+            animator.rotate(Head, -0.5F, 0F, 0F);
+
+            animator.rotate(LArmA, -2F, 0F, -0.05F);
+            animator.rotate(LArmB, -0.5F, 0F, 0F);
+
+            animator.rotate(RArmA, -2F, 0F, 0.05F);
+            animator.rotate(RArmB, -0.5F, 0F, 0F);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(30);
+        animator.startKeyframe(10);
+            animator.rotate(LArmA, -0.75F, 0F, 0F);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(20);
     }
 
     private void doFirebreathRotations(){

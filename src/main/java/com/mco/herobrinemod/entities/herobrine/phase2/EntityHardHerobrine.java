@@ -5,27 +5,28 @@ import com.mco.herobrinemod.config.HerobrineConfig;
 import com.mco.herobrinemod.entities.herobrine.phase1.EntityHerobrine;
 import com.mco.herobrinemod.entities.herobrine.phase2.ai.AIBreatheFire;
 import com.mco.herobrinemod.entities.herobrine.phase2.ai.AIShootFireballs;
+import com.mco.herobrinemod.entities.herobrine.phase2.ai.AISummonLightning;
 import com.mco.herobrinemod.entities.herobrine.phase2.ai.AISwordSlice;
 import com.mco.herobrinemod.entities.herobrine.phase2.ghast.EntityCorruptedGhast;
+import com.mco.herobrinemod.entities.util.ParticleHelper;
 import com.mco.herobrinemod.main.MainItems;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationAI;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.*;
+import net.minecraft.entity.ai.EntityAIHurtByTarget;
+import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
-import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.passive.EntityTameable;
-import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityLargeFireball;
-import net.minecraft.entity.projectile.EntitySmallFireball;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -35,7 +36,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.BossInfo;
@@ -48,8 +49,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Random;
 
 public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, IMob
 {
@@ -66,10 +65,11 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
     public final Animation ANIMATION_SHOOT = Animation.create(70);
     public final Animation ANIMATION_FIRE = Animation.create(80);
     public final Animation ANIMATION_SWORD = Animation.create(60);
+    public final Animation ANIMATION_LIGHTNING = Animation.create(100);
     public final Animation ANIMATION_DEATH_FULL = Animation.create(200);
     public final Animation ANIMATION_DEATH = Animation.create(400);
 
-    private final Animation[] ANIMATIONS = {ANIMATION_SHOOT, ANIMATION_FIRE, ANIMATION_SWORD, ANIMATION_DEATH, ANIMATION_DEATH_FULL};
+    private final Animation[] ANIMATIONS = {ANIMATION_SHOOT, ANIMATION_FIRE, ANIMATION_SWORD, ANIMATION_LIGHTNING, ANIMATION_DEATH, ANIMATION_DEATH_FULL};
 
     public AnimationAI currentAnim;
 
@@ -93,6 +93,7 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
         tasks.addTask(1, new AIShootFireballs(this, ANIMATION_SHOOT));
         tasks.addTask(1, new AIBreatheFire(this, ANIMATION_FIRE));
         tasks.addTask(1, new AISwordSlice(this, ANIMATION_SWORD));
+        tasks.addTask(1, new AISummonLightning(this, ANIMATION_LIGHTNING));
 
         this.tasks.addTask(1, new EntityAIWatchClosest(this, EntityPlayer.class, 64.0F));
         this.tasks.addTask(2, new EntityAILookIdle(this));
@@ -185,7 +186,7 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
             switch(1)
             {
                 case 1:
-                    AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_SWORD);
+                    AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_LIGHTNING);
                     break;
 
                 default:
@@ -193,22 +194,11 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
             }
         }
 
+        if(world.isRemote && getAnimation().equals(ANIMATION_LIGHTNING))
+            lightningParticles();
 
 /*        if (getAttackTarget() != null && !world.isRemote && deathTicks == 0)
         {
-            if (rand.nextInt(30) == 1 ) {
-                attackWithBlazeFireballs(getAttackTarget());
-                attackWithBlazeFireballs(getAttackTarget());
-                attackWithBlazeFireballs(getAttackTarget());
-            }
-
-            if(rand.nextInt(50) == 1){
-                EntityLightningBolt lightningBolt = new EntityLightningBolt(world, getAttackTarget().posX, getAttackTarget().posY, getAttackTarget().posZ, false);
-
-                for(int i = 0; i < rand.nextInt(5); i++)
-                    world.addWeatherEffect(lightningBolt);
-            }
-
             if(rand.nextInt(100) == 1){
                 EntityCorruptedGhast ghast = new EntityCorruptedGhast(world);
                 ghast.setLocationAndAngles(getAttackTarget().posX + rand.nextInt(5),
@@ -311,6 +301,15 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
     @Override
     public Animation[] getAnimations() {
         return ANIMATIONS;
+    }
+
+    private void lightningParticles()
+    {
+        if(getAnimationTick() == 65)
+        {
+            ParticleHelper.createParticleCube(world, EnumParticleTypes.CLOUD, 5, 12, 10, getPositionVector(),
+                    rand.nextGaussian() * 0.005D,rand.nextGaussian() * 0.005D,rand.nextGaussian() * 0.005D);
+        }
     }
 
     private void onDeathAIUpdate()
