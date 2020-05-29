@@ -15,10 +15,7 @@ import net.ilexiconn.llibrary.server.animation.AnimationAI;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.EntityAIHurtByTarget;
-import net.minecraft.entity.ai.EntityAILookIdle;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.entity.ai.EntityAIWatchClosest;
+import net.minecraft.entity.ai.*;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
@@ -49,6 +46,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 
 public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, IMob
 {
@@ -95,12 +93,13 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
         tasks.addTask(1, new AISwordSlice(this, ANIMATION_SWORD));
         tasks.addTask(1, new AISummonLightning(this, ANIMATION_LIGHTNING));
 
+        this.tasks.addTask(0, new EntityAIWander(this, 1.5D));
         this.tasks.addTask(1, new EntityAIWatchClosest(this, EntityPlayer.class, 64.0F));
         this.tasks.addTask(2, new EntityAILookIdle(this));
         this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
         this.targetTasks.addTask(4, new EntityAINearestAttackableTarget<>(this, EntityPlayer.class, false));
 
-        setScale(6);
+        this.setScale(6);
         this.isImmuneToFire = true;
         this.setSize(4F, 12F);
         experienceValue = 250;
@@ -140,7 +139,7 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
     {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(66.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.33000000417232513D);
         this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(12.0D);
         this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(8.0D);
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(1500);
@@ -183,9 +182,21 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
         //Go thru list of anims + some pad so he can move and choose randomly
         if(getAttackTarget() != null && currentAnim == null && getAnimation() == NO_ANIMATION &&
                 getAnimation() != ANIMATION_DEATH && getAnimation() != ANIMATION_DEATH_FULL) {
-            switch(1)
+            switch(new Random().nextInt(8))
             {
+                case 0:
+                    AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_SHOOT);
+                    break;
+
                 case 1:
+                    AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_FIRE);
+                    break;
+
+                case 2:
+                    AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_SWORD);
+                    break;
+
+                case 3:
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_LIGHTNING);
                     break;
 
@@ -197,7 +208,7 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
         if(world.isRemote && getAnimation().equals(ANIMATION_LIGHTNING))
             lightningParticles();
 
-/*        if (getAttackTarget() != null && !world.isRemote && deathTicks == 0)
+        if (getAttackTarget() != null && !world.isRemote && deathTicks == 0)
         {
             if(rand.nextInt(100) == 1){
                 EntityCorruptedGhast ghast = new EntityCorruptedGhast(world);
@@ -205,7 +216,7 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
                         getAttackTarget().posY + rand.nextInt(5), getAttackTarget().posZ + rand.nextInt(5), 0, 0);
                 world.spawnEntity(ghast);
             }
-        }*/
+        }
 
         if (getHealth() <= getMaxHealth() / 2 && getHealth() > getMaxHealth() / 4){
             setScale(3);
@@ -307,7 +318,9 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
     {
         if(getAnimationTick() == 65)
         {
-            ParticleHelper.createParticleCube(world, EnumParticleTypes.CLOUD, 5, 12, 10, getPositionVector(),
+            int radius = getScale() >= 3 ? (int)getScale() - 1 : (int)getScale();
+            int height = getScale() >= 3 ? (int) getScale() * 2 : (int)getScale() * 2 + 1;
+            ParticleHelper.createParticleCube(world, EnumParticleTypes.CLOUD, radius, height, 10, getPositionVector(),
                     rand.nextGaussian() * 0.005D,rand.nextGaussian() * 0.005D,rand.nextGaussian() * 0.005D);
         }
     }
