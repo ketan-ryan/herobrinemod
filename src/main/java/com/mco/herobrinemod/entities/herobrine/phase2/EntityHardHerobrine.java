@@ -182,7 +182,7 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
         //Go thru list of anims + some pad so he can move and choose randomly
         if(getAttackTarget() != null && currentAnim == null && getAnimation() == NO_ANIMATION &&
                 getAnimation() != ANIMATION_DEATH && getAnimation() != ANIMATION_DEATH_FULL) {
-            switch(new Random().nextInt(8))
+            switch(new Random().nextInt(16))
             {
                 case 0:
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_SHOOT);
@@ -202,6 +202,22 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
 
                 default:
                     break;
+            }
+        }
+
+        if(getAttackTarget() != null && getAnimationTick() == 0)
+        {
+            float entityHitAngle = (float) ((Math.atan2(getAttackTarget().posZ - posZ, getAttackTarget().posX - posX) * (180 / Math.PI) - 90) % 360);
+            float entityAttackingAngle = renderYawOffset % 360;
+            if (entityHitAngle < 0) {
+                entityHitAngle += 360;
+            }
+            if (entityAttackingAngle < 0) {
+                entityAttackingAngle += 360;
+            }
+            float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
+            if (getNavigator().noPath() && !((entityRelativeAngle <= 30 / 2 && entityRelativeAngle >= -30 / 2) || (entityRelativeAngle >= 360 - 30 / 2 || entityRelativeAngle <= -360 + 30 / 2))) {
+                getNavigator().tryMoveToEntityLiving(getAttackTarget(), 0.85);
             }
         }
 
