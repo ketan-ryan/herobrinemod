@@ -16,6 +16,7 @@ public class MainEntities {
 
         LibEntityRegistry.registerEntityEggless("corrupted_ghast", EntityCorruptedGhast.class);
         LibEntityRegistry.registerEntityEggless("entity_laser", EntityLaser.class);
+
     }
 
 }

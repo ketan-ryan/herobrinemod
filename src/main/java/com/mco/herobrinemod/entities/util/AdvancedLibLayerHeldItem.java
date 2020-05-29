@@ -3,16 +3,17 @@ package com.mco.herobrinemod.entities.util;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
 
 public class AdvancedLibLayerHeldItem extends LayerHeldItem
 {
-
     public AdvancedLibLayerHeldItem(RenderLivingBase<?> livingEntityRendererIn)
     {
         super(livingEntityRendererIn);
@@ -58,7 +59,6 @@ public class AdvancedLibLayerHeldItem extends LayerHeldItem
         if (!itemstack.isEmpty() || !itemstack1.isEmpty())
         {
             GlStateManager.pushMatrix();
-
             this.renderHeldItem(entitylivingbaseIn, itemstack1, ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, EnumHandSide.RIGHT);
             this.renderHeldItem(entitylivingbaseIn, itemstack, ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, EnumHandSide.LEFT);
             GlStateManager.popMatrix();
@@ -85,5 +85,4 @@ public class AdvancedLibLayerHeldItem extends LayerHeldItem
             GlStateManager.popMatrix();
         }
     }
-
 }

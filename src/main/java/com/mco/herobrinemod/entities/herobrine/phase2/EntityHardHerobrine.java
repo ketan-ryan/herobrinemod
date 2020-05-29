@@ -1,9 +1,14 @@
 package com.mco.herobrinemod.entities.herobrine.phase2;
 
 import com.google.common.base.Predicate;
-import com.mco.herobrinemod.entities.herobrine.phase1.EntityHerobrine;
-import com.mco.herobrinemod.entities.herobrine.phase2.ghast.EntityCorruptedGhast;
 import com.mco.herobrinemod.config.HerobrineConfig;
+import com.mco.herobrinemod.entities.herobrine.phase1.EntityHerobrine;
+import com.mco.herobrinemod.entities.herobrine.phase2.ai.AIBreatheFire;
+import com.mco.herobrinemod.entities.herobrine.phase2.ai.AIShootFireballs;
+import com.mco.herobrinemod.entities.herobrine.phase2.ai.AISummonLightning;
+import com.mco.herobrinemod.entities.herobrine.phase2.ai.AISwordSlice;
+import com.mco.herobrinemod.entities.herobrine.phase2.ghast.EntityCorruptedGhast;
+import com.mco.herobrinemod.entities.util.ParticleHelper;
 import com.mco.herobrinemod.main.MainItems;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationAI;
@@ -14,15 +19,11 @@ import net.minecraft.entity.ai.*;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
-import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.passive.EntityTameable;
-import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityLargeFireball;
-import net.minecraft.entity.projectile.EntitySmallFireball;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -31,11 +32,8 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.BossInfo;
@@ -48,9 +46,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
-import java.util.List;
+import java.util.Random;
 
-public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, IMob, IAnimatedEntity
+public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, IMob
 {
     private final BossInfoServer bossInfo = (BossInfoServer)(new BossInfoServer(this.getDisplayName(), BossInfo.Color.WHITE,
             BossInfo.Overlay.PROGRESS)).setDarkenSky(true);
@@ -59,13 +57,17 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
 
     private static final DataParameter<Float> SCALE = EntityDataManager.<Float>createKey(EntityHardHerobrine.class, DataSerializers.FLOAT);
 
-    private Animation animation = NO_ANIMATION;
+    public Animation animation = NO_ANIMATION;
     private int animationTick;
 
+    public final Animation ANIMATION_SHOOT = Animation.create(70);
+    public final Animation ANIMATION_FIRE = Animation.create(80);
+    public final Animation ANIMATION_SWORD = Animation.create(60);
+    public final Animation ANIMATION_LIGHTNING = Animation.create(100);
     public final Animation ANIMATION_DEATH_FULL = Animation.create(200);
     public final Animation ANIMATION_DEATH = Animation.create(400);
 
-    private final Animation[] ANIMATIONS = {ANIMATION_DEATH, ANIMATION_DEATH_FULL};
+    private final Animation[] ANIMATIONS = {ANIMATION_SHOOT, ANIMATION_FIRE, ANIMATION_SWORD, ANIMATION_LIGHTNING, ANIMATION_DEATH, ANIMATION_DEATH_FULL};
 
     public AnimationAI currentAnim;
 
@@ -86,32 +88,21 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
     public EntityHardHerobrine(World world){
         super(world);
 
-        setScale(6);
+        tasks.addTask(1, new AIShootFireballs(this, ANIMATION_SHOOT));
+        tasks.addTask(1, new AIBreatheFire(this, ANIMATION_FIRE));
+        tasks.addTask(1, new AISwordSlice(this, ANIMATION_SWORD));
+        tasks.addTask(1, new AISummonLightning(this, ANIMATION_LIGHTNING));
+
+        this.tasks.addTask(0, new EntityAIWander(this, 1.5D));
+        this.tasks.addTask(1, new EntityAIWatchClosest(this, EntityPlayer.class, 64.0F));
+        this.tasks.addTask(2, new EntityAILookIdle(this));
+        this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
+        this.targetTasks.addTask(4, new EntityAINearestAttackableTarget<>(this, EntityPlayer.class, false));
+
+        this.setScale(6);
         this.isImmuneToFire = true;
         this.setSize(4F, 12F);
         experienceValue = 250;
-    }
-
-    protected void initEntityAI()
-    {
-        this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new EntityAIHardHerobrineAttack(this, 2, true));
-        this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 64.0F));
-        this.tasks.addTask(8, new EntityAILookIdle(this));
-        this.targetTasks.addTask(2, new EntityAIHurtByTarget(this, false, new Class[0]));
-
-        this.applyEntityAI();
-    }
-
-    @SuppressWarnings("unchecked")
-    protected void applyEntityAI()
-    {
-        this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, false));
-        this.targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityVillager.class, false));
-        this.targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityIronGolem.class, false));
-        this.targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityTameable.class, false));
-        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityMob.class, false));
-        this.targetTasks.addTask(6, new EntityAINearestAttackableTarget(this, EntityLivingBase.class, false));
     }
 
     @Override
@@ -148,7 +139,7 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
     {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(66.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.33000000417232513D);
         this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(12.0D);
         this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(8.0D);
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(1500);
@@ -179,46 +170,62 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
     public void onLivingUpdate() {
         super.onLivingUpdate();
 
-        if(getAttackTarget() == null && !world.isRemote)
-        {
-            List<EntityPlayer> list = this.world.<EntityPlayer>getEntitiesWithinAABB(EntityPlayer.class, this.getEntityBoundingBox().expand(64.0D, 64.0D, 64.0D));
-            for (EntityPlayer entity : list) {
-                if (entity != null && !entity.isCreative())
-                    setAttackTarget(entity);
-            }
-        }
-
         if (getHealth() >= getMaxHealth() / 2)
             this.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, Integer.MAX_VALUE, 0));
 
-        if(getAnimation() != NO_ANIMATION)
-        {
+        if(getAnimation() != NO_ANIMATION){
             animationTick++;
             if(world.isRemote && animationTick >= animation.getDuration())
-            {
                 setAnimation(NO_ANIMATION);
+        }
+
+        //Go thru list of anims + some pad so he can move and choose randomly
+        if(getAttackTarget() != null && currentAnim == null && getAnimation() == NO_ANIMATION &&
+                getAnimation() != ANIMATION_DEATH && getAnimation() != ANIMATION_DEATH_FULL) {
+            switch(new Random().nextInt(16))
+            {
+                case 0:
+                    AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_SHOOT);
+                    break;
+
+                case 1:
+                    AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_FIRE);
+                    break;
+
+                case 2:
+                    AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_SWORD);
+                    break;
+
+                case 3:
+                    AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_LIGHTNING);
+                    break;
+
+                default:
+                    break;
             }
         }
 
-        if (getAttackTarget() != null && !world.isRemote && deathTicks == 0) {
-
-            if (rand.nextInt(40) == 1) {
-                attackEntityWithRangedAttack(getAttackTarget(), 0);
+        if(getAttackTarget() != null && getAnimationTick() == 0)
+        {
+            float entityHitAngle = (float) ((Math.atan2(getAttackTarget().posZ - posZ, getAttackTarget().posX - posX) * (180 / Math.PI) - 90) % 360);
+            float entityAttackingAngle = renderYawOffset % 360;
+            if (entityHitAngle < 0) {
+                entityHitAngle += 360;
             }
-
-            if (rand.nextInt(30) == 1 ) {
-                attackWithBlazeFireballs(getAttackTarget());
-                attackWithBlazeFireballs(getAttackTarget());
-                attackWithBlazeFireballs(getAttackTarget());
+            if (entityAttackingAngle < 0) {
+                entityAttackingAngle += 360;
             }
-
-            if(rand.nextInt(50) == 1){
-                EntityLightningBolt lightningBolt = new EntityLightningBolt(world, getAttackTarget().posX, getAttackTarget().posY, getAttackTarget().posZ, false);
-
-                for(int i = 0; i < rand.nextInt(5); i++)
-                    world.addWeatherEffect(lightningBolt);
+            float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
+            if (getNavigator().noPath() && !((entityRelativeAngle <= 30 / 2 && entityRelativeAngle >= -30 / 2) || (entityRelativeAngle >= 360 - 30 / 2 || entityRelativeAngle <= -360 + 30 / 2))) {
+                getNavigator().tryMoveToEntityLiving(getAttackTarget(), 0.85);
             }
+        }
 
+        if(world.isRemote && getAnimation().equals(ANIMATION_LIGHTNING))
+            lightningParticles();
+
+        if (getAttackTarget() != null && !world.isRemote && deathTicks == 0)
+        {
             if(rand.nextInt(100) == 1){
                 EntityCorruptedGhast ghast = new EntityCorruptedGhast(world);
                 ghast.setLocationAndAngles(getAttackTarget().posX + rand.nextInt(5),
@@ -292,115 +299,49 @@ public class EntityHardHerobrine extends EntityMob implements IRangedAttackMob, 
      * Removes the given player from the list of players tracking this entity. See {@link net.minecraft.entity.Entity#addTrackingPlayer} for
      * more information on tracking.
      */
-    public void removeTrackingPlayer(EntityPlayerMP player)
-    {
+    public void removeTrackingPlayer(EntityPlayerMP player) {
         super.removeTrackingPlayer(player);
         this.bossInfo.removePlayer(player);
     }
 
     @Override
-    public void setSwingingArms(boolean swingingArms) {}
-
-    @Override
-    public void attackEntityWithRangedAttack(EntityLivingBase target, float unused) {
-        double d1 = 4.0D;
-        Vec3d vec3d = this.getLook(1.0F);
-        double d2 = target.posX - (this.posX + vec3d.x * 4.0D);
-        double d3;
-        if(getScale() == 6)
-            d3 = target.getEntityBoundingBox().minY + (double)(target.height / 2.0F) - (0.5D + this.posY*2 + (double)(this.height / 2.0F));
-        else
-            d3 = target.getEntityBoundingBox().minY + (double)(target.height / 2.0F) - (0.5D + this.posY*1 + (double)(this.height / 2.0F));
-
-        double d4 = target.posZ - (this.posZ + vec3d.z * 4.0D);
-        world.playEvent((EntityPlayer)null, 1016, new BlockPos(this), 0);
-        EntityLargeFireball entitylargefireball = new EntityLargeFireball(world, this, d2, d3, d4);
-        entitylargefireball.explosionPower = 1;
-        entitylargefireball.posX = this.posX;
-        if(getScale() == 6)
-            entitylargefireball.posY = this.posY + (double)(this.height / 2.0F) + 5.0D;
-        else if (getScale() == 3)
-            entitylargefireball.posY = this.posY + (double)(this.height / 2.0F) + 0.0D;
-        else if (getScale() == 1.5)
-            entitylargefireball.posY = this.posY + (double)(this.height / 2.0F) - 3.0D;
-        entitylargefireball.posZ = this.posZ;
-
-        world.spawnEntity(entitylargefireball);
-    }
-
-    public void attackWithBlazeFireballs(EntityLivingBase target){
-
-        double d0 = this.getDistanceSq(target);
-        double d1 = target.posX - this.posX;
-        double d2;
-        if(getScale() == 6)
-            d2 = target.getEntityBoundingBox().minY + (double)(target.height / 2.0F) - (this.posY*2 + (double)(this.height / 2.0F));
-        else
-            d2 = target.getEntityBoundingBox().minY + (double)(target.height / 2.0F) - (this.posY + (double)(this.height / 2.0F));
-        double d3 = target.posZ - this.posZ;
-        float f = MathHelper.sqrt(MathHelper.sqrt(d0)) * 0.05F;
-
-        for (int i = 0; i < 7; ++i)
-        {
-            EntitySmallFireball entitysmallfireball = new EntitySmallFireball(this.world, this, d1 + this.getRNG().nextGaussian() * (double)f, d2, d3 + this.getRNG().nextGaussian() * (double)f);
-            if(getScale() == 6)
-                entitysmallfireball.posY = this.posY + (double)(this.height / 2.0F) + 5.0D;
-            else if (getScale() == 3)
-                entitysmallfireball.posY = this.posY + (double)(this.height / 2.0F) + 0.0D;
-            else if (getScale() == 1.5)
-                entitysmallfireball.posY = this.posY + (double)(this.height / 2.0F) - 3.0D;
-            this.world.spawnEntity(entitysmallfireball);
-        }
+    public int getAnimationTick() {
+        return this.animationTick;
     }
 
     @Override
-    public int getAnimationTick()
-    {
-        return animationTick;
+    public void setAnimationTick(int animationTick) {
+        this.animationTick = animationTick;
     }
 
     @Override
-    public void setAnimationTick(int tick)
-    {
-        animationTick = tick;
-    }
-
-    @Override
-    public Animation getAnimation()
-    {
+    public Animation getAnimation() {
         return this.animation;
     }
 
     @Override
-    public void setAnimation(Animation animation)
-    {
-        if(animation == NO_ANIMATION)
-        {
-            onAnimationFinish(this.animation);
-            setAnimationTick(0);
-        }
-
+    public void setAnimation(Animation animation) {
         this.animation = animation;
+        setAnimationTick(0);
     }
 
     @Override
-    public Animation[] getAnimations()
-    {
+    public Animation[] getAnimations() {
         return ANIMATIONS;
     }
 
-    protected void onAnimationFinish(Animation animation)
-    {}
-
-    public Animation getDeathAnimation()
+    private void lightningParticles()
     {
-        if(HerobrineConfig.enableFight)
-            return ANIMATION_DEATH;
-
-        return ANIMATION_DEATH_FULL;
+        if(getAnimationTick() == 65)
+        {
+            int radius = getScale() >= 3 ? (int)getScale() - 1 : (int)getScale();
+            int height = getScale() >= 3 ? (int) getScale() * 2 : (int)getScale() * 2 + 1;
+            ParticleHelper.createParticleCube(world, EnumParticleTypes.CLOUD, radius, height, 10, getPositionVector(),
+                    rand.nextGaussian() * 0.005D,rand.nextGaussian() * 0.005D,rand.nextGaussian() * 0.005D);
+        }
     }
 
-    protected void onDeathAIUpdate()
+    private void onDeathAIUpdate()
     {
         if(HerobrineConfig.enableFight) {
             if (getAnimation() != ANIMATION_DEATH)
