@@ -20,13 +20,18 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
 
     private static final double RADIUS = 1.7;
 
-    public static final RenderHardestHerobrine.Factory FACTORY =  new RenderHardestHerobrine.Factory();
+    private static final double HEIGHT = 20;
+    private static final double TEXTURE_HEIGHT = 16;
+    private static final double TEXTURE_WIDTH = 16;
+
+    private float f = 0.0F;
+
 
     public RenderHardestHerobrine(RenderManager renderManagerIn)
     {
         super(renderManagerIn, new ModelHardestHerobrine(), 0.5F);
         this.addLayer(new AdvancedLibLayerHeldItem(this));
-       // this.addLayer(new LayerHerobineLaser());
+      //  this.addLayer(new LayerHerobineLaser(this));
     }
 
     /**
@@ -48,70 +53,144 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
      */
     public void doRender(EntityHardestHerobrine herobrine, double x, double y, double z, float entityYaw, float partialTicks)
     {
-        if(herobrine.getStartPos() != null && herobrine.getEndPos() != null)
-        {
-            double height = herobrine.getStartPos().y - 10;
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(x, y + 1.1, z);
-            setupGl();
-            this.bindTexture(BEAM_TEXTURES);
-            GlStateManager.rotate(20, 0, 1, 0);
-            GlStateManager.disableDepth();
-            renderLaser(x - 3.8, y + 9, z, partialTicks, herobrine.posX, herobrine.posY, herobrine.posZ,
-                    herobrine.ticksExisted, herobrine.getEndPos().x, herobrine.getEndPos().y, herobrine.getEndPos().z,
-                    height, herobrine.rotationYaw, herobrine.rotationPitch);
-            renderLaser(x + 3.8, y + 9, z, partialTicks, herobrine.posX, herobrine.posY, herobrine.posZ,
-                    herobrine.ticksExisted, herobrine.getEndPos().x, herobrine.getEndPos().y, herobrine.getEndPos().z,
-                    height, herobrine.rotationYaw, herobrine.rotationPitch);
-            GlStateManager.enableDepth();
-            revertGl();
-            GlStateManager.popMatrix();
+        this.bindTexture(BEAM_TEXTURES);
+        GlStateManager.alphaFunc(516, 0.1F);
+
+        if (herobrine.getStartPos() != null && herobrine.getEndPos() != null) {
+            double height = herobrine.getStartPos().y;
+            double totalWorldTime = herobrine.world.getWorldTime();
+            double texScale = 10.0D;
+
+            renderLaserTranslated(x - 3.8, y - 0.5, z, partialTicks, herobrine.posX, herobrine.posY, herobrine.posZ,
+                    totalWorldTime, herobrine.getEndPos().x, herobrine.getEndPos().y, herobrine.getEndPos().z,
+                    height, texScale, herobrine.getRotationYawHead(), herobrine.rotationPitch);
+            renderLaserTranslated(x + 3.8, y - 0.5, z, partialTicks, herobrine.posX, herobrine.posY, herobrine.posZ,
+                    totalWorldTime, herobrine.getEndPos().x, herobrine.getEndPos().y, herobrine.getEndPos().z,
+                    height, texScale, herobrine.getRotationYawHead(), herobrine.rotationPitch);
+
         }
         super.doRender(herobrine, x, y, z, entityYaw, partialTicks);
     }
 
-    private void setupGl()
-    {
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        GlStateManager.enableBlend();
-        GlStateManager.disableLighting();
-        GlStateManager.alphaFunc(GL11.GL_GREATER, 0);
-        GlStateManager.disableCull();
-    }
+    private void renderLaser1 ( double x, double y, double z, float partialTicks, double newX, double newY,
+    double newZ, int ticksExisted, double blockX, double blockY, double blockZ, double height, float yaw, float pitch){
 
-    private void revertGl()
-    {
-        GlStateManager.disableBlend();
-        GlStateManager.enableLighting();
-        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-        GlStateManager.enableCull();
-    }
-    private void renderLaser(double x, double y, double z, float partialTicks, double newX, double newY, double newZ,
-                             int ticksExisted, double blockX, double blockY, double blockZ, double height, float yaw, float pitch) {
-
-        float f = (float)(blockX - newX);
-        float f1 = (float)(blockY - 1.0D - newY);
-        float f2 = (float)(blockZ - newZ);
+        float f = (float) (blockX - newX);
+        float f1 = (float) (blockY - 1.0D - newY);
+        float f2 = (float) (blockZ - newZ);
         float length = MathHelper.sqrt(f * f + f1 * f1 + f2 * f2) + 5;
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buf = tessellator.getBuffer();
         buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
-        buf.pos(-RADIUS + x, height + y, + z).tex(0, 0).lightmap(0,240).color(255, 255, 255, 255).endVertex();
-        buf.pos(-RADIUS + x, height+y, length + z).tex(0, 1).lightmap(0,240).color(255, 255, 255, 255).endVertex();
-        buf.pos(RADIUS + x, height+y, length + z).tex(1, 0).lightmap(0, 240).color(255, 255, 255, 255).endVertex();
-        buf.pos(RADIUS + x, height + y,  z).tex(1, 1).lightmap(0, 240).color(255, 255, 255, 255).endVertex();
+        buf.pos(-RADIUS + x, height + y, +z).tex(0, 0).lightmap(0, 240).color(255, 255, 255, 255).endVertex();
+        buf.pos(-RADIUS + x, height + y, length + z).tex(0, 1).lightmap(0, 240).color(255, 255, 255, 255).endVertex();
+        buf.pos(RADIUS + x, height + y, length + z).tex(1, 0).lightmap(0, 240).color(255, 255, 255, 255).endVertex();
+        buf.pos(RADIUS + x, height + y, z).tex(1, 1).lightmap(0, 240).color(255, 255, 255, 255).endVertex();
         GlStateManager.disableDepth();
         tessellator.draw();
         GlStateManager.enableDepth();
     }
 
-    public static class Factory implements IRenderFactory<EntityHardestHerobrine>
-    {
-        @Override
-        public Render<? super EntityHardestHerobrine> createRenderFor(RenderManager manager)
-        {
-            return new RenderHardestHerobrine(manager);
-        }
+    private void renderLaserTranslated(double x, double y, double z, float partialTicks, double newX, double newY,
+                                         double newZ, double totalWorldTime, double blockX, double blockY, double blockZ,
+                                         double height, double textureScale, double yaw, double pitch){
+        float diffX = (float) (blockX - newX);
+        float diffY = (float) (blockY - newY);
+        float diffZ = (float) (blockZ - newZ);
+        float length = MathHelper.sqrt(diffX * diffX + diffY * diffY + diffZ * diffZ);
+
+        double d1 = totalWorldTime + partialTicks;
+        double d2 = MathHelper.frac(d1 * 0.2D - (double) MathHelper.floor(d1 * 0.1D));
+        double d14 = -1.0D + d2;
+        double d15 = (double) height * textureScale * (0.5D / RADIUS) + d14;
+
+        double minU = 0;
+        double minV = 16 / TEXTURE_HEIGHT + 1 / TEXTURE_HEIGHT * 1;
+        double maxU = minU + 20 / TEXTURE_WIDTH;
+        double maxV = minV + 1 / TEXTURE_HEIGHT;
+
+        GlStateManager.pushMatrix();
+
+        GlStateManager.disableLighting();
+        GlStateManager.disableCull();
+        GlStateManager.disableBlend();
+        GlStateManager.depthMask(true);
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE,
+                GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+
+        GlStateManager.translate(x, y, z);
+        GlStateManager.translate(0, height, 0);
+        GlStateManager.rotate((float) -yaw, 0, 1, 0);
+        GlStateManager.rotate((float) pitch, 1, 0, 0);
+
+        GlStateManager.scale(RADIUS, 1, length * 1.5);
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buf = tessellator.getBuffer();
+
+        buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+
+        buf.pos(-1, 0, 0).tex(minU, minV).endVertex();
+        buf.pos(-1, 0, 1).tex(minU, maxV).endVertex();
+        buf.pos(1, 0, 1).tex(maxU, maxV).endVertex();
+        buf.pos(1, 0, 0).tex(maxU, minV).endVertex();
+
+        tessellator.draw();
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.depthMask(false);
+
+        GlStateManager.enableLighting();
+        GlStateManager.enableTexture2D();
+        GlStateManager.depthMask(true);
+        GlStateManager.popMatrix();
+    }
+
+    private void renderLaser ( double x, double y, double z, float partialTicks, double newX, double newY,
+    double newZ, int ticksExisted, double blockX, double blockY, double blockZ, double height,
+    double textureScale, double radius, double yaw, double pitch){
+        float f = (float) (blockX - newX);
+        float f1 = (float) (blockY - 1.0D - newY);
+        float f2 = (float) (blockZ - newZ);
+        float length = MathHelper.sqrt(f * f + f1 * f1 + f2 * f2);
+
+        GlStateManager.pushMatrix();
+
+        GlStateManager.rotate((float) yaw, 0, 1, 0);
+        GlStateManager.rotate((float) pitch, 1, 0, 0);
+
+        GlStateManager.translate(x, y, z);
+
+        GlStateManager.disableLighting();
+        GlStateManager.disableCull();
+        GlStateManager.disableBlend();
+        GlStateManager.depthMask(true);
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE,
+                GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buf = tessellator.getBuffer();
+
+        buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+
+        buf.pos(-RADIUS + x, height + y, z).tex(0, 0).endVertex();
+        buf.pos(-RADIUS + x, height + y, length + z).tex(0, 1).endVertex();
+        buf.pos(RADIUS + x, height + y, length + z).tex(1, 0).endVertex();
+        buf.pos(RADIUS + x, height + y, z).tex(1, 1).endVertex();
+
+        tessellator.draw();
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.depthMask(false);
+
+        GlStateManager.enableLighting();
+        GlStateManager.enableTexture2D();
+        GlStateManager.depthMask(true);
+        GlStateManager.popMatrix();
+        //  System.out.println("x:" + x + " y:" + y + " z:" + z + " newX:" + newX + " newY:" + newY + " newZ:" + newZ +
+        //        " blockX:" + blockX + " blockY:" + blockY + " blockZ:" + blockZ + " yaw:" + yaw + " pitch:" + pitch + " length:" + length);
+
+
     }
 }

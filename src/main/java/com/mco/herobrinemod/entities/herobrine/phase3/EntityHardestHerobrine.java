@@ -8,7 +8,9 @@ import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -24,6 +26,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
@@ -183,6 +186,9 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
 
         this.rotationPitch = 38;
         laser(1);
+        this.setRotationYawHead(getRotationYawHead()+1);
+    //    if(ticksExisted % 100 == 0)
+         //   world.spawnEntity(laser);
 
 /*        if(getAnimation() != NO_ANIMATION){
             animationTick++;
@@ -193,17 +199,18 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
         if(currentAnim == null && getAnimation() == NO_ANIMATION && getAnimation() != ANIMATION_DEATH){
             AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_LASER);
         }*/
+
     }
 
     @Nullable
     private void laser(int offset)
     {
         Vec3d initialVec = startPos = this.getPositionEyes(1);
-        //Get the block or entity within 200 blocks of the start vec
-        RayTraceResult rayTrace = this.rayTrace(200,1);
+        //Get the block or entity within 100 blocks of the start vec
+        RayTraceResult rayTrace = this.rayTrace(100,1);
         Vec3d lookFar = rayTrace.hitVec;
 
-        if(lookFar != null)
+        if(lookFar != null )
         {
             BlockPos secondPos = new BlockPos(lookFar);
             //Light a fire at the targeted block
@@ -270,6 +277,56 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
         if(world.getBlockState(pos).getMaterial() == Material.AIR && Blocks.FIRE.canPlaceBlockAt(world, pos)
                 && !world.isRemote)
             world.setBlockState(pos, Blocks.FIRE.getDefaultState());
+    }
+
+    private void createShockwave(BlockPos initialPos, float size)
+    {
+        List<BlockPos> blocks = new ArrayList<BlockPos>();
+        blocks.add(initialPos);
+
+        double inX = initialPos.getX();
+        double inY = initialPos.getY();
+        double inZ = initialPos.getZ();
+
+        for(int i = 0; i < size * 1.5; i++)
+        {
+            for(float f = 0; f < 360; f+=15)
+            {
+                double x = 2 * Math.sin(Math.toRadians(f));
+                double z = 2 * Math.cos(Math.toRadians(f));
+
+                BlockPos tempPos = new BlockPos(x + inX, inY, z + inZ);
+                BlockPos shockPos = checkAir(tempPos, 5);
+
+                EntityFallingBlock entityFallingBlock = new EntityFallingBlock(world, shockPos.getX(), shockPos.getY(),
+                        shockPos.getZ(), world.getBlockState(shockPos));
+                entityFallingBlock.motionY = 1;
+                EntityPig pig = new EntityPig(world);
+                pig.setPosition(shockPos.getX(), shockPos.getY(), shockPos.getZ());
+                if(!world.isRemote)
+                    world.spawnEntity(entityFallingBlock);
+                //world.spawnEntity(entityFallingBlock);
+            }
+        }
+    }
+
+    private BlockPos checkAir(BlockPos pos, int depth)
+    {
+        if(world.isAirBlock(pos) && depth < 5)
+        {
+            BlockPos downPos = pos.down();
+            checkAir(downPos, depth + 1);
+        }
+        else if(depth < 5)
+        {
+            if(world.isAirBlock(pos.up()))
+                return pos;
+            else{
+                BlockPos upPos = pos.up();
+                checkAir(upPos, depth + 1);
+            }
+        }
+        return pos;
     }
 
 }

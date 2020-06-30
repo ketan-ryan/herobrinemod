@@ -22,7 +22,7 @@ public class ClientProxy extends CommonProxy {
     public void preInit(FMLPreInitializationEvent event){
         RenderingRegistry.registerEntityRenderingHandler(EntityHerobrine.class, RenderHerobrine.FACTORY);
         RenderingRegistry.registerEntityRenderingHandler(EntityHardHerobrine.class, RenderHardHerobrine.FACTORY);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHardestHerobrine.class, RenderHardestHerobrine.FACTORY);
+        RenderingRegistry.registerEntityRenderingHandler(EntityHardestHerobrine.class, RenderHardestHerobrine::new);
 
         RenderingRegistry.registerEntityRenderingHandler(EntityCorruptedGhast.class, RenderCorruptedGhast.FACTORY);
         RenderingRegistry.registerEntityRenderingHandler(EntityLaser.class, RenderLaser.FACTORY);
