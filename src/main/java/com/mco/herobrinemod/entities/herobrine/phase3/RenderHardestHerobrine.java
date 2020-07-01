@@ -10,6 +10,9 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Quaternion;
+import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
 {
@@ -21,9 +24,9 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
     private static final double HEIGHT = 20;
     private static final double TEXTURE_HEIGHT = 16;
     private static final double TEXTURE_WIDTH = 16;
+    Quaternion axisAngleYaw = null;
 
     private float f = 0.0F;
-
 
     public RenderHardestHerobrine(RenderManager renderManagerIn)
     {
@@ -98,8 +101,22 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
 
         GlStateManager.translate(x, y, z);
         GlStateManager.translate(0, height, 0);
-        GlStateManager.rotate((float) -yaw, 0, 1, 0);
-        GlStateManager.rotate((float) pitch, 1, 0, 0);
+
+        float pitchAngle = (float)Math.cos(Math.toRadians(pitch/2)) + (float)Math.sin(Math.toRadians(pitch/2));
+        float yawAngle = (float)Math.cos(Math.toRadians(yaw/2)) + (float)Math.sin(Math.toRadians(yaw/2));
+
+        Quaternion pitchQuat = createFromAxisAngle(new Vector3f(1, 0, 0), (float)pitch, null);
+        Quaternion yawQuat = createFromAxisAngle(new Vector3f(0, -1, 0), (float)yaw, null);
+        Quaternion rotQuat = Quaternion.mul(yawQuat, pitchQuat, null);
+
+        Quaternion normalPitch = Quaternion.normalise(pitchQuat, null);
+
+//        axisAngleYaw.setFromAxisAngle(new Vector4f(0, 1, 0, (float)yaw));
+
+        //GlStateManager.rotate(rotationQuat);
+        GlStateManager.rotate(rotQuat);
+     //   GlStateManager.rotate((float) -yaw, 0, 1, 0);
+     //   GlStateManager.rotate((float) pitch, 1, 0, 0);
 
         GlStateManager.scale(RADIUS, 1, length * 1.5);
 
@@ -122,4 +139,33 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
         GlStateManager.enableTexture2D();
         GlStateManager.depthMask(true);
         GlStateManager.popMatrix();
-    }}
+    }
+
+    /**
+     * Creates a Quaternion from an axis and an angle
+     *
+     * @param axis The axis to rotate upon
+     * @param angle The angle of rotation (in degrees)
+     * @param dest The destination quaternion to store
+     * @return The new rotation quaternion
+     */
+    public static Quaternion createFromAxisAngle(Vector3f axis, float angle, Quaternion dest)
+    {
+        if(dest == null)
+            dest = new Quaternion();
+
+        axis.normalise();
+
+        float halfAngle = (float) Math.toRadians(angle/2);
+
+        dest.x = axis.x * (float)Math.sin(halfAngle);
+        dest.y = axis.y * (float)Math.sin(halfAngle);
+        dest.z = axis.z * (float)Math.sin(halfAngle);
+
+        dest.w = (float)Math.cos(halfAngle);
+
+        dest.normalise();
+
+        return dest;
+    }
+}
