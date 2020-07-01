@@ -24,7 +24,8 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
     private static final double HEIGHT = 20;
     private static final double TEXTURE_HEIGHT = 16;
     private static final double TEXTURE_WIDTH = 16;
-    Quaternion axisAngleYaw = null;
+    private Quaternion axisAngleYaw = new Quaternion();
+    private Quaternion axisAnglePitch = new Quaternion();
 
     private float f = 0.0F;
 
@@ -56,17 +57,18 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
         this.bindTexture(BEAM_TEXTURES);
         GlStateManager.alphaFunc(516, 0.1F);
 
-        if (herobrine.getStartPos() != null && herobrine.getEndPos() != null) {
+        if (herobrine.getStartPos() != null && herobrine.getEndPos() != null)
+        {
             double height = herobrine.getStartPos().y;
             double totalWorldTime = herobrine.world.getWorldTime();
             double texScale = 10.0D;
 
-            renderLaserTranslated(x - 3.8, y - 0.5, z, partialTicks, herobrine.posX, herobrine.posY, herobrine.posZ,
+            renderLaserTranslated(x, y, z, partialTicks, herobrine.posX, herobrine.posY, herobrine.posZ,
                     totalWorldTime, herobrine.getEndPos().x, herobrine.getEndPos().y, herobrine.getEndPos().z,
-                    height, texScale, herobrine.getRotationYawHead(), herobrine.rotationPitch);
-            renderLaserTranslated(x + 3.8, y - 0.5, z, partialTicks, herobrine.posX, herobrine.posY, herobrine.posZ,
+                    height, texScale, herobrine.getRotationYawHead(), herobrine.rotationPitch, -3.7F);
+            renderLaserTranslated(x, y , z, partialTicks, herobrine.posX, herobrine.posY, herobrine.posZ,
                     totalWorldTime, herobrine.getEndPos().x, herobrine.getEndPos().y, herobrine.getEndPos().z,
-                    height, texScale, herobrine.getRotationYawHead(), herobrine.rotationPitch);
+                    height, texScale, herobrine.getRotationYawHead(), herobrine.rotationPitch, 3.7F);
 
         }
         super.doRender(herobrine, x, y, z, entityYaw, partialTicks);
@@ -74,7 +76,7 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
 
     private void renderLaserTranslated(double x, double y, double z, float partialTicks, double newX, double newY,
                                          double newZ, double totalWorldTime, double blockX, double blockY, double blockZ,
-                                         double height, double textureScale, double yaw, double pitch){
+                                         double height, double textureScale, double yaw, double pitch, float eyeOff){
         float diffX = (float) (blockX - newX);
         float diffY = (float) (blockY - newY);
         float diffZ = (float) (blockZ - newZ);
@@ -100,21 +102,15 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
                 GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
         GlStateManager.translate(x, y, z);
-        GlStateManager.translate(0, height, 0);
 
-        float pitchAngle = (float)Math.cos(Math.toRadians(pitch/2)) + (float)Math.sin(Math.toRadians(pitch/2));
-        float yawAngle = (float)Math.cos(Math.toRadians(yaw/2)) + (float)Math.sin(Math.toRadians(yaw/2));
+        axisAngleYaw.setFromAxisAngle(new Vector4f(0, -1, 0, (float)Math.toRadians(yaw)));
+        axisAnglePitch.setFromAxisAngle(new Vector4f(1, 0, 0, (float)Math.toRadians(pitch)));
+        Quaternion rotQuat = Quaternion.mul(axisAngleYaw, axisAnglePitch, null);
 
-        Quaternion pitchQuat = createFromAxisAngle(new Vector3f(1, 0, 0), (float)pitch, null);
-        Quaternion yawQuat = createFromAxisAngle(new Vector3f(0, -1, 0), (float)yaw, null);
-        Quaternion rotQuat = Quaternion.mul(yawQuat, pitchQuat, null);
-
-        Quaternion normalPitch = Quaternion.normalise(pitchQuat, null);
-
-//        axisAngleYaw.setFromAxisAngle(new Vector4f(0, 1, 0, (float)yaw));
-
-        //GlStateManager.rotate(rotationQuat);
         GlStateManager.rotate(rotQuat);
+
+        GlStateManager.translate(eyeOff, height-10.5, -20);
+
      //   GlStateManager.rotate((float) -yaw, 0, 1, 0);
      //   GlStateManager.rotate((float) pitch, 1, 0, 0);
 
@@ -141,31 +137,4 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
         GlStateManager.popMatrix();
     }
 
-    /**
-     * Creates a Quaternion from an axis and an angle
-     *
-     * @param axis The axis to rotate upon
-     * @param angle The angle of rotation (in degrees)
-     * @param dest The destination quaternion to store
-     * @return The new rotation quaternion
-     */
-    public static Quaternion createFromAxisAngle(Vector3f axis, float angle, Quaternion dest)
-    {
-        if(dest == null)
-            dest = new Quaternion();
-
-        axis.normalise();
-
-        float halfAngle = (float) Math.toRadians(angle/2);
-
-        dest.x = axis.x * (float)Math.sin(halfAngle);
-        dest.y = axis.y * (float)Math.sin(halfAngle);
-        dest.z = axis.z * (float)Math.sin(halfAngle);
-
-        dest.w = (float)Math.cos(halfAngle);
-
-        dest.normalise();
-
-        return dest;
-    }
 }

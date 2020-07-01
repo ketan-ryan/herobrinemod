@@ -186,7 +186,7 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
 
         this.rotationPitch = 38;
         laser(1);
-        this.setRotationYawHead(getRotationYawHead()+1);
+        this.setRotationYawHead(prevRotationYawHead);
     //    if(ticksExisted % 100 == 0)
          //   world.spawnEntity(laser);
 
