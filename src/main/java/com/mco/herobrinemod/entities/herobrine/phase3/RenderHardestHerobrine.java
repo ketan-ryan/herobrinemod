@@ -24,6 +24,7 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
     private static final double HEIGHT = 20;
     private static final double TEXTURE_HEIGHT = 16;
     private static final double TEXTURE_WIDTH = 16;
+
     private Quaternion axisAngleYaw = new Quaternion();
     private Quaternion axisAnglePitch = new Quaternion();
 
@@ -101,24 +102,28 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE,
                 GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
+        //Put entity at right place on screen
         GlStateManager.translate(x, y, z);
 
+        //Initialize pitch and yaw quats from axisangle vecs
         axisAngleYaw.setFromAxisAngle(new Vector4f(0, -1, 0, (float)Math.toRadians(yaw)));
         axisAnglePitch.setFromAxisAngle(new Vector4f(1, 0, 0, (float)Math.toRadians(pitch)));
+
+        //Combine quats by multiplying in this specific order
         Quaternion rotQuat = Quaternion.mul(axisAngleYaw, axisAnglePitch, null);
 
         GlStateManager.rotate(rotQuat);
 
-        GlStateManager.translate(eyeOff, height-10.5, -20);
+        //Offset to eyes AFTER rotating
+        GlStateManager.translate(eyeOff, height - 10.5, -20);
 
-     //   GlStateManager.rotate((float) -yaw, 0, 1, 0);
-     //   GlStateManager.rotate((float) pitch, 1, 0, 0);
-
+        //The quad is just a square so scale to proper rectangle length
         GlStateManager.scale(RADIUS, 1, length * 1.5);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buf = tessellator.getBuffer();
 
+        //Draw a square
         buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
         buf.pos(-1, 0, 0).tex(minU, minV).endVertex();
