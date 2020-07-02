@@ -103,11 +103,11 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
 
             if(getAnimationTick() == 1 && getRotationYawHead() - prevRotationYawHead > 30){
                 setRotationYawHead(getRotationYawHead() - 45);}
-/*            else if(getAnimationTick() > 1 && getAnimationTick() < 90)
+            else if(getAnimationTick() > 1 && getAnimationTick() < 90)
                 setRotationYawHead(prevRotationYawHead + 1F);
             else if(getAnimationTick() == 90) {
-                setRotationYawHead(getRotationYawHead() - 45);*/
-         //   }
+                setRotationYawHead(getRotationYawHead() - 45);
+            }
         }
     }
 
