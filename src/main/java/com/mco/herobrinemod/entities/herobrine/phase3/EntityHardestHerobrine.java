@@ -4,6 +4,7 @@ import com.mco.herobrinemod.entities.herobrine.phase3.ai.AILaser;
 import com.mco.herobrinemod.main.HerobrineDamageSources;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationAI;
+import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -16,6 +17,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -28,6 +30,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
 {
@@ -37,20 +40,18 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
     private Animation animation = NO_ANIMATION;
     private int animationTick;
 
-    public static Animation ANIMATION_LASER = Animation.create(200);
-    public static Animation ANIMATION_DEATH = Animation.create(200);
+    Animation ANIMATION_LASER = Animation.create(91);
+    static Animation ANIMATION_DEATH = Animation.create(200);
 
-    private static final Animation[] ANIMATIONS = {ANIMATION_LASER, ANIMATION_DEATH};
+    private final Animation[] ANIMATIONS = {ANIMATION_LASER, ANIMATION_DEATH};
 
     public AnimationAI currentAnim;
-
-    private static final DataParameter<Float> YAW = EntityDataManager.createKey(EntityHardestHerobrine.class, DataSerializers.FLOAT);
-    private static final DataParameter<Float> PITCH = EntityDataManager.createKey(EntityHardestHerobrine.class, DataSerializers.FLOAT);
 
     public EntityHardestHerobrine(World world){
         super(world);
         setSize(15, 60);
         ignoreFrustumCheck = true;
+        isImmuneToFire = true;
         tasks.addTask(1, new AILaser(this, ANIMATION_LASER));
     }
 
@@ -67,158 +68,76 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
     @Override
     protected void entityInit() {
         super.entityInit();
-        getDataManager().register(YAW, 0F);
-        getDataManager().register(PITCH, 0F);
-    }
-/*
-    public float getYaw(){
-        return getDataManager().get(YAW);
     }
 
-    public void setYaw(float yaw){
-        getDataManager().register(YAW, yaw);
-    }
-
-    public float getPitch()
-    {
-        return getDataManager().get(PITCH);
-    }
-
-    public void setPitch(float pitch){
-        getDataManager().set(PITCH, pitch);
-    }*/
-
-    @Override
-    public void writeEntityToNBT(NBTTagCompound compound) {
-    }
-
-    @Override
-    public void readEntityFromNBT(NBTTagCompound compound) {
-    }
-
-    @Override
-    public boolean isAIDisabled() {
-        return false;
-    }
-
-    @Override
-    public void setInWeb() {
-    }
-
-    @Override
-    public void fall(float distance, float damageMultiplier) {
-    }
-
-    /**
-     * Since it's so big, we have to override these
-     * to make it not disappear when you look up
-     */
-    @SideOnly(Side.CLIENT)
-    @Override
-    public boolean isInRangeToRender3d(double x, double y, double z)
-    {
-        double d0 = this.posX - x;
-        double d1 = this.posY + y;
-        double d2 = this.posZ - z;
-        double d3 = d0 * d0 + d1 * d1 + d2 * d2;
-        return this.isInRangeToRenderDist(d3);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public boolean isInRangeToRenderDist(double distance)
-    {
-        double d0 = this.getEntityBoundingBox().getAverageEdgeLength();
-
-        if (Double.isNaN(d0))
-        {
-            d0 = 1.0D;
-        }
-
-        d0 = d0 * 128.0D;
-        return distance < d0 * d0;
-    }
-    @Override
-    public boolean isNonBoss() {
-        return false;
-    }
-
-    @Override
-    protected boolean canDespawn() {
-        return false;
-    }
-
-    @Override
-    public Animation getAnimation() {
-        return this.animation;
-    }
-
-    @Override
-    public int getAnimationTick() {
-        return this.animationTick;
-    }
-
-    @Override
-    public void setAnimationTick(int animationTick) {
-        this.animationTick = animationTick;
-    }
-
-    @Override
-    public void setAnimation(Animation animation) {
-        if(animation == NO_ANIMATION){
-            setAnimationTick(0);
-        }
-        this.animation = animation;
-    }
-
-    @Override
-    public Animation[] getAnimations() {
-        return ANIMATIONS;
-    }
-
-    public static Animation getDeathAnimation() {
-        return ANIMATION_DEATH;
-    }
 
     @Override
     public void onLivingUpdate() {
         super.onLivingUpdate();
 
-        this.rotationPitch = 38;
-        laser(1);
-        this.setRotationYawHead(prevRotationYawHead);
-    //    if(ticksExisted % 100 == 0)
-         //   world.spawnEntity(laser);
-
-/*        if(getAnimation() != NO_ANIMATION){
+        if(getAnimation() != NO_ANIMATION)
+        {
             animationTick++;
             if(world.isRemote && animationTick >= animation.getDuration())
                 setAnimation(NO_ANIMATION);
         }
 
-        if(currentAnim == null && getAnimation() == NO_ANIMATION && getAnimation() != ANIMATION_DEATH){
-            AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_LASER);
-        }*/
+        if(currentAnim == null && getAnimation() == NO_ANIMATION && getAnimation() != ANIMATION_DEATH)
+        {
+            switch(new Random().nextInt(32))
+            {
+                case 0:
+                    AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_LASER);
+                    System.out.println("laser");
+                    break;
 
+                default:
+                    break;
+            }
+        }
+
+        if(getAnimation() == ANIMATION_LASER)
+        {
+            this.rotationPitch = 38;
+            laser();
+
+            if(getAnimationTick() == 1 && getRotationYawHead() - prevRotationYawHead > 30){
+                setRotationYawHead(getRotationYawHead() - 45);}
+/*            else if(getAnimationTick() > 1 && getAnimationTick() < 90)
+                setRotationYawHead(prevRotationYawHead + 1F);
+            else if(getAnimationTick() == 90) {
+                setRotationYawHead(getRotationYawHead() - 45);*/
+         //   }
+        }
     }
 
-    @Nullable
-    private void laser(int offset)
+    public void laser()
     {
         Vec3d initialVec = startPos = this.getPositionEyes(1);
         //Get the block or entity within 100 blocks of the start vec
         RayTraceResult rayTrace = this.rayTrace(100,1);
         Vec3d lookFar = rayTrace.hitVec;
 
-        if(lookFar != null )
+        if(lookFar != null)
         {
             BlockPos secondPos = new BlockPos(lookFar);
+            BlockPos cornerPos = secondPos.west(5).north(5);
+
+            for(int x = 0; x < 5; x++)
+            {
+                for(int z = 0; z < 5; z++)
+                {
+                    setFire(new BlockPos(x + cornerPos.getX(), cornerPos.getY(), z + cornerPos.getZ()));
+                }
+            }
+
             //Light a fire at the targeted block
-            setFire(secondPos);
+
+/*            setFire(secondPos);
             setFire(secondPos.east());
             setFire(secondPos.west());
             setFire(secondPos.north());
-            setFire(secondPos.south());
+            setFire(secondPos.south());*/
 
             double diffX = secondPos.getX() - initialVec.x;
             double diffY = secondPos.getY() - initialVec.y;
@@ -240,25 +159,22 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
                 BlockPos slopePos = new BlockPos(slopeVec);
 
                 //Cosmetic stuff
-                if (ticksExisted % 10 == 0)
+                world.setBlockToAir(slopePos);
+
+                AxisAlignedBB axisPos = new AxisAlignedBB(slopePos.getX(), slopePos.getY(), slopePos.getZ(), slopePos.getX(), slopePos.getY(), slopePos.getZ());
+                axisPos.grow(2);
+                List entities = world.getEntitiesWithinAABB(Entity.class, axisPos);
+
+                if(entities.size() > 0 && entities.get(0) != null && !world.isRemote)
                 {
-                    world.setBlockToAir(slopePos);
-
-                    AxisAlignedBB axisPos = new AxisAlignedBB(slopePos.getX(), slopePos.getY(), slopePos.getZ(), slopePos.getX(), slopePos.getY(), slopePos.getZ());
-                    axisPos.grow(2);
-                    List entities = world.getEntitiesWithinAABB(Entity.class, axisPos);
-
-                    if(entities.size() > 0 && entities.get(0) != null && !world.isRemote)
-                    {
-                        Entity entity = (Entity) entities.get(0);
-                        System.out.println(entity);
-                        entity.attackEntityFrom(HerobrineDamageSources.HARD_HEROBRINE, 10);
-                    }
-
-                    world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, slopePos.getX(), slopePos.getY(), slopePos.getZ(),
-                            0, 0, 0);
+                    Entity entity = (Entity) entities.get(0);
+                    System.out.println(entity);
+                    entity.attackEntityFrom(HerobrineDamageSources.HARD_HEROBRINE, 10);
                 }
-            }
+
+         //       world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, slopePos.getX(), slopePos.getY(), slopePos.getZ(),
+         //               0, 0, 0);
+                }
         }
         this.endPos = lookFar;
     }
@@ -327,6 +243,85 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
             }
         }
         return pos;
+    }
+    @Override
+    public void setInWeb() {
+    }
+
+    @Override
+    public void fall(float distance, float damageMultiplier) {
+    }
+
+    /**
+     * Since it's so big, we have to override these
+     * to make it not disappear when you look up
+     */
+    @SideOnly(Side.CLIENT)
+    @Override
+    public boolean isInRangeToRender3d(double x, double y, double z)
+    {
+        double d0 = this.posX - x;
+        double d1 = this.posY + y;
+        double d2 = this.posZ - z;
+        double d3 = d0 * d0 + d1 * d1 + d2 * d2;
+        return this.isInRangeToRenderDist(d3);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public boolean isInRangeToRenderDist(double distance)
+    {
+        double d0 = this.getEntityBoundingBox().getAverageEdgeLength();
+
+        if (Double.isNaN(d0))
+        {
+            d0 = 1.0D;
+        }
+
+        d0 = d0 * 128.0D;
+        return distance < d0 * d0;
+    }
+
+    @Override
+    public boolean isNonBoss() {
+        return false;
+    }
+
+    @Override
+    protected boolean canDespawn() {
+        return false;
+    }
+
+    @Override
+    public Animation getAnimation() {
+        return this.animation;
+    }
+
+    @Override
+    public int getAnimationTick() {
+        return this.animationTick;
+    }
+
+    @Override
+    public void setAnimationTick(int animationTick) {
+        this.animationTick = animationTick;
+    }
+
+    @Override
+    public void setAnimation(Animation animation) {
+        if(animation == NO_ANIMATION){
+            setAnimationTick(0);
+        }
+        this.animation = animation;
+    }
+
+    @Override
+    public Animation[] getAnimations() {
+        return ANIMATIONS;
+    }
+
+    public static Animation getDeathAnimation() {
+        return ANIMATION_DEATH;
     }
 
 }

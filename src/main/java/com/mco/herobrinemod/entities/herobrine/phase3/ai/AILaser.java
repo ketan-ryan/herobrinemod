@@ -10,6 +10,7 @@ public class AILaser extends AnimationAI<EntityHardestHerobrine>
     private Animation animation;
     private EntityLivingBase target;
     protected EntityHardestHerobrine herobrine;
+    private float yaw;
 
     public AILaser(EntityHardestHerobrine herobrine, Animation animation){
         super(herobrine);
@@ -37,12 +38,14 @@ public class AILaser extends AnimationAI<EntityHardestHerobrine>
     }
 
     @Override
-    public void updateTask() {
+    public void updateTask()
+    {
         super.updateTask();
     }
 
     @Override
     public void resetTask() {
         super.resetTask();
+        herobrine.currentAnim = null;
     }
 }

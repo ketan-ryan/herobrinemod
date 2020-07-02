@@ -11,7 +11,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Quaternion;
-import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
@@ -58,18 +57,20 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
         this.bindTexture(BEAM_TEXTURES);
         GlStateManager.alphaFunc(516, 0.1F);
 
-        if (herobrine.getStartPos() != null && herobrine.getEndPos() != null)
+        if (herobrine.getAnimation() == herobrine.ANIMATION_LASER && herobrine.getAnimationTick() < 90
+                && herobrine.getStartPos() != null && herobrine.getEndPos() != null)
         {
+            int frame = herobrine.getAnimationTick();
             double height = herobrine.getStartPos().y;
             double totalWorldTime = herobrine.world.getWorldTime();
             double texScale = 10.0D;
 
             renderLaserTranslated(x, y, z, partialTicks, herobrine.posX, herobrine.posY, herobrine.posZ,
                     totalWorldTime, herobrine.getEndPos().x, herobrine.getEndPos().y, herobrine.getEndPos().z,
-                    height, texScale, herobrine.getRotationYawHead(), herobrine.rotationPitch, -3.7F);
+                    height, texScale, herobrine.getRotationYawHead(), herobrine.rotationPitch, -3.7F, frame);
             renderLaserTranslated(x, y , z, partialTicks, herobrine.posX, herobrine.posY, herobrine.posZ,
                     totalWorldTime, herobrine.getEndPos().x, herobrine.getEndPos().y, herobrine.getEndPos().z,
-                    height, texScale, herobrine.getRotationYawHead(), herobrine.rotationPitch, 3.7F);
+                    height, texScale, herobrine.getRotationYawHead(), herobrine.rotationPitch, 3.7F, frame);
 
         }
         super.doRender(herobrine, x, y, z, entityYaw, partialTicks);
@@ -77,7 +78,7 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
 
     private void renderLaserTranslated(double x, double y, double z, float partialTicks, double newX, double newY,
                                          double newZ, double totalWorldTime, double blockX, double blockY, double blockZ,
-                                         double height, double textureScale, double yaw, double pitch, float eyeOff){
+                                         double height, double textureScale, double yaw, double pitch, float eyeOff, int frame){
         float diffX = (float) (blockX - newX);
         float diffY = (float) (blockY - newY);
         float diffZ = (float) (blockZ - newZ);
@@ -89,9 +90,9 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
         double d15 = (double) height * textureScale * (0.5D / RADIUS) + d14;
 
         double minU = 0;
-        double minV = 16 / TEXTURE_HEIGHT + 1 / TEXTURE_HEIGHT * 1;
-        double maxU = minU + 20 / TEXTURE_WIDTH;
-        double maxV = minV + 1 / TEXTURE_HEIGHT;
+        double minV = 16 / TEXTURE_HEIGHT + 1 / TEXTURE_HEIGHT ;
+        double maxU = minU + 16 / TEXTURE_WIDTH ;
+        double maxV = minV  / TEXTURE_HEIGHT * frame;
 
         GlStateManager.pushMatrix();
 
@@ -126,10 +127,10 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
         //Draw a square
         buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
-        buf.pos(-1, 0, 0).tex(minU, minV).endVertex();
-        buf.pos(-1, 0, 1).tex(minU, maxV).endVertex();
-        buf.pos(1, 0, 1).tex(maxU, maxV).endVertex();
-        buf.pos(1, 0, 0).tex(maxU, minV).endVertex();
+        buf.pos(-1, 0, 0).tex(minU, maxV).endVertex();
+        buf.pos(-1, 0, 1).tex(minU, minV).endVertex();
+        buf.pos(1, 0, 1).tex(maxU, minV).endVertex();
+        buf.pos(1, 0, 0).tex(maxU, maxV).endVertex();
 
         tessellator.draw();
         GlStateManager.enableBlend();
