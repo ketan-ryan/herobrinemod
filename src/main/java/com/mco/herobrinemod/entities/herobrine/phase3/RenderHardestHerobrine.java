@@ -61,16 +61,13 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
                 && herobrine.getStartPos() != null && herobrine.getEndPos() != null)
         {
             int frame = herobrine.getAnimationTick();
-            double height = herobrine.posY + herobrine.getEyeHeight();
-            double totalWorldTime = herobrine.world.getWorldTime();
-            double texScale = 10.0D;
 
             renderLaserTranslated(x, y, z,  herobrine.posX, herobrine.posY, herobrine.posZ,
                     herobrine.getEndPos().x, herobrine.getEndPos().y, herobrine.getEndPos().z,
-                    height, herobrine.getRotationYawHead(), herobrine.rotationPitch, -2.3F, frame);
+                    herobrine.getRotationYawHead(), herobrine.rotationPitch, -2.3F, frame);
             renderLaserTranslated(x, y , z, herobrine.posX, herobrine.posY, herobrine.posZ,
                     herobrine.getEndPos().x, herobrine.getEndPos().y, herobrine.getEndPos().z,
-                    height, herobrine.getRotationYawHead(), herobrine.rotationPitch, 2.3F, frame);
+                    herobrine.getRotationYawHead(), herobrine.rotationPitch, 2.3F, frame);
 
         }
         super.doRender(herobrine, x, y, z, entityYaw, partialTicks);
@@ -78,7 +75,7 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
 
     private void renderLaserTranslated(double x, double y, double z, double newX, double newY,
                                          double newZ, double blockX, double blockY, double blockZ,
-                                         double height, double yaw, double pitch, float eyeOff, int frame){
+                                         double yaw, double pitch, float eyeOff, int frame){
         float diffX = (float) (blockX - newX);
         float diffY = (float) (blockY - newY);
         float diffZ = (float) (blockZ - newZ);
@@ -111,15 +108,13 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
         GlStateManager.rotate(rotQuat);
 
         //Offset to eyes AFTER rotating
-       // GlStateManager.translate(eyeOff, height - 10.5, newZ);
+        GlStateManager.translate(eyeOff,41.5, -20);
 
         //The quad is just a square so scale to proper rectangle length
         GlStateManager.scale(RADIUS, 1, length * 1.5);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buf = tessellator.getBuffer();
-
-        buf.setTranslation(eyeOff, 42.5, -0.17);
 
         //Draw a square
         buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
@@ -130,8 +125,6 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
         buf.pos(1, 0, 0).tex(maxU, maxV).endVertex();
 
         tessellator.draw();
-
-        buf.setTranslation(0,0,0);
 
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
