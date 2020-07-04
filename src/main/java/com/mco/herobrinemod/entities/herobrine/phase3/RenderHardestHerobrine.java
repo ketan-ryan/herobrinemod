@@ -61,33 +61,28 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
                 && herobrine.getStartPos() != null && herobrine.getEndPos() != null)
         {
             int frame = herobrine.getAnimationTick();
-            double height = herobrine.getStartPos().y;
+            double height = herobrine.posY + herobrine.getEyeHeight();
             double totalWorldTime = herobrine.world.getWorldTime();
             double texScale = 10.0D;
 
-            renderLaserTranslated(x, y, z, partialTicks, herobrine.posX, herobrine.posY, herobrine.posZ,
-                    totalWorldTime, herobrine.getEndPos().x, herobrine.getEndPos().y, herobrine.getEndPos().z,
-                    height, texScale, herobrine.getRotationYawHead(), herobrine.rotationPitch, -3.7F, frame);
-            renderLaserTranslated(x, y , z, partialTicks, herobrine.posX, herobrine.posY, herobrine.posZ,
-                    totalWorldTime, herobrine.getEndPos().x, herobrine.getEndPos().y, herobrine.getEndPos().z,
-                    height, texScale, herobrine.getRotationYawHead(), herobrine.rotationPitch, 3.7F, frame);
+            renderLaserTranslated(x, y, z,  herobrine.posX, herobrine.posY, herobrine.posZ,
+                    herobrine.getEndPos().x, herobrine.getEndPos().y, herobrine.getEndPos().z,
+                    height, herobrine.getRotationYawHead(), herobrine.rotationPitch, -2.3F, frame);
+            renderLaserTranslated(x, y , z, herobrine.posX, herobrine.posY, herobrine.posZ,
+                    herobrine.getEndPos().x, herobrine.getEndPos().y, herobrine.getEndPos().z,
+                    height, herobrine.getRotationYawHead(), herobrine.rotationPitch, 2.3F, frame);
 
         }
         super.doRender(herobrine, x, y, z, entityYaw, partialTicks);
     }
 
-    private void renderLaserTranslated(double x, double y, double z, float partialTicks, double newX, double newY,
-                                         double newZ, double totalWorldTime, double blockX, double blockY, double blockZ,
-                                         double height, double textureScale, double yaw, double pitch, float eyeOff, int frame){
+    private void renderLaserTranslated(double x, double y, double z, double newX, double newY,
+                                         double newZ, double blockX, double blockY, double blockZ,
+                                         double height, double yaw, double pitch, float eyeOff, int frame){
         float diffX = (float) (blockX - newX);
         float diffY = (float) (blockY - newY);
         float diffZ = (float) (blockZ - newZ);
         float length = MathHelper.sqrt(diffX * diffX + diffY * diffY + diffZ * diffZ);
-
-        double d1 = totalWorldTime + partialTicks;
-        double d2 = MathHelper.frac(d1 * 0.2D - (double) MathHelper.floor(d1 * 0.1D));
-        double d14 = -1.0D + d2;
-        double d15 = (double) height * textureScale * (0.5D / RADIUS) + d14;
 
         double minU = 0;
         double minV = 16 / TEXTURE_HEIGHT + 1 / TEXTURE_HEIGHT ;
@@ -116,13 +111,15 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
         GlStateManager.rotate(rotQuat);
 
         //Offset to eyes AFTER rotating
-        GlStateManager.translate(eyeOff, height - 10.5, -20);
+       // GlStateManager.translate(eyeOff, height - 10.5, newZ);
 
         //The quad is just a square so scale to proper rectangle length
         GlStateManager.scale(RADIUS, 1, length * 1.5);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buf = tessellator.getBuffer();
+
+        buf.setTranslation(eyeOff, 42.5, -0.17);
 
         //Draw a square
         buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
@@ -133,6 +130,9 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
         buf.pos(1, 0, 0).tex(maxU, maxV).endVertex();
 
         tessellator.draw();
+
+        buf.setTranslation(0,0,0);
+
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.depthMask(false);

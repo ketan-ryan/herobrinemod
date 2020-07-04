@@ -41,7 +41,7 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
     private int animationTick;
 
     Animation ANIMATION_LASER = Animation.create(91);
-    static Animation ANIMATION_DEATH = Animation.create(200);
+    private static Animation ANIMATION_DEATH = Animation.create(200);
 
     private final Animation[] ANIMATIONS = {ANIMATION_LASER, ANIMATION_DEATH};
 
@@ -101,17 +101,20 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
             this.rotationPitch = 38;
             laser();
 
-            if(getAnimationTick() == 1 && getRotationYawHead() - prevRotationYawHead > 30){
-                setRotationYawHead(getRotationYawHead() - 45);}
+            if(getAnimationTick() == 1 && getRotationYawHead() - prevRotationYawHead > 30)
+                setRotationYawHead(getRotationYawHead() - 45);
             else if(getAnimationTick() > 1 && getAnimationTick() < 90)
+            {
                 setRotationYawHead(prevRotationYawHead + 1F);
+                laser();
+            }
             else if(getAnimationTick() == 90) {
                 setRotationYawHead(getRotationYawHead() - 45);
             }
         }
     }
 
-    public void laser()
+    private void laser()
     {
         Vec3d initialVec = startPos = this.getPositionEyes(1);
         //Get the block or entity within 100 blocks of the start vec
@@ -130,14 +133,6 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
                     setFire(new BlockPos(x + cornerPos.getX(), cornerPos.getY(), z + cornerPos.getZ()));
                 }
             }
-
-            //Light a fire at the targeted block
-
-/*            setFire(secondPos);
-            setFire(secondPos.east());
-            setFire(secondPos.west());
-            setFire(secondPos.north());
-            setFire(secondPos.south());*/
 
             double diffX = secondPos.getX() - initialVec.x;
             double diffY = secondPos.getY() - initialVec.y;
