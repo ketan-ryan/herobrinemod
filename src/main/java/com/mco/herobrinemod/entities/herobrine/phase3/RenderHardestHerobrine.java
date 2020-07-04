@@ -82,8 +82,8 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
         float length = MathHelper.sqrt(diffX * diffX + diffY * diffY + diffZ * diffZ);
 
         double minU = 0;
-        double minV = 16 / TEXTURE_HEIGHT + 1 / TEXTURE_HEIGHT ;
-        double maxU = minU + 16 / TEXTURE_WIDTH ;
+        double minV = 16 / TEXTURE_HEIGHT + 1 / TEXTURE_HEIGHT;
+        double maxU = minU + 16 / TEXTURE_WIDTH;
         double maxV = minV  / TEXTURE_HEIGHT * frame;
 
         GlStateManager.pushMatrix();
@@ -108,7 +108,7 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
         GlStateManager.rotate(rotQuat);
 
         //Offset to eyes AFTER rotating
-        GlStateManager.translate(eyeOff,41.5, -20);
+        GlStateManager.translate(eyeOff, 41.5, -20);
 
         //The quad is just a square so scale to proper rectangle length
         GlStateManager.scale(RADIUS, 1, length * 1.5);
@@ -135,5 +135,4 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
         GlStateManager.depthMask(true);
         GlStateManager.popMatrix();
     }
-
 }

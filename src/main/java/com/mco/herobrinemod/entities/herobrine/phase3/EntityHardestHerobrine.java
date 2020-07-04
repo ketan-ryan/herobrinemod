@@ -117,6 +117,7 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
     private void laser()
     {
         Vec3d initialVec = startPos = this.getPositionEyes(1);
+
         //Get the block or entity within 100 blocks of the start vec
         RayTraceResult rayTrace = this.rayTrace(100,1);
         Vec3d lookFar = rayTrace.hitVec;
@@ -130,7 +131,10 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
             {
                 for(int z = 0; z < 5; z++)
                 {
-                    setFire(new BlockPos(x + cornerPos.getX(), cornerPos.getY(), z + cornerPos.getZ()));
+                    BlockPos pos = new BlockPos(x + cornerPos.getX(), cornerPos.getY(), z + cornerPos.getZ());
+                    if(world.getBlockState(pos).getMaterial() == Material.AIR && Blocks.FIRE.canPlaceBlockAt(world, pos)
+                            && !world.isRemote)
+                        world.setBlockState(pos, Blocks.FIRE.getDefaultState());
                 }
             }
 
@@ -174,20 +178,13 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
         this.endPos = lookFar;
     }
 
-    public Vec3d getStartPos(){
+    Vec3d getStartPos(){
         return startPos;
     }
 
-    public Vec3d getEndPos()
+    Vec3d getEndPos()
     {
         return endPos;
-    }
-
-    private void setFire(BlockPos pos)
-    {
-        if(world.getBlockState(pos).getMaterial() == Material.AIR && Blocks.FIRE.canPlaceBlockAt(world, pos)
-                && !world.isRemote)
-            world.setBlockState(pos, Blocks.FIRE.getDefaultState());
     }
 
     private void createShockwave(BlockPos initialPos, float size)
@@ -239,6 +236,12 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
         }
         return pos;
     }
+
+    @Override
+    public boolean canBeCollidedWith() {
+        return true;
+    }
+
     @Override
     public void setInWeb() {
     }
