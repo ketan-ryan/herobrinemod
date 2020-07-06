@@ -99,7 +99,6 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
         if(getAnimation() == ANIMATION_LASER)
         {
             this.rotationPitch = 38;
-            laser();
 
             if(getAnimationTick() == 1 && getRotationYawHead() - prevRotationYawHead > 30)
                 setRotationYawHead(getRotationYawHead() - 45);
@@ -119,24 +118,32 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
         Vec3d initialVec = startPos = this.getPositionEyes(1);
 
         //Get the block or entity within 100 blocks of the start vec
-        RayTraceResult rayTrace = this.rayTrace(100,1);
+        RayTraceResult rayTrace = this.rayTrace(200,1);
         Vec3d lookFar = rayTrace.hitVec;
+        Vec3d unitVec = lookFar.normalize();
+        Vec3d scaledVec = unitVec.scale(200);
 
         if(lookFar != null)
         {
-            BlockPos secondPos = new BlockPos(lookFar);
+            BlockPos secondPos = new BlockPos(scaledVec);
             BlockPos cornerPos = secondPos.west(5).north(5);
 
-            for(int x = 0; x < 5; x++)
-            {
-                for(int z = 0; z < 5; z++)
-                {
+
+            System.out.println(scaledVec.length());
+
+            for (int x = 0; x < 5; x++) {
+                for (int z = 0; z < 5; z++) {
                     BlockPos pos = new BlockPos(x + cornerPos.getX(), cornerPos.getY(), z + cornerPos.getZ());
-                    if(world.getBlockState(pos).getMaterial() == Material.AIR && Blocks.FIRE.canPlaceBlockAt(world, pos)
-                            && !world.isRemote)
-                        world.setBlockState(pos, Blocks.FIRE.getDefaultState());
+                    if(world.getBlockState(pos).equals(Blocks.BEDROCK.getDefaultState())){
+                        if (world.getBlockState(pos).getMaterial() == Material.AIR && Blocks.FIRE.canPlaceBlockAt(world, pos)
+                                && !world.isRemote)
+                            world.setBlockState(pos, Blocks.FIRE.getDefaultState());
+                    }
+                    else if(!world.isRemote)
+                        world.setBlockToAir(pos);
                 }
             }
+
 
             double diffX = secondPos.getX() - initialVec.x;
             double diffY = secondPos.getY() - initialVec.y;
