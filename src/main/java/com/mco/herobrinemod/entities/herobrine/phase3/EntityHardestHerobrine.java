@@ -115,7 +115,7 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
                 laser();
             }
             else
-                setRotationYawHead(prevRotationYawHead - 20F);
+                setRotationYawHead(prevRotationYawHead - 17F);
         }
 
         updateAITasks();
@@ -124,6 +124,7 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
     private void laser()
     {
         Vec3d initialVec = startPos = this.getPositionEyes(1);
+
         //Get the block or entity within 100 blocks of the start vec
         RayTraceResult rayTrace = this.rayTrace(100,1);
         Vec3d lookFar = rayTrace.hitVec;
@@ -136,15 +137,19 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
                 for(int z = 0; z < 5; z++)
                 {
                     BlockPos pos = new BlockPos(x + cornerPos.getX(), cornerPos.getY(), z + cornerPos.getZ());
-                    if(world.getBlockState(pos).getMaterial() == Material.AIR && Blocks.FIRE.canPlaceBlockAt(world, pos)
-                            && !world.isRemote && HerobrineConfig.laserFire == true)
-                    world.setBlockState(pos, Blocks.FIRE.getDefaultState());
+                    if(!world.isRemote && HerobrineConfig.laserFire)
+                    {
+                        BlockPos airPos = checkAir(pos);
+                        if(Blocks.FIRE.canPlaceBlockAt(world, airPos))
+                            world.setBlockState(airPos, Blocks.FIRE.getDefaultState());
+                    }
                 }
             }
 
             double diffX = secondPos.getX() - initialVec.x;
             double diffY = secondPos.getY() - initialVec.y;
             double diffZ = secondPos.getZ() - initialVec.z;
+
             //Get how far away the hit block is from the start
             double length = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2) + Math.pow(diffZ, 2));
             for (int i = 0; i < length; i++)
@@ -155,9 +160,11 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
                 double factorZ = diffZ * (i / 32.0);
                 Vec3d factorVec = new Vec3d(factorX, factorY, factorZ);
                 Vec3d slopeVec = initialVec.add(factorVec);
+
                 //Get the current block in the line
                 BlockPos slopePos = new BlockPos(slopeVec);
-                //Cosmetic stuff
+
+                //Attack anyone in range of the beam
                 world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(slopePos.getX() + -2, slopePos.getY() + -2,
                         slopePos.getZ() + -2, slopePos.getX() + 4, slopePos.getY() + 4, slopePos.getZ() + 4)).
                         forEach(entity -> entity.attackEntityFrom(HerobrineDamageSources.HARD_LASER, HerobrineConfig.laserDamage));
@@ -175,6 +182,21 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
             }
         }
         this.endPos = lookFar;
+    }
+
+    private BlockPos checkAir(BlockPos pos)
+    {
+        if(world.getBlockState(pos).getMaterial() == Material.AIR)
+        {
+            if(world.getBlockState(pos.down()).getMaterial() != Material.AIR)
+                return pos;
+            else if(world.getBlockState(pos.down()).getMaterial() == Material.AIR)
+                checkAir(pos.down());
+        }
+        else
+            checkAir(pos.up());
+
+        return pos;
     }
 
     Vec3d getStartPos(){
