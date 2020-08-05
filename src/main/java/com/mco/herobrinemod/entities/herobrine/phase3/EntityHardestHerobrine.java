@@ -6,12 +6,15 @@ import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationAI;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityPig;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -23,6 +26,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.BossInfo;
+import net.minecraft.world.BossInfoServer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -34,6 +39,9 @@ import java.util.Random;
 
 public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
 {
+    private final BossInfoServer bossInfo = (BossInfoServer)(new BossInfoServer(this.getDisplayName(), BossInfo.Color.WHITE,
+            BossInfo.Overlay.PROGRESS)).setDarkenSky(true);
+
     private Vec3d startPos;
     private Vec3d endPos;
 
@@ -100,55 +108,42 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
         {
             this.rotationPitch = 38;
 
-            if(getAnimationTick() == 1 && getRotationYawHead() - prevRotationYawHead > 30)
-                setRotationYawHead(getRotationYawHead() - 45);
-            else if(getAnimationTick() > 1 && getAnimationTick() < 90)
+            if(getAnimationTick() > 1 && getAnimationTick() < 90)
             {
                 setRotationYawHead(prevRotationYawHead + 1F);
                 laser();
             }
-            else if(getAnimationTick() == 90) {
-                setRotationYawHead(getRotationYawHead() - 45);
-            }
+            else
+                setRotationYawHead(prevRotationYawHead - 20F);
         }
+
+        updateAITasks();
     }
 
     private void laser()
     {
         Vec3d initialVec = startPos = this.getPositionEyes(1);
-
         //Get the block or entity within 100 blocks of the start vec
-        RayTraceResult rayTrace = this.rayTrace(200,1);
+        RayTraceResult rayTrace = this.rayTrace(100,1);
         Vec3d lookFar = rayTrace.hitVec;
-        Vec3d unitVec = lookFar.normalize();
-        Vec3d scaledVec = unitVec.scale(200);
-
         if(lookFar != null)
         {
-            BlockPos secondPos = new BlockPos(scaledVec);
-            BlockPos cornerPos = secondPos.west(5).north(5);
-
-
-            System.out.println(scaledVec.length());
-
-            for (int x = 0; x < 5; x++) {
-                for (int z = 0; z < 5; z++) {
+            BlockPos secondPos = new BlockPos(lookFar);
+            BlockPos cornerPos = secondPos.south(2).west(2);
+            for(int x = 0; x < 5; x++)
+            {
+                for(int z = 0; z < 5; z++)
+                {
                     BlockPos pos = new BlockPos(x + cornerPos.getX(), cornerPos.getY(), z + cornerPos.getZ());
-                    if(world.getBlockState(pos).equals(Blocks.BEDROCK.getDefaultState())){
-                        if (world.getBlockState(pos).getMaterial() == Material.AIR && Blocks.FIRE.canPlaceBlockAt(world, pos)
-                                && !world.isRemote)
-                            world.setBlockState(pos, Blocks.FIRE.getDefaultState());
-                    }
-                    else if(!world.isRemote)
-                        world.setBlockToAir(pos);
+                    if(world.getBlockState(pos).getMaterial() == Material.AIR && Blocks.FIRE.canPlaceBlockAt(world, pos)
+                            && !world.isRemote)
+                    world.setBlockState(pos, Blocks.FIRE.getDefaultState());
                 }
             }
-
 
             double diffX = secondPos.getX() - initialVec.x;
             double diffY = secondPos.getY() - initialVec.y;
             double diffZ = secondPos.getZ() - initialVec.z;
-
             //Get how far away the hit block is from the start
             double length = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2) + Math.pow(diffZ, 2));
             for (int i = 0; i < length; i++)
@@ -157,30 +152,23 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
                 double factorX = diffX * (i / 32.0);
                 double factorY = diffY * (i / 32.0);
                 double factorZ = diffZ * (i / 32.0);
-
                 Vec3d factorVec = new Vec3d(factorX, factorY, factorZ);
                 Vec3d slopeVec = initialVec.add(factorVec);
-
                 //Get the current block in the line
                 BlockPos slopePos = new BlockPos(slopeVec);
-
                 //Cosmetic stuff
-                world.setBlockToAir(slopePos);
-
                 AxisAlignedBB axisPos = new AxisAlignedBB(slopePos.getX(), slopePos.getY(), slopePos.getZ(), slopePos.getX(), slopePos.getY(), slopePos.getZ());
                 axisPos.grow(2);
                 List entities = world.getEntitiesWithinAABB(Entity.class, axisPos);
-
                 if(entities.size() > 0 && entities.get(0) != null && !world.isRemote)
                 {
                     Entity entity = (Entity) entities.get(0);
                     System.out.println(entity);
                     entity.attackEntityFrom(HerobrineDamageSources.HARD_HEROBRINE, 10);
                 }
-
-         //       world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, slopePos.getX(), slopePos.getY(), slopePos.getZ(),
-         //               0, 0, 0);
-                }
+                //       world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, slopePos.getX(), slopePos.getY(), slopePos.getZ(),
+                //               0, 0, 0);
+            }
         }
         this.endPos = lookFar;
     }
@@ -242,6 +230,40 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
             }
         }
         return pos;
+    }
+
+    protected void updateAITasks()
+    {
+        this.bossInfo.setPercent(this.getHealth() / this.getMaxHealth());
+    }
+
+    /**
+     * Sets the custom name tag for this entity
+     */
+    public void setCustomNameTag(String name)
+    {
+        super.setCustomNameTag(name);
+        this.bossInfo.setName(this.getDisplayName());
+    }
+
+    /**
+     * Add the given player to the list of players tracking this entity. For instance, a player may track a boss in
+     * order to view its associated boss bar.
+     */
+    public void addTrackingPlayer(EntityPlayerMP player)
+    {
+        super.addTrackingPlayer(player);
+        this.bossInfo.addPlayer(player);
+    }
+
+    /**
+     * Removes the given player from the list of players tracking this entity. See {@link net.minecraft.entity.Entity#addTrackingPlayer} for
+     * more information on tracking.
+     */
+    public void removeTrackingPlayer(EntityPlayerMP player)
+    {
+        super.removeTrackingPlayer(player);
+        this.bossInfo.removePlayer(player);
     }
 
     @Override

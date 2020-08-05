@@ -1,9 +1,9 @@
 package com.mco.herobrinemod.entities.herobrine.phase2;
 
 import com.google.common.base.Predicate;
+import com.mco.herobrinemod.config.HerobrineConfig;
 import com.mco.herobrinemod.entities.herobrine.phase1.EntityHerobrine;
 import com.mco.herobrinemod.entities.herobrine.phase2.ghast.EntityCorruptedGhast;
-import com.mco.herobrinemod.config.HerobrineConfig;
 import com.mco.herobrinemod.main.MainItems;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationAI;
@@ -31,7 +31,6 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;

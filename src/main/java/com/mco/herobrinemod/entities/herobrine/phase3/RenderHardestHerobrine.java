@@ -15,6 +15,7 @@ import org.lwjgl.util.vector.Vector4f;
 
 public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
 {
+
     private static ResourceLocation TEXTURE = new ResourceLocation("herobrinemod:textures/entities/herobrine.png");
     public static final ResourceLocation BEAM_TEXTURES = new ResourceLocation("herobrinemod:textures/entities/laser.png");
 
