@@ -168,17 +168,6 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
                 world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(slopePos.getX() + -2, slopePos.getY() + -2,
                         slopePos.getZ() + -2, slopePos.getX() + 4, slopePos.getY() + 4, slopePos.getZ() + 4)).
                         forEach(entity -> entity.attackEntityFrom(HerobrineDamageSources.HARD_LASER, HerobrineConfig.laserDamage));
-              /*  AxisAlignedBB axisPos = new AxisAlignedBB(slopePos);
-                axisPos.grow(2);
-                List entities = world.getEntitiesWithinAABB(Entity.class, axisPos);
-                if(entities.size() > 0 && entities.get(0) != null && !world.isRemote)
-                {
-                    Entity entity = (Entity) entities.get(0);
-                    System.out.println(entity);
-                    entity.attackEntityFrom(HerobrineDamageSources.HARD_HEROBRINE, 10);
-                }*/
-                //       world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, slopePos.getX(), slopePos.getY(), slopePos.getZ(),
-                //               0, 0, 0);
             }
         }
         this.endPos = lookFar;
