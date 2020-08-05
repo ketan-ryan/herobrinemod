@@ -159,7 +159,7 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
                 //Cosmetic stuff
                 world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(slopePos.getX() + -2, slopePos.getY() + -2,
                         slopePos.getZ() + -2, slopePos.getX() + 4, slopePos.getY() + 4, slopePos.getZ() + 4)).
-                        forEach(entity -> entity.attackEntityFrom(HerobrineDamageSources.HARD_HEROBRINE, 10));
+                        forEach(entity -> entity.attackEntityFrom(HerobrineDamageSources.HARD_LASER, 10));
               /*  AxisAlignedBB axisPos = new AxisAlignedBB(slopePos);
                 axisPos.grow(2);
                 List entities = world.getEntitiesWithinAABB(Entity.class, axisPos);

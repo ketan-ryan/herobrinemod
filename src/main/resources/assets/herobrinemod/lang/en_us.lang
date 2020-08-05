@@ -27,3 +27,4 @@ item.hardest_leggings.name=Fully Enhanced Leggings
 item.hardest_boots.name=Fully Enhanced Boots
 
 death.attack.hard_herobrine=%1$s was slain by the bane of Minecraft
+death.attack.hard_laser=%1$s was vaporized
