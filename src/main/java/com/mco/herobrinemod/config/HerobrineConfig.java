@@ -13,6 +13,9 @@ public class HerobrineConfig
     @Config.Comment("Damage dealt by direct contact with laser")
     public static float laserDamage = 10.0F;
 
+    @Config.Comment("Should the laser set fire to the terrain")
+    public static boolean laserFire = true;
+
     @Config.Comment("Whether or not to enable the third phase of the Herobrine fight")
     public static boolean enableFight = true;
 

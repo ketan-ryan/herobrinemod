@@ -137,7 +137,7 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
                 {
                     BlockPos pos = new BlockPos(x + cornerPos.getX(), cornerPos.getY(), z + cornerPos.getZ());
                     if(world.getBlockState(pos).getMaterial() == Material.AIR && Blocks.FIRE.canPlaceBlockAt(world, pos)
-                            && !world.isRemote)
+                            && !world.isRemote && HerobrineConfig.laserFire == true)
                     world.setBlockState(pos, Blocks.FIRE.getDefaultState());
                 }
             }
