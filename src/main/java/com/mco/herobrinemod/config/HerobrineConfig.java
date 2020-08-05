@@ -10,6 +10,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Config(modid = HerobrineMod.MODID)
 public class HerobrineConfig
 {
+    @Config.Comment("Damage dealt by direct contact with laser")
+    public static float laserDamage = 10.0F;
+
     @Config.Comment("Whether or not to enable the third phase of the Herobrine fight")
     public static boolean enableFight = true;
 
