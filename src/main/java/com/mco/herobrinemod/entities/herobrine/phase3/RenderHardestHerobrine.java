@@ -101,7 +101,7 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
 
         //Initialize pitch and yaw quats from axisangle vecs
         axisAngleYaw.setFromAxisAngle(new Vector4f(0, -1, 0, (float)Math.toRadians(yaw)));
-        axisAnglePitch.setFromAxisAngle(new Vector4f(1, 0, 0, (float)Math.toRadians(pitch)));
+        axisAnglePitch.setFromAxisAngle(new Vector4f(1, 0, 0, (float)Math.toRadians(pitch )));
 
         //Combine quats by multiplying in this specific order
         Quaternion rotQuat = Quaternion.mul(axisAngleYaw, axisAnglePitch, null);
@@ -109,7 +109,7 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
         GlStateManager.rotate(rotQuat);
 
         //Offset to eyes AFTER rotating
-        GlStateManager.translate(eyeOff, 41.5, -20);
+        GlStateManager.translate(eyeOff, 38, -20);
 
         //The quad is just a square so scale to proper rectangle length
         GlStateManager.scale(RADIUS, 1, length * 1.5);
