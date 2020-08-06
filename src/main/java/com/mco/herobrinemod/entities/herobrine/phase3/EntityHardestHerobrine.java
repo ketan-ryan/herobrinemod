@@ -176,7 +176,13 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
                     e.setFire(10);
                 }
 
-                world.spawnParticle(EnumParticleTypes.END_ROD, slopePos.getX(), slopePos.getY(), slopePos.getZ(), 0, 0, 0);
+                if(rand.nextInt(5) == 0)
+                world.spawnParticle(EnumParticleTypes.END_ROD, slopePos.getX() + (this.rand.nextDouble() - 0.5D) * 4.0D,
+                        slopePos.getY() + this.rand.nextDouble() * 6.0D, slopePos.getZ() + (this.rand.nextDouble() - 0.5D) * 4.0D, 0, 0, 0);
+
+                if(rand.nextInt(2) == 0)
+                world.spawnParticle(EnumParticleTypes.FLAME, slopePos.getX() + (this.rand.nextDouble() - 0.5D) * 4.0D,
+                        slopePos.getY() + this.rand.nextDouble() * 6.0D, slopePos.getZ() + (this.rand.nextDouble() - 0.5D) * 4.0D, 0, 0, 0);
             }
         }
         this.endPos = lookFar;
