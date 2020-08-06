@@ -169,13 +169,9 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
                 BlockPos slopePos = new BlockPos(slopeVec);
 
                 //Attack anyone in range of the beam
-/*                world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(slopePos.getX() + -2, slopePos.getY() + -2,
-                        slopePos.getZ() + -2, slopePos.getX() + 2, slopePos.getY() + 2, slopePos.getZ() + 2)).
-                        forEach(entity -> entity.attackEntityFrom(HerobrineDamageSources.HARD_LASER, HerobrineConfig.laserDamage));*/
 
                 for(Entity e : world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(slopePos.getX() + -2, slopePos.getY() + -2,
-                        slopePos.getZ() + -2, slopePos.getX() + 2, slopePos.getY() + 2, slopePos.getZ() + 2)))
-                {
+                        slopePos.getZ() + -2, slopePos.getX() + 2, slopePos.getY() + 2, slopePos.getZ() + 2))) {
                     e.attackEntityFrom(HerobrineDamageSources.HARD_LASER, HerobrineConfig.laserDamage);
                     e.setFire(10);
                 }
@@ -258,6 +254,12 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
             }
         }
         return pos;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public int getBrightnessForRender()
+    {
+        return 15728880;
     }
 
     protected void updateAITasks()
