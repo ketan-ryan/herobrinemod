@@ -3,6 +3,7 @@ package com.mco.herobrinemod.entities.herobrine.phase2;
 import com.mco.herobrinemod.config.HerobrineConfig;
 import com.mco.herobrinemod.entities.herobrine.phase2.layers.LayerDeathGlow;
 import com.mco.herobrinemod.entities.herobrine.phase2.layers.LayerHardEyes;
+import com.mco.herobrinemod.entities.herobrine.phase2.layers.LayerLightningCharge;
 import com.mco.herobrinemod.entities.herobrine.phase2.layers.LayerRGB;
 import com.mco.herobrinemod.entities.util.AdvancedLibLayerHeldItem;
 import net.minecraft.client.renderer.GlStateManager;
@@ -24,6 +25,7 @@ public class RenderHardHerobrine extends RenderLiving<EntityHardHerobrine>{
         this.addLayer(new AdvancedLibLayerHeldItem(this));
         this.addLayer(new LayerHardEyes<>(this));
         this.addLayer(new LayerRGB<>(this));
+        this.addLayer(new LayerLightningCharge(this));
         this.addLayer(new LayerDeathGlow<>());
     }
 

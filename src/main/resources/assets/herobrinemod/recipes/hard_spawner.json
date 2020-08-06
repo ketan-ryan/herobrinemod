@@ -2,28 +2,24 @@
   "type": "minecraft:crafting_shaped",
   "pattern":
   [
-    "o",
-    "w",
-    "s"
+    "ooo",
+    "oso",
+    "ooo"
   ],
   "key":
   {
-    "w":
-    {
-      "item": "minecraft:diamond_sword"
-    },
     "o":
     {
       "item": "minecraft:obsidian"
     },
     "s":
     {
-      "item": "minecraft:stick"
+      "item": "minecraft:nether_star"
     }
   },
   "result":
   {
-    "item": "herobrinemod:hard_sword",
+    "item": "herobrinemod:hard_spawner",
     "count": 1
   }
 }

@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class LayerHardEyes<T extends EntityHardHerobrine> implements LayerRenderer<T> {
 
-    private static final ResourceLocation HEROBRINE_GLOW = new ResourceLocation(HerobrineMod.MODID, "textures/entities/hard_glow.png");
+    private static final ResourceLocation HEROBRINE_GLOW = new ResourceLocation(HerobrineMod.MODID, "textures/entities/herobrine_glow.png");
     private final RenderHardHerobrine herobrineRenderer;
 
     public LayerHardEyes(RenderHardHerobrine renderHerobrine)

@@ -32,6 +32,8 @@ public class ModelHardHerobrine extends ModelHumanoid {
 
         if((herobrine.getAnimation() == herobrine.ANIMATION_DEATH && !shouldPulse) || ticks == 0 || ticks >= 190)
             this.Chest.render(f5);
+        else if(herobrine.getAnimation() == herobrine.ANIMATION_DEATH_FULL)
+            this.Chest.render(f5);
     }
 
     public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5)
@@ -194,5 +196,89 @@ public class ModelHardHerobrine extends ModelHumanoid {
             animator.rotate(RArmA, -0.8F, 0F, 0F);
         animator.endKeyframe();
         animator.setStaticKeyframe(30);
+
+        //Fireball shoot
+        animator.setAnimation(herobrine.ANIMATION_SHOOT);
+        animator.startKeyframe(20);
+            animator.rotate(RArmA, -0.85F, 0F, 0F);
+            animator.rotate(RArmB, -0.35F, 0F, 0F);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(50);
+
+        //Fire breath
+        animator.setAnimation(herobrine.ANIMATION_FIRE);
+        animator.startKeyframe(20);
+            doFirebreathRotations();
+        animator.endKeyframe();
+        animator.startKeyframe(20);
+            animator.rotate(Head, 0F, 0.25F, 0F);
+            doFirebreathRotations();
+        animator.endKeyframe();
+        animator.startKeyframe(20);
+            animator.rotate(Head, 0F, -0.25F, 0F);
+            doFirebreathRotations();
+        animator.endKeyframe();
+        animator.startKeyframe(20);
+            animator.rotate(Head, 0F, 0.25F, 0F);
+            doFirebreathRotations();
+        animator.endKeyframe();
+
+        //Sword slice
+        animator.setAnimation(herobrine.ANIMATION_SWORD);
+        animator.startKeyframe(20);
+            animator.rotate(LArmA, -1F, 0F, 0F);
+            animator.rotate(Chest, -0.25F, 0F, 0F);
+
+            animator.rotate(LLegA, -0.25F, 0F, 0.05F);
+            animator.rotate(LLegB, 0.4F, 0F, 0F);
+
+            animator.rotate(RLegA, 0.25F, 0F, -0.05F);
+            animator.rotate(RLegB, 0.4F, 0F, 0F);
+        animator.endKeyframe();
+        animator.startKeyframe(8);
+            animator.rotate(LArmA, -0.25F, 0F, -0.5F);
+            animator.rotate(LArmB, 0F, 0F, -0.25F);
+
+            animator.rotate(Chest, 0.25F, 0F, 0F);
+
+            animator.rotate(LLegA, 0.25F, 0F, 0.05F);
+            animator.rotate(LLegB, 0.4F, 0F, 0F);
+
+            animator.rotate(RLegA, -0.4F, 0F, -0.05F);
+            animator.rotate(RLegB, 0.2F, 0F, 0F);
+        animator.endKeyframe();
+
+        //Lightning
+        animator.setAnimation(herobrine.ANIMATION_LIGHTNING);
+        animator.startKeyframe(30);
+            animator.rotate(Head, -0.5F, 0F, 0F);
+
+            animator.rotate(LArmA, -2F, 0F, -0.05F);
+            animator.rotate(LArmB, -0.5F, 0F, 0F);
+
+            animator.rotate(RArmA, -2F, 0F, 0.05F);
+            animator.rotate(RArmB, -0.5F, 0F, 0F);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(30);
+        animator.startKeyframe(10);
+            animator.rotate(LArmA, -0.75F, 0F, 0F);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(20);
+    }
+
+    private void doFirebreathRotations(){
+        animator.rotate(Chest, 0.2F, 0F, 0F);
+
+        animator.rotate(LArmA, 0.2F, 0F, 0.1F);
+        animator.rotate(RArmA, 0.2F, 0F, -0.1F);
+
+        animator.rotate(LArmB, -0.1F, 0F, 0F);
+        animator.rotate(RArmB, -0.1F, 0F, 0F);
+
+        animator.rotate(LLegA, -0.5F, 0F, 0.05F);
+        animator.rotate(RLegA, -0.5F, 0F, -0.05F);
+
+        animator.rotate(LLegB, 0.5F, 0F, 0F);
+        animator.rotate(RLegB, 0.5F, 0F, 0F);
     }
 }
