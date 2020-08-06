@@ -16,8 +16,11 @@ public class HerobrineConfig
     @Config.Comment("Should the laser set fire to the terrain")
     public static boolean laserFire = true;
 
+    @Config.Comment("Whether or not to enable the second phase of the Herobrine fight")
+    public static boolean enablePhase2 = true;
+
     @Config.Comment("Whether or not to enable the third phase of the Herobrine fight")
-    public static boolean enableFight = true;
+    public static boolean enablePhase3 = true;
 
     @Config.Comment("If true, disables a part of the fight that may trigger epilepsy")
     public static boolean disableEpilepsy = false;

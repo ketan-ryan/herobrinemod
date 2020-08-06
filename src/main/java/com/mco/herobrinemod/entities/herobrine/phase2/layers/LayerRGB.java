@@ -37,7 +37,7 @@ public class LayerRGB<T extends EntityHardHerobrine> implements LayerRenderer<T>
 
         boolean shouldPulse = (b1 || b2 || b3 || b4 || b5 || b6 || b7) && !HerobrineConfig.disableEpilepsy;
 
-        if(shouldPulse && HerobrineConfig.enableFight) {
+        if(shouldPulse && HerobrineConfig.enablePhase3) {
             this.herobrineRenderer.bindTexture(HEROBRINE_GLOW);
             GlStateManager.enableBlend();
             GlStateManager.disableAlpha();

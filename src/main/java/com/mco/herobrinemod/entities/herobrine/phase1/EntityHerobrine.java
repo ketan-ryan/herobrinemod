@@ -1,6 +1,7 @@
 package com.mco.herobrinemod.entities.herobrine.phase1;
 
 import com.google.common.base.Predicate;
+import com.mco.herobrinemod.config.HerobrineConfig;
 import com.mco.herobrinemod.entities.herobrine.phase2.EntityHardHerobrine;
 import com.mco.herobrinemod.entities.herobrine.phase2.ghast.EntityCorruptedGhast;
 import net.ilexiconn.llibrary.server.animation.Animation;
@@ -78,7 +79,8 @@ public class EntityHerobrine extends EntityMob implements IRangedAttackMob, IMob
         this.secondSpawn = false;
     }
 
-    public EntityHerobrine(World world, boolean secondSpawn) {
+    public EntityHerobrine(World world, boolean secondSpawn)
+    {
         super(world);
         this.isImmuneToFire = true;
         this.setSize(0.6F, 1.95F);
@@ -165,7 +167,8 @@ public class EntityHerobrine extends EntityMob implements IRangedAttackMob, IMob
     }
 
     @Override
-    public void onLivingUpdate() {
+    public void onLivingUpdate()
+    {
         super.onLivingUpdate();
 
         if(getAttackTarget()==null && !world.isRemote) {
@@ -187,7 +190,8 @@ public class EntityHerobrine extends EntityMob implements IRangedAttackMob, IMob
             }
         }
 
-        if(getAttackTarget() != null && !world.isRemote && deathTicks == 0 && currentAnim == null) {
+        if(getAttackTarget() != null && !world.isRemote && deathTicks == 0 && currentAnim == null)
+        {
             this.getLookHelper().setLookPositionWithEntity(getAttackTarget(), 10.0F, 10.0F);
 
             if (rand.nextInt(70) == 1){
@@ -348,7 +352,7 @@ public class EntityHerobrine extends EntityMob implements IRangedAttackMob, IMob
         else
             second = false;
 
-        if(!second)
+        if(!second && HerobrineConfig.enablePhase2)
         {
             if (getAnimation() == NO_ANIMATION && currentAnim == null)
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_DEATH);

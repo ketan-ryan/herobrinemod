@@ -343,7 +343,7 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
 
     private void onDeathAIUpdate()
     {
-        if(HerobrineConfig.enableFight) {
+        if(HerobrineConfig.enablePhase3) {
             if (getAnimation() != ANIMATION_DEATH)
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_DEATH);
         }
@@ -358,7 +358,7 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
         deathTicks++;
 
         if (getAnimation() == NO_ANIMATION && currentAnim == null) {
-            if (HerobrineConfig.enableFight)
+            if (HerobrineConfig.enablePhase3)
                 //If the fight is enabled, play the death sequence with the chromatic aberration
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, ANIMATION_DEATH);
             else
@@ -375,7 +375,7 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
             }
         }
 
-        if (!HerobrineConfig.enableFight)
+        if (!HerobrineConfig.enablePhase3)
         {
             if(deathTicks == 1)
                 setAnimation(ANIMATION_DEATH_FULL);
@@ -473,7 +473,7 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
         {
             EntityPlayer entityPlayer = (EntityPlayer)cause.getTrueSource();
 
-            if(HerobrineConfig.enableFight)
+            if(HerobrineConfig.enablePhase3)
             {
                 for(ItemStack tempDrops: hardestDrops)
                 {
@@ -490,7 +490,7 @@ public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, I
         }
         else if(world.getGameRules().getBoolean("doMobLoot"))
         {
-            if(HerobrineConfig.enableFight)
+            if(HerobrineConfig.enablePhase3)
             {
                 for(ItemStack temp: hardestDrops)
                 {

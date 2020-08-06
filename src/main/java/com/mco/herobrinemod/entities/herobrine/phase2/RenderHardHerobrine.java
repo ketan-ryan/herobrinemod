@@ -61,7 +61,7 @@ public class RenderHardHerobrine extends RenderLiving<EntityHardHerobrine>{
 
             boolean shouldPulse = f1 || f2 || f3 || f4 || f5 || f6 || f7;
 
-            if (HerobrineConfig.enableFight && shouldPulse)
+            if (HerobrineConfig.enablePhase3 && shouldPulse)
                 GlStateManager.scale(1.1, 1.1, 1.1);
         }
 
