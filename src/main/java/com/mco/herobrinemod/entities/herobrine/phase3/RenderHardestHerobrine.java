@@ -56,7 +56,6 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
     public void doRender(EntityHardestHerobrine herobrine, double x, double y, double z, float entityYaw, float partialTicks)
     {
         this.bindTexture(BEAM_TEXTURES);
-        GlStateManager.alphaFunc(516, 0.1F);
 
         if (herobrine.getAnimation() == herobrine.ANIMATION_LASER && herobrine.getAnimationTick() < 90
                 && herobrine.getStartPos() != null && herobrine.getEndPos() != null)
@@ -86,15 +85,19 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
         double minV = 16 / TEXTURE_HEIGHT + 1 / TEXTURE_HEIGHT;
         double maxU = minU + 16 / TEXTURE_WIDTH;
         double maxV = minV  / TEXTURE_HEIGHT * frame;
-
+        GlStateManager.glTexParameteri(3553, 10242, 10497);
+        GlStateManager.glTexParameteri(3553, 10243, 10497);
         GlStateManager.pushMatrix();
+
 
         GlStateManager.disableLighting();
         GlStateManager.disableCull();
         GlStateManager.disableBlend();
         GlStateManager.depthMask(true);
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE,
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
                 GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+
+
 
         //Put entity at right place on screen
         GlStateManager.translate(x, y, z);
@@ -109,7 +112,7 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
         GlStateManager.rotate(rotQuat);
 
         //Offset to eyes AFTER rotating
-        GlStateManager.translate(eyeOff, 38, -20);
+        GlStateManager.translate(eyeOff, 36.5, -20);
 
         //The quad is just a square so scale to proper rectangle length
         GlStateManager.scale(RADIUS, 1, length * 1.5);

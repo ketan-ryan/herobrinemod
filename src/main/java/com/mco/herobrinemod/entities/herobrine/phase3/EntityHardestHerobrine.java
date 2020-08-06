@@ -125,13 +125,17 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
     {
         Vec3d initialVec = startPos = this.getPositionEyes(1);
 
+        Vec3d vec3d = this.getPositionEyes(1).add(0, -8, 0);
+        Vec3d vec3d1 = this.getLook(1);
+        Vec3d vec3d2 = vec3d.add(vec3d1.x * 100, vec3d1.y * 100, vec3d1.z * 100);
+
         //Get the block or entity within 100 blocks of the start vec
-        RayTraceResult rayTrace = this.rayTrace(100,1);
+        RayTraceResult rayTrace = world.rayTraceBlocks(vec3d, vec3d2, true, false, true);
         Vec3d lookFar = rayTrace.hitVec;
         if(lookFar != null)
         {
             BlockPos secondPos = new BlockPos(lookFar);
-            BlockPos cornerPos = secondPos.south(2).west(2);
+            BlockPos cornerPos = secondPos;
             for(int x = 0; x < 5; x++)
             {
                 for(int z = 0; z < 5; z++)
@@ -165,9 +169,18 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
                 BlockPos slopePos = new BlockPos(slopeVec);
 
                 //Attack anyone in range of the beam
-                world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(slopePos.getX() + -2, slopePos.getY() + -2,
-                        slopePos.getZ() + -2, slopePos.getX() + 4, slopePos.getY() + 4, slopePos.getZ() + 4)).
-                        forEach(entity -> entity.attackEntityFrom(HerobrineDamageSources.HARD_LASER, HerobrineConfig.laserDamage));
+/*                world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(slopePos.getX() + -2, slopePos.getY() + -2,
+                        slopePos.getZ() + -2, slopePos.getX() + 2, slopePos.getY() + 2, slopePos.getZ() + 2)).
+                        forEach(entity -> entity.attackEntityFrom(HerobrineDamageSources.HARD_LASER, HerobrineConfig.laserDamage));*/
+
+                for(Entity e : world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(slopePos.getX() + -2, slopePos.getY() + -2,
+                        slopePos.getZ() + -2, slopePos.getX() + 2, slopePos.getY() + 2, slopePos.getZ() + 2)))
+                {
+                    e.attackEntityFrom(HerobrineDamageSources.HARD_LASER, HerobrineConfig.laserDamage);
+                    e.setFire(10);
+                }
+
+                world.spawnParticle(EnumParticleTypes.END_ROD, slopePos.getX(), slopePos.getY(), slopePos.getZ(), 0, 0, 0);
             }
         }
         this.endPos = lookFar;
