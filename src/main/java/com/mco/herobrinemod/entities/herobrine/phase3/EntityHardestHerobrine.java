@@ -125,12 +125,12 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
     {
         Vec3d initialVec = startPos = this.getPositionEyes(1);
 
-        Vec3d vec3d = this.getPositionEyes(1).add(0, -8, 0);
-        Vec3d vec3d1 = this.getLook(1);
-        Vec3d vec3d2 = vec3d.add(vec3d1.x * 100, vec3d1.y * 100, vec3d1.z * 100);
+        Vec3d eyeVec = this.getPositionEyes(1).add(0, -10, 0);
+        Vec3d lookVec = this.getLook(1);
+        Vec3d scaleEye = eyeVec.add(lookVec.x * 100, lookVec.y * 100, lookVec.z * 100);
 
         //Get the block or entity within 100 blocks of the start vec
-        RayTraceResult rayTrace = world.rayTraceBlocks(vec3d, vec3d2, true, false, true);
+        RayTraceResult rayTrace = world.rayTraceBlocks(eyeVec, scaleEye, true, false, true);
         Vec3d lookFar = rayTrace.hitVec;
         if(lookFar != null)
         {
@@ -197,7 +197,7 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
             else if(world.getBlockState(pos.down()).getMaterial() == Material.AIR)
                 checkAir(pos.down());
         }
-        else
+        else if(world.canBlockSeeSky(pos))
             checkAir(pos.up());
 
         return pos;
