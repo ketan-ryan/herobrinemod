@@ -8,6 +8,7 @@ import com.mco.herobrinemod.entities.herobrine.phase2.ai.AIShootFireballs;
 import com.mco.herobrinemod.entities.herobrine.phase2.ai.AISummonLightning;
 import com.mco.herobrinemod.entities.herobrine.phase2.ai.AISwordSlice;
 import com.mco.herobrinemod.entities.herobrine.phase2.ghast.EntityCorruptedGhast;
+import com.mco.herobrinemod.entities.util.ParticleHelper;
 import com.mco.herobrinemod.main.MainItems;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationAI;
