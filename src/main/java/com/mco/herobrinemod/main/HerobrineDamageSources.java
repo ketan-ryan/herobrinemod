@@ -9,5 +9,6 @@ public class HerobrineDamageSources extends DamageSource {
     }
 
     public static DamageSource HARD_HEROBRINE = new HerobrineDamageSources("hard_herobrine");
+    public static DamageSource HARD_LASER = new HerobrineDamageSources("hard_laser");
     public static DamageSource HARD_SWORD = new HerobrineDamageSources("hard_sword");
 }

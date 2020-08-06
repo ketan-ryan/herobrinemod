@@ -1,5 +1,6 @@
 entity.herobrine.name=Herobrine (Phase 1)
 entity.hard_herobrine.name=Herobrine (Phase 2)
+entity.hardest_herobrine.name=Herobrine (Phase 3)
 
 item.hard_sword.name=Enhanced Sword
 item.hard_helmet.name=Enhanced Helmet
@@ -28,4 +29,4 @@ item.hardest_boots.name=Fully Enhanced Boots
 item.hard_spawner.name=Herobrine Spawn Item
 
 death.attack.hard_herobrine=%1$s was slain by the bane of Minecraft
-death.attack.hard_sword=%1$s was cut in half
+death.attack.hard_laser=%1$s was vaporized
