@@ -113,7 +113,7 @@ public class RenderHardestHerobrine extends RenderLiving<EntityHardestHerobrine>
         GlStateManager.translate(eyeOff, 36.5, -20);
 
         //The quad is just a square so scale to proper rectangle length
-        GlStateManager.scale(RADIUS, 1, length * 1.5);
+        GlStateManager.scale(RADIUS, 1, length * 1.15);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buf = tessellator.getBuffer();

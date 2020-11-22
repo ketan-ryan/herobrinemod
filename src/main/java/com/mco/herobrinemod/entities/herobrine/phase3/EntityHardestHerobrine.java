@@ -79,7 +79,6 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
         super.entityInit();
     }
 
-
     @Override
     public void onLivingUpdate() {
         super.onLivingUpdate();
@@ -121,13 +120,21 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
         updateAITasks();
     }
 
+    /**
+     * Performs all the logic behind the laser
+     * Generates a vector from the eyes to the target block
+     * Sets blocks along the vector to air
+     * Spawns particles along the beam
+     * Attacks and burns any entities in the path
+     * If ocnfig enabled, sets fire to the ground
+     */
     private void laser()
     {
         Vec3d initialVec = startPos = this.getPositionEyes(1);
 
         Vec3d eyeVec = this.getPositionEyes(1).add(0, -10, 0);
         Vec3d lookVec = this.getLook(1);
-        Vec3d scaleEye = eyeVec.add(lookVec.x * 100, lookVec.y * 100, lookVec.z * 100);
+        Vec3d scaleEye = eyeVec.add(lookVec.x * 75, lookVec.y * 75, lookVec.z * 75);
 
         //Get the block or entity within 100 blocks of the start vec
         RayTraceResult rayTrace = world.rayTraceBlocks(eyeVec, scaleEye, true, false, true);
@@ -136,19 +143,6 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
         {
             BlockPos secondPos = new BlockPos(lookFar);
             BlockPos cornerPos = secondPos;
-            for(int x = 0; x < 5; x++)
-            {
-                for(int z = 0; z < 5; z++)
-                {
-                    BlockPos pos = new BlockPos(x + cornerPos.getX(), cornerPos.getY(), z + cornerPos.getZ());
-                    if(!world.isRemote && HerobrineConfig.laserFire)
-                    {
-                        BlockPos airPos = checkAir(pos);
-                        if(Blocks.FIRE.canPlaceBlockAt(world, airPos))
-                            world.setBlockState(airPos, Blocks.FIRE.getDefaultState());
-                    }
-                }
-            }
 
             double diffX = secondPos.getX() - initialVec.x;
             double diffY = secondPos.getY() - initialVec.y;
@@ -169,13 +163,31 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
                 BlockPos slopePos = new BlockPos(slopeVec);
 
                 //Attack anyone in range of the beam
+                AxisAlignedBB box = new AxisAlignedBB(slopePos.getX() + -2, slopePos.getY() + -2,
+                        slopePos.getZ() + -2, slopePos.getX() + 2, slopePos.getY() + 2, slopePos.getZ() + 2);
 
-                for(Entity e : world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(slopePos.getX() + -2, slopePos.getY() + -2,
-                        slopePos.getZ() + -2, slopePos.getX() + 2, slopePos.getY() + 2, slopePos.getZ() + 2))) {
+                for(Entity e : world.getEntitiesWithinAABB(Entity.class, box)) {
                     e.attackEntityFrom(HerobrineDamageSources.HARD_LASER, HerobrineConfig.laserDamage);
                     e.setFire(10);
                 }
 
+                //Creates a cube of air along the beam
+                for(double boxX = box.minX; boxX < box.maxX; boxX++)
+                {
+                    for(double boxY = box.minY; boxY < box.maxY; boxY++)
+                    {
+                        for(double boxZ = box.minZ; boxZ < box.maxZ; boxZ++)
+                        {
+                            BlockPos axisPos = new BlockPos(boxX, boxY, boxZ);
+                            if(!world.isAirBlock(axisPos) && world.getBlockState(axisPos).getMaterial() != Material.WATER
+                            && world.getBlockState(axisPos).getMaterial() != Material.LAVA && world.getBlockState(axisPos) != Blocks.BEDROCK.getDefaultState()
+                            && world.getBlockState(axisPos) != Blocks.FIRE.getDefaultState())
+                                world.setBlockToAir(axisPos);
+                        }
+                    }
+                }
+
+                //Spawns flame and end rod particles along the beam to convey heat
                 if(rand.nextInt(5) == 0)
                 world.spawnParticle(EnumParticleTypes.END_ROD, slopePos.getX() + (this.rand.nextDouble() - 0.5D) * 4.0D,
                         slopePos.getY() + this.rand.nextDouble() * 6.0D, slopePos.getZ() + (this.rand.nextDouble() - 0.5D) * 4.0D, 0, 0, 0);
@@ -184,31 +196,58 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
                 world.spawnParticle(EnumParticleTypes.FLAME, slopePos.getX() + (this.rand.nextDouble() - 0.5D) * 4.0D,
                         slopePos.getY() + this.rand.nextDouble() * 6.0D, slopePos.getZ() + (this.rand.nextDouble() - 0.5D) * 4.0D, 0, 0, 0);
             }
+
+            //Checks if the block is valid for placing fire
+            //and if setting fire is enabled in the config
+            for(int x = 0; x < 5; x++)
+            {
+                for(int z = 0; z < 5; z++)
+                {
+                    BlockPos pos = new BlockPos(x + cornerPos.getX(), cornerPos.getY(), z + cornerPos.getZ());
+                    if(!world.isRemote && HerobrineConfig.laserFire)
+                    {
+                        BlockPos airPos = checkAir(pos);
+                        if(Blocks.FIRE.canPlaceBlockAt(world, airPos))
+                            world.setBlockState(airPos, Blocks.FIRE.getDefaultState());
+                    }
+                }
+            }
         }
         this.endPos = lookFar;
     }
 
+    /**
+     * Checks a given pos to see where around it is air
+     * @param pos the pos to check at
+     * @return an air block in the same x and z coordinates
+     */
     private BlockPos checkAir(BlockPos pos)
     {
-        if(world.getBlockState(pos).getMaterial() == Material.AIR)
-        {
-            if(world.getBlockState(pos.down()).getMaterial() != Material.AIR)
-                return pos;
-            else if(world.getBlockState(pos.down()).getMaterial() == Material.AIR)
-                checkAir(pos.down());
+        if(pos.getY() < 256 && pos.getY() > 0) {
+            if (world.getBlockState(pos).getMaterial() == Material.AIR) {
+                if (world.getBlockState(pos.down()).getMaterial() != Material.AIR)
+                    return pos;
+                else if (world.getBlockState(pos.down()).getMaterial() == Material.AIR)
+                    checkAir(pos.down());
+            } else if (world.canBlockSeeSky(pos))
+                checkAir(pos.up());
         }
-        else if(world.canBlockSeeSky(pos))
-            checkAir(pos.up());
-
         return pos;
     }
 
+    /**
+     * Gets the starting position of the laser
+     * @return the starting position of the laser
+     */
     Vec3d getStartPos(){
         return startPos;
     }
 
-    Vec3d getEndPos()
-    {
+    /**
+     * Returns the end position of the laser
+     * @return the end position of the laser
+     */
+    Vec3d getEndPos() {
         return endPos;
     }
 
@@ -243,6 +282,12 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
         }
     }
 
+    /**
+     * Checks a block for air with a given depth to stop checking at
+     * @param pos the x and z coords of the block to check at
+     * @param depth how far we should look for an air block, caps at 5
+     * @return the closest air block
+     */
     private BlockPos checkAir(BlockPos pos, int depth)
     {
         if(world.isAirBlock(pos) && depth < 5)
@@ -262,14 +307,20 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
         return pos;
     }
 
+    /**
+     * How bright to render the entity
+     * @return a fixed brightness value
+     */
     @SideOnly(Side.CLIENT)
     public int getBrightnessForRender()
     {
         return 15728880;
     }
 
-    protected void updateAITasks()
-    {
+    /**
+     * Updates bossbar
+     */
+    protected void updateAITasks() {
         this.bossInfo.setPercent(this.getHealth() / this.getMaxHealth());
     }
 
@@ -302,15 +353,28 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
         this.bossInfo.removePlayer(player);
     }
 
+    /**
+     * Whether you can pass through the entity
+     * Always returns true so you can't walk through it
+     * @return whether the entity can be collided with
+     */
     @Override
     public boolean canBeCollidedWith() {
         return true;
     }
 
+    /**
+     * Overrides so not slowed by cobwebs
+     */
     @Override
     public void setInWeb() {
     }
 
+    /**
+     * Overriden to negate fall damage
+     * @param distance how far the entity falls
+     * @param damageMultiplier the damage multiplier for falling
+     */
     @Override
     public void fall(float distance, float damageMultiplier) {
     }
@@ -318,6 +382,9 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
     /**
      * Since it's so big, we have to override these
      * to make it not disappear when you look up
+     * @param x the x amount
+     * @param y the y amount
+     * @param z the z amount
      */
     @SideOnly(Side.CLIENT)
     @Override
@@ -330,6 +397,11 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
         return this.isInRangeToRenderDist(d3);
     }
 
+    /**
+     * Whether the entity is in range to be rendered
+     * @param distance the distance from the entity
+     * @return whether the entity is in range
+     */
     @SideOnly(Side.CLIENT)
     @Override
     public boolean isInRangeToRenderDist(double distance)
