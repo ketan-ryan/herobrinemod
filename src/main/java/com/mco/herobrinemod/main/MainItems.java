@@ -2,6 +2,7 @@ package com.mco.herobrinemod.main;
 
 import com.mco.herobrinemod.HerobrineMod;
 import com.mco.herobrinemod.armor.HardArmor;
+import com.mco.herobrinemod.armor.HarderArmor;
 import com.mco.herobrinemod.items.HardSpawner;
 import com.mco.herobrinemod.items.HardSword;
 import net.minecraft.client.Minecraft;

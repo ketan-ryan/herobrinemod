@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
 public class HardArmor extends ItemArmor {
@@ -17,43 +18,59 @@ public class HardArmor extends ItemArmor {
 
         setRegistryName(registryName);
         setTranslationKey(unlocalizedName);
-        //setCreativeTab()
-        
     }
 
-    public static boolean isWearingFullSet(EntityPlayer player, Item helmet, Item chestplate, Item leggings, Item boots)
-    {
-        return player.inventory.armorItemInSlot(3) != null && player.inventory.armorItemInSlot(3).getItem() == helmet
-                && player.inventory.armorItemInSlot(2) != null && player.inventory.armorItemInSlot(2).getItem() == chestplate
-                && player.inventory.armorItemInSlot(1) != null && player.inventory.armorItemInSlot(1).getItem() == leggings
-                && player.inventory.armorItemInSlot(0) != null && player.inventory.armorItemInSlot(0).getItem() == boots;
-    }
-
+    @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack)
     {
-        if (isWearingFullSet(player, MainItems.hard_helmet, MainItems.hard_chestplate, MainItems.hard_leggings, MainItems.hard_boots)) {
-            player.addPotionEffect(new PotionEffect(MobEffects.FIRE_RESISTANCE, 2, 0));
-            player.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, 2, 0));
-        }
-        else if (isWearingFullSet(player, MainItems.harder_helmet, MainItems.harder_chestplate, MainItems.harder_leggings, MainItems.harder_boots)) {
-            player.addPotionEffect(new PotionEffect(MobEffects.FIRE_RESISTANCE, 2, 2));
-            player.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, 2, 1));
-            player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 2, 1));
-        }
-        else if(isWearingFullSet(player, MainItems.halfharder_helmet, MainItems.halfharder_chestplate, MainItems.halfharder_leggings, MainItems.halfharder_boots)){
-            player.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, 2, 2));
-            player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 2, 1));
-            player.addPotionEffect(new PotionEffect(MobEffects.FIRE_RESISTANCE, 2, 3));
-            player.addPotionEffect(new PotionEffect(MobEffects.STRENGTH, 2, 0));
-            player.addPotionEffect(new PotionEffect(MobEffects.ABSORPTION, 2, 1));
-        }
-        else if(isWearingFullSet(player, MainItems.hardest_helmet, MainItems.hardest_chestplate, MainItems.hardest_leggings, MainItems.hardest_boots)){
-            player.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, 2, 3));
-            player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 2, 3));
-            player.addPotionEffect(new PotionEffect(MobEffects.FIRE_RESISTANCE, 2, 4));
-            player.addPotionEffect(new PotionEffect(MobEffects.STRENGTH, 2, 1));
-            player.addPotionEffect(new PotionEffect(MobEffects.ABSORPTION, 2, 3));
-            player.capabilities.allowFlying = true;
+        if(!player.isSpectator()) {
+            NonNullList<ItemStack> armor = player.inventory.armorInventory;
+            int hardPieces, harderPieces, halfHarderPieces, hardestPieces;
+            hardPieces = harderPieces = halfHarderPieces = hardestPieces = 0;
+
+            for (ItemStack itemArmor : armor) {
+                if (itemArmor != null && itemArmor.getItem() instanceof HardArmor) {
+                    String noId = itemArmor.getItem().getRegistryName().toString().substring(13);
+                    if(noId.contains("hard_"))
+                        hardPieces++;
+                    else if(noId.contains("harder_"))
+                        harderPieces++;
+                    else if(noId.contains("halfharder_"))
+                        halfHarderPieces++;
+                    else if(noId.contains("hardest_"))
+                        hardestPieces++;
+                }
+            }
+
+            if(hardPieces == 4)
+            {
+                player.addPotionEffect(new PotionEffect(MobEffects.FIRE_RESISTANCE, 2, 2));
+                player.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, 2, 1));
+                player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 2, 1));
+            }
+
+            else if (harderPieces == 4) {
+                player.addPotionEffect(new PotionEffect(MobEffects.FIRE_RESISTANCE, 2, 2));
+                player.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, 2, 1));
+                player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 2, 1));
+            }
+
+            else if(halfHarderPieces == 4){
+                player.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, 2, 2));
+                player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 2, 1));
+                player.addPotionEffect(new PotionEffect(MobEffects.FIRE_RESISTANCE, 2, 3));
+                player.addPotionEffect(new PotionEffect(MobEffects.STRENGTH, 2, 0));
+                player.addPotionEffect(new PotionEffect(MobEffects.ABSORPTION, 2, 1));
+            }
+
+            else if(hardestPieces == 4){
+                player.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, 2, 3));
+                player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 2, 3));
+                player.addPotionEffect(new PotionEffect(MobEffects.FIRE_RESISTANCE, 2, 4));
+                player.addPotionEffect(new PotionEffect(MobEffects.STRENGTH, 2, 1));
+                player.addPotionEffect(new PotionEffect(MobEffects.ABSORPTION, 2, 3));
+                player.capabilities.allowFlying = true;
+            }
         }
     }
 }
