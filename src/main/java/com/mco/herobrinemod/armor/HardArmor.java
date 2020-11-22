@@ -18,7 +18,6 @@ public class HardArmor extends ItemArmor {
         setRegistryName(registryName);
         setTranslationKey(unlocalizedName);
         //setCreativeTab()
-        
     }
 
     public static boolean isWearingFullSet(EntityPlayer player, Item helmet, Item chestplate, Item leggings, Item boots)
