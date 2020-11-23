@@ -71,6 +71,11 @@ public class HardArmor extends ItemArmor {
                 player.addPotionEffect(new PotionEffect(MobEffects.ABSORPTION, 2, 3));
                 player.capabilities.allowFlying = true;
             }
+
+            else if(hardestPieces < 4 && !player.isCreative()) {
+                player.capabilities.allowFlying = false;
+                player.capabilities.isFlying = false;
+            }
         }
     }
 }
