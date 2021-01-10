@@ -1,5 +1,6 @@
 package com.mco.herobrinemod.entities.herobrine.phase2.ai;
 
+import com.mco.herobrinemod.config.HerobrineConfig;
 import com.mco.herobrinemod.entities.herobrine.phase2.EntityHardHerobrine;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationAI;
@@ -48,7 +49,7 @@ public class AIBreatheFire extends AnimationAI<EntityHardHerobrine>
             if(herobrine.getAnimationTick() < 20)
                 herobrine.faceEntity(target, 30F, 30F);
 
-            else
+            else if (herobrine.getAnimationTick() % (11 - (HerobrineConfig.fireRate * 10)) == 0)
                 breatheFire(target);
         }
     }
@@ -65,7 +66,7 @@ public class AIBreatheFire extends AnimationAI<EntityHardHerobrine>
         double d3 = target.posZ - herobrine.posZ;
         float f = MathHelper.sqrt(MathHelper.sqrt(d0)) * 0.05F;
 
-        for (int i = 0; i < 3; ++i)
+        for (int i = 0; i < 3 * HerobrineConfig.fireRate; ++i)
         {
             EntitySmallFireball entitysmallfireball = new EntitySmallFireball(herobrine.world, herobrine, d1 + herobrine.getRNG().nextGaussian() * (double)f, d2, d3 + herobrine.getRNG().nextGaussian() * (double)f);
             if(herobrine.getScale() == 6)

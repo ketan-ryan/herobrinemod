@@ -179,10 +179,12 @@ public class EntityHardestHerobrine extends EntityMob implements IAnimatedEntity
                         for(double boxZ = box.minZ; boxZ < box.maxZ; boxZ++)
                         {
                             BlockPos axisPos = new BlockPos(boxX, boxY, boxZ);
-                            if(!world.isAirBlock(axisPos) && world.getBlockState(axisPos).getMaterial() != Material.WATER
-                            && world.getBlockState(axisPos).getMaterial() != Material.LAVA && world.getBlockState(axisPos) != Blocks.BEDROCK.getDefaultState()
-                            && world.getBlockState(axisPos) != Blocks.FIRE.getDefaultState())
-                                world.setBlockToAir(axisPos);
+                            if(Math.sqrt(axisPos.distanceSq(this.getPosition())) < 100) {
+                                if (!world.isAirBlock(axisPos) && world.getBlockState(axisPos).getMaterial() != Material.WATER
+                                        && world.getBlockState(axisPos).getMaterial() != Material.LAVA && world.getBlockState(axisPos) != Blocks.BEDROCK.getDefaultState()
+                                        && world.getBlockState(axisPos) != Blocks.FIRE.getDefaultState())
+                                    world.setBlockToAir(axisPos);
+                            }
                         }
                     }
                 }

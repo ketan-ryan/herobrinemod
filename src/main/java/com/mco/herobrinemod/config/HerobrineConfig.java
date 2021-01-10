@@ -25,6 +25,12 @@ public class HerobrineConfig
     @Config.Comment("If true, disables a part of the fight that may trigger epilepsy")
     public static boolean disableEpilepsy = false;
 
+    @Config.Comment("Whether to enable the fireball rain that occurs when Phase 2 is killed")
+    public static boolean fireballRain = true;
+
+    @Config.Comment("The frequency of fireballs spawned by the boss")
+    public static double fireRate = 1.0D;
+
     @Mod.EventBusSubscriber(modid = HerobrineMod.MODID)
     private static class EventHandler {
 
