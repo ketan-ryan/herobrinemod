@@ -18,7 +18,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 @Mod(modid = HerobrineMod.MODID, name = HerobrineMod.NAME, version = HerobrineMod.VERSION,
-        dependencies = "required-after:llibrary@[1.7.14,)")
+        dependencies = "required-after:llibrary@[1.7.19,)")
 public class HerobrineMod
 {
     public static final String MODID = "herobrinemod";

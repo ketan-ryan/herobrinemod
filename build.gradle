@@ -35,46 +35,13 @@ minecraft {
 
 repositories {
     maven {
-        url = "https://maven.mcmoddev.com/"
-    }
-    maven {
-    	url = 'https://maven.gegy1000.net/'
+       	url "https://mmdmaven.blamejared.com"
     }
 }
 
 dependencies {
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
-
-    // real examples
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // the 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
-    //provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
-    // the deobf configurations:  'deobfCompile' and 'deobfProvided' are the same as the normal compile and provided,
-    // except that these dependencies get remapped to your current MCP mappings
-    //deobfCompile 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-    //deobfProvided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
-    // for more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
-    // JEI is a useful mod that shows all available blocks and item on the right side when
-    // an inventory is open. It helps greatly during development as it makes it very easy
-    // to cheat in item and blocks from your mod and examine recipes
- //   deobfCompile "mezz.jei:jei_1.12:4.7.0.67"
-
-    // The One Probe is a mod that allows you to examine blocks and entities in game with a tooltip
-    //deobfCompile "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.10-4"
-
-     deobfCompile "net.ilexiconn:llibrary:1.7.19-1.12.2"
+    compile "net.ilexiconn:llibrary:1.7.19-1.12.2:dev"
 }
-
 
 processResources {
     // this will ensure that this task is redone when the versions change.
@@ -94,3 +61,5 @@ processResources {
         exclude 'mcmod.info'
     }
 }
+
+sourceSets { main { output.resourcesDir = output.classesDir } }

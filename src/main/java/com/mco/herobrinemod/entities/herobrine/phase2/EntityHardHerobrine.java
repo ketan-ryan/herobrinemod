@@ -10,7 +10,6 @@ import com.mco.herobrinemod.entities.herobrine.phase2.ai.AISwordSlice;
 import com.mco.herobrinemod.entities.herobrine.phase2.ghast.EntityCorruptedGhast;
 import com.mco.herobrinemod.entities.util.ParticleHelper;
 import com.mco.herobrinemod.main.MainItems;
-import com.sun.istack.internal.Nullable;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationAI;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
@@ -46,6 +45,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import javax.annotation.Nullable;
 import java.util.Random;
 
 public class EntityHardHerobrine extends EntityMob implements IAnimatedEntity, IMob
