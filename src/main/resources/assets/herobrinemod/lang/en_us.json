@@ -1,0 +1,36 @@
+{
+"entity.herobrinemod.herobrine": "Herobrine (Phase 1)",
+"entity.herobrinemod.hard_herobrine": "Herobrine (Phase 2)",
+"entity.herobrinemod.hardest_herobrine": "Herobrine (Phase 3)",
+
+"item.herobrinemod.hard_sword": "Enhanced Sword",
+"item.herobrinemod.hard_helmet": "Enhanced Helmet",
+"item.herobrinemod.hard_chestplate": "Enhanced Chestplate",
+"item.herobrinemod.hard_leggings": "Enhanced Leggings",
+"item.herobrinemod.hard_boots": "Enhanced Boots",
+
+"item.herobrinemod.harder_sword": "Twice Enhanced Sword",
+"item.herobrinemod.harder_helmet": "Twice Enhanced Helmet",
+"item.herobrinemod.harder_chestplate": "Twice Enhanced Chestplate",
+"item.herobrinemod.harder_leggings": "Twice Enhanced Leggings",
+"item.herobrinemod.harder_boots": "Twice Enhanced Boots",
+
+"item.herobrinemod.halfharder_sword": "Thrice Enhanced Sword",
+"item.herobrinemod.halfharder_helmet": "Thrice Enhanced Helmet",
+"item.herobrinemod.halfharder_chestplate": "Thrice Enhanced Chestplate",
+"item.herobrinemod.halfharder_leggings": "Thrice Enhanced Leggings",
+"item.herobrinemod.halfharder_boots": "Thrice Enhanced Boots",
+
+"item.herobrinemod.hardest_sword": "Fully Enhanced Sword",
+"item.herobrinemod.hardest_helmet": "Fully Enhanced Helmet",
+"item.herobrinemod.hardest_chestplate": "Fully Enhanced Chestplate",
+"item.herobrinemod.hardest_leggings": "Fully Enhanced Leggings",
+"item.herobrinemod.hardest_boots": "Fully Enhanced Boots",
+
+"item.herobrinemod.hard_spawner": "Herobrine Spawn Item",
+
+"death.attack.hard_herobrine": "%1$s was slain by the bane of Minecraft",
+"death.attack.hard_laser": "%1$s was vaporized",
+
+"item_group.herobrinemod.herobrine": "Hard Herobrine Items"
+}

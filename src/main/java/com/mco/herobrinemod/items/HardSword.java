@@ -1,70 +1,38 @@
 package com.mco.herobrinemod.items;
 
-import com.mco.herobrinemod.entities.herobrine.phase1.EntityHerobrine;
-import com.mco.herobrinemod.entities.herobrine.phase2.EntityHardHerobrine;
-import com.mco.herobrinemod.main.MainItems;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
-public class HardSword extends ItemSword {
+public class HardSword extends SwordItem {
+	private String tooltip;
 
-    private ToolMaterial material;
+	public HardSword(Tier tier, int damage, float attackSpeed, Properties properties, String tooltip) {
+		super(tier, damage, attackSpeed, properties);
+		this.tooltip = tooltip;
+	}
 
-    public HardSword(ToolMaterial material, String registryName, String unlocalizedName){
-        super(material);
-        this.material = material;
-        setTranslationKey(unlocalizedName);
-        setRegistryName(registryName);
+	@Override
+	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+//		if(target != null && attacker != null
+//				&& (target instanceof EntityHerobrine || target instanceof EntityHardHerobrine)) {
+//			target.setHealth(target.getHealth() - this.getDamage());
+//		}
+		return super.hurtEnemy(stack, target, attacker);
+	}
 
-      //  this.setCreativeTab();
-    }
-
-    @Override
-    public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
-        if(target != null && attacker != null && stack.getDisplayName().equals("Fully Enhanced Sword")){
-            if(target instanceof EntityHerobrine || target instanceof EntityHardHerobrine){
-                target.setHealth(target.getHealth() - material.getAttackDamage());
-            }
-        }
-        if(target != null && attacker != null && stack.getDisplayName().equals("Thrice Enhanced Sword")){
-            if(target instanceof EntityHerobrine || target instanceof EntityHardHerobrine){
-                target.setHealth(target.getHealth() - material.getAttackDamage());
-            }
-        }
-        if(target != null && attacker != null && stack.getDisplayName().equals("Twice Enhanced Sword")){
-            if(target instanceof EntityHerobrine || target instanceof EntityHardHerobrine){
-                  target.setHealth(target.getHealth() - material.getAttackDamage());
-            }
-        }
-        if(target != null && attacker != null && stack.getDisplayName().equals("Enhanced Sword")){
-            if(target instanceof EntityHerobrine || target instanceof EntityHardHerobrine){
-                target.setHealth(target.getHealth() - material.getAttackDamage());
-            }
-        }
-        return super.hitEntity(stack, target, attacker);
-    }
-
-    @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-
-        if(stack.getItem().equals(MainItems.hard_sword))
-            tooltip.add(TextFormatting.DARK_PURPLE + "This weapon has been enhanced to combat Herobrine");
-
-        else if(stack.getItem().equals(MainItems.harder_sword))
-            tooltip.add(TextFormatting.DARK_PURPLE + "This weapon has been twice enhanced to combat Herobrine");
-
-        else if(stack.getItem().equals(MainItems.halfharder_sword))
-            tooltip.add(TextFormatting.DARK_PURPLE + "This weapon has been thrice enhanced to combat Herobrine");
-
-        else if(stack.getItem().equals(MainItems.hardest_sword))
-            tooltip.add(TextFormatting.DARK_PURPLE + "This is the ultimate weapon for combating Herobrine");
-    }
+	@Override
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+		super.appendHoverText(stack, level, tooltip, flag);
+		tooltip.add(Component.literal(this.tooltip).withStyle(ChatFormatting.DARK_PURPLE));
+	}
 }

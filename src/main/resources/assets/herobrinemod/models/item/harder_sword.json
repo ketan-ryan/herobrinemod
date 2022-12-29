@@ -1,6 +1,6 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "herobrinemod:items/harder_sword"
+    "layer0": "herobrinemod:item/harder_sword"
   }
 }

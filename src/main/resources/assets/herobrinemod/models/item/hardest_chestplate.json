@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "herobrinemod:items/hardest_chestplate"
+    "layer0": "herobrinemod:item/hardest_chestplate"
   }
 }
