@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -42,6 +43,7 @@ public class Herobrine extends Monster implements GeoEntity {
 	// The time in the swing animation where damage should be dealt
 	public final int damageTime = 10;
 	private final int explosionPower = 1;
+	private int animationTick = 0;
 	private final ServerBossEvent bossEvent = (ServerBossEvent)(new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
 
 	public enum State {
@@ -120,6 +122,13 @@ public class Herobrine extends Monster implements GeoEntity {
 //
 //		this.level.addParticle(ParticleTypes.DRIPPING_DRIPSTONE_LAVA, bb.maxX, bb.maxY, bb.minZ, 0.0D, 0.0D, 0.0D);
 //		this.level.addParticle(ParticleTypes.END_ROD, bb.maxX, bb.maxY, bb.maxZ, 0.0D, 0.0D, 0.0D);
+		if(this.swinging)
+			this.animationTick = this.swingTime;
+
+		System.out.println(this.getAnimatableInstanceCache().getManagerForId((this).getId())
+				.getAnimationControllers().get().getAnimationState());
+
+//		System.out.println(this.animationTick);
 
 		super.aiStep();
 	}
@@ -184,9 +193,16 @@ public class Herobrine extends Monster implements GeoEntity {
 		return this.explosionPower;
 	}
 
+	@Override
+	public boolean isOnFire() {
+		return false;
+	}
+
 	static class ShootFireballGoal extends Goal {
 		private final Herobrine herobrine;
-		public int chargeTime;
+		public int chargeTime = -99;
+
+		private boolean started = false;
 
 		public ShootFireballGoal(Herobrine herobrine) {
 			this.herobrine = herobrine;
@@ -195,20 +211,23 @@ public class Herobrine extends Monster implements GeoEntity {
 		public boolean canUse() {
 			return this.herobrine.getTarget() != null;
 		}
+		public boolean canContinueToUse() {
+			return herobrine.animationTick < 40;
+		}
 
 		public void start() {
-			if(this.chargeTime == -99 && herobrine.currentState == State.IDLE) {
-				this.chargeTime = 0;
+			if(herobrine.currentState == State.IDLE) {
 				this.herobrine.currentState = State.GHAST;
 				this.herobrine.triggerAnim("Ghast", "herobrine_shoot");
-				System.out.println("Start☺");
+				System.out.println("Starting shoot");
 			}
 		}
 
 		public void stop() {
-			if(this.chargeTime == 40) {
-				this.chargeTime = -99;
+			if(herobrine.currentState == State.GHAST) {
 				this.herobrine.currentState = State.IDLE;
+				System.out.println("Stopping shoot");
+				this.herobrine.animationTick = 0;
 			}
 		}
 
@@ -219,16 +238,14 @@ public class Herobrine extends Monster implements GeoEntity {
 		public void tick() {
 			LivingEntity livingentity = this.herobrine.getTarget();
 			if (livingentity != null) {
+				this.herobrine.animationTick++;
 				if (livingentity.distanceToSqr(this.herobrine) < 4096.0D && this.herobrine.hasLineOfSight(livingentity)) {
 					Level level = this.herobrine.level;
-					++this.chargeTime;
-					if (this.chargeTime == 10 && !this.herobrine.isSilent()) {
+					if (this.herobrine.animationTick == 10 && !this.herobrine.isSilent()) {
 						level.levelEvent(null, 1015, this.herobrine.blockPosition(), 0);
 					}
 
-					System.out.println(this.chargeTime);
-
-					if (this.chargeTime == 20) {
+					if (this.herobrine.animationTick > 30 && this.herobrine.animationTick % 3 == 0) {
 						var bb = herobrine.getBoundingBox();
 						var mov = this.herobrine.getDeltaMovement();
 						this.herobrine.setDeltaMovement(0, mov.y, 0);
@@ -260,9 +277,9 @@ public class Herobrine extends Monster implements GeoEntity {
 						}
 
 						Vec3 vec3 = this.herobrine.getViewVector(1.0F);
-						double d2 = livingentity.getX();
-						double d3 = livingentity.getY();
-						double d4 = livingentity.getZ();
+						double d2 = livingentity.getX() - (this.herobrine.getX() + vec3.x);
+						double d3 = livingentity.getY() - (this.herobrine.getY());
+						double d4 = livingentity.getZ() - (this.herobrine.getZ() + vec3.z);
 
 						if (!this.herobrine.isSilent()) {
 							level.levelEvent(null, 1016, this.herobrine.blockPosition(), 0);
@@ -272,12 +289,9 @@ public class Herobrine extends Monster implements GeoEntity {
 						largefireball.setPos(xPos, yPos, zPos);
 						level.addFreshEntity(largefireball);
 					}
-					if(this.chargeTime >= 40)
-						this.chargeTime = -20;
-				} else if (this.chargeTime > 0) {
-					--this.chargeTime;
-				} else {
-					this.herobrine.currentState = State.IDLE;
+					if(this.herobrine.animationTick >= 40) {
+						this.stop();
+					}
 				}
 			}
 		}
