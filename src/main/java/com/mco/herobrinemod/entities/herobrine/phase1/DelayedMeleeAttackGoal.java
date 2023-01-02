@@ -1,5 +1,6 @@
 package com.mco.herobrinemod.entities.herobrine.phase1;
 
+import com.mco.herobrinemod.client.ClientAnimationInfoData;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;

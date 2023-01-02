@@ -1,29 +1,34 @@
 package com.mco.herobrinemod;
 
+import com.mco.herobrinemod.capabilities.AnimationInfoProvider;
+import com.mco.herobrinemod.entities.herobrine.base.BaseHerobrine;
 import com.mco.herobrinemod.entities.herobrine.phase1.Herobrine;
 import com.mco.herobrinemod.entities.herobrine.phase1.HerobrineRenderer;
+import com.mco.herobrinemod.entities.herobrine.base.BaseHerobrineRenderer;
+import com.mco.herobrinemod.main.HerobrineActivities;
 import com.mco.herobrinemod.main.HerobrineEntities;
 import com.mco.herobrinemod.main.HerobrineItems;
+import com.mco.herobrinemod.main.HerobrineMemoryModules;
+import com.mco.herobrinemod.network.PacketHandler;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
 import software.bernie.geckolib.GeckoLib;
@@ -48,6 +53,8 @@ public class HerobrineMod
         // Register the Deferred Register to the mod event bus so items get registered
         HerobrineItems.register(modEventBus);
         HerobrineEntities.register(modEventBus);
+        HerobrineMemoryModules.register(modEventBus);
+        HerobrineActivities.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -61,18 +68,22 @@ public class HerobrineMod
         // Some common setup code
         LOGGER.info("HELLO FROM COMMON SETUP");
         LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
+        PacketHandler.init();
     }
 
     public void entityAttributes(EntityAttributeCreationEvent event) {
         event.put(HerobrineEntities.HEROBRINE.get(), Herobrine.createAttributes().build());
+        event.put(HerobrineEntities.BASE_HEROBRINE.get(), BaseHerobrine.createAttributes().build());
+
     }
 
-    // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event)
-    {
-        // Do something when the server starts
-        LOGGER.info("HELLO from server starting");
+    public void onAttachCapabilitiesEvent(AttachCapabilitiesEvent<Entity> event) {
+        if(event.getObject() instanceof Herobrine) {
+            if(!event.getObject().getCapability(AnimationInfoProvider.ANIMATION_INFO).isPresent()) {
+                event.addCapability(new ResourceLocation(MODID, "animationinfo"), new AnimationInfoProvider());
+            }
+        }
     }
 
     private void buildContents(CreativeModeTabEvent.Register event) {
@@ -104,6 +115,7 @@ public class HerobrineMod
                             populator.accept(HerobrineItems.HARDEST_CHESTPLATE.get());
                             populator.accept(HerobrineItems.HARDEST_LEGGINGS.get());
                             populator.accept(HerobrineItems.HARDEST_BOOTS.get());
+                            populator.accept(HerobrineItems.HEROBRINE_SPAWN_EGG.get());
                         }).build()
         );
     }
@@ -123,6 +135,8 @@ public class HerobrineMod
         @SubscribeEvent
         public static void entityRenderers(EntityRenderersEvent.RegisterRenderers event) {
             event.registerEntityRenderer(HerobrineEntities.HEROBRINE.get(), HerobrineRenderer::new);
+            event.registerEntityRenderer(HerobrineEntities.BASE_HEROBRINE.get(), BaseHerobrineRenderer::new);
+
         }
     }
 }

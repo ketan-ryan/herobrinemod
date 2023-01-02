@@ -1,5 +1,6 @@
-package com.mco.herobrinemod.entities;
+package com.mco.herobrinemod.entities.herobrine.base;
 
+import com.mco.herobrinemod.client.ClientAnimationInfoData;
 import com.mco.herobrinemod.entities.herobrine.phase1.Herobrine;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
