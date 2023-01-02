@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mco.herobrinemod.entities.herobrine.base.BaseHerobrine;
 import com.mco.herobrinemod.main.HerobrineMemoryModules;
+import com.mco.herobrinemod.main.HerobrineSensors;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -20,8 +21,10 @@ import java.util.List;
 
 public class BaseHerobrineAi {
     private static final float SPEED_MULTIPLIER_WHEN_FIGHTING = 1.75F;
-    private static final int MELEE_ATTACK_COOLDOWN = 18;
-    private static final List<SensorType<? extends Sensor<? super BaseHerobrine>>> SENSOR_TYPES = List.of(SensorType.NEAREST_PLAYERS);
+    private static final List<SensorType<? extends Sensor<? super BaseHerobrine>>> SENSOR_TYPES = ImmutableList.of(
+            SensorType.NEAREST_PLAYERS, SensorType.NEAREST_LIVING_ENTITIES, SensorType.HURT_BY,
+            HerobrineSensors.HEROBRINE_ENTITY_SENSOR.get());
+
     private static final List<MemoryModuleType<?>> MEMORY_TYPES = List.of(
             MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES,
             MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER,

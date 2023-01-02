@@ -5,7 +5,7 @@ import com.mco.herobrinemod.entities.herobrine.base.BaseHerobrine;
 import com.mco.herobrinemod.entities.herobrine.phase1.Herobrine;
 import com.mco.herobrinemod.entities.herobrine.phase1.HerobrineRenderer;
 import com.mco.herobrinemod.entities.herobrine.base.BaseHerobrineRenderer;
-import com.mco.herobrinemod.main.HerobrineActivities;
+import com.mco.herobrinemod.main.HerobrineSensors;
 import com.mco.herobrinemod.main.HerobrineEntities;
 import com.mco.herobrinemod.main.HerobrineItems;
 import com.mco.herobrinemod.main.HerobrineMemoryModules;
@@ -54,7 +54,7 @@ public class HerobrineMod
         HerobrineItems.register(modEventBus);
         HerobrineEntities.register(modEventBus);
         HerobrineMemoryModules.register(modEventBus);
-        HerobrineActivities.register(modEventBus);
+        HerobrineSensors.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);

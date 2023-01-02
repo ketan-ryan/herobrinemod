@@ -4,7 +4,12 @@ import com.mco.herobrinemod.client.ClientAnimationInfoData;
 import com.mco.herobrinemod.entities.herobrine.base.ai.BaseHerobrineAi;
 import com.mco.herobrinemod.entities.herobrine.base.ai.FireballShoot;
 import com.mojang.serialization.Dynamic;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -33,6 +38,7 @@ import static com.mco.herobrinemod.entities.herobrine.base.Animations.genericWal
 
 public class BaseHerobrine extends Monster implements GeoEntity {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+    private final ServerBossEvent bossEvent = (ServerBossEvent)(new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
 
     public BaseHerobrine(EntityType<? extends Monster> type, Level level) {
         super(type, level);
@@ -44,7 +50,8 @@ public class BaseHerobrine extends Monster implements GeoEntity {
                 .add(Attributes.MOVEMENT_SPEED, 0.29F)
                 .add(Attributes.ATTACK_DAMAGE, 6.0D)
                 .add(Attributes.ARMOR, 6.0D)
-                .add(Attributes.FOLLOW_RANGE, 66.0D);
+                .add(Attributes.FOLLOW_RANGE, 66.0D)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 1.0D);
     }
 
     protected @NotNull Brain<?> makeBrain(@NotNull Dynamic<?> dynamic) {
@@ -99,15 +106,13 @@ public class BaseHerobrine extends Monster implements GeoEntity {
         if(brain.isActive(Activity.IDLE)) {
             setSprinting(false);
         } else if(brain.isActive(Activity.FIGHT)) {
-            setSprinting(true);
+            setSprinting((getDeltaMovement().length() - Math.abs(getDeltaMovement().y)) > 0.0);
             if(ClientAnimationInfoData.getAnimation() != null && ClientAnimationInfoData.getAnimation().equals("fireball")) {
                 setDeltaMovement(0, 0, 0);
                 setSprinting(false);
-                setYBodyRot(0);
-                setYRot(0);
             }
-            System.out.println(ClientAnimationInfoData.getAnimation());
         }
+        this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
     }
 
     @Contract("null->false")
@@ -161,5 +166,27 @@ public class BaseHerobrine extends Monster implements GeoEntity {
         } else {
             this.noActionTime = 0;
         }
+    }
+
+    public void readAdditionalSaveData(@NotNull CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        if (this.hasCustomName()) {
+            this.bossEvent.setName(this.getDisplayName());
+        }
+    }
+
+    public void setCustomName(@Nullable Component component) {
+        super.setCustomName(component);
+        this.bossEvent.setName(this.getDisplayName());
+    }
+
+    public void startSeenByPlayer(@NotNull ServerPlayer serverPlayer) {
+        super.startSeenByPlayer(serverPlayer);
+        this.bossEvent.addPlayer(serverPlayer);
+    }
+
+    public void stopSeenByPlayer(@NotNull ServerPlayer serverPlayer) {
+        super.stopSeenByPlayer(serverPlayer);
+        this.bossEvent.removePlayer(serverPlayer);
     }
 }

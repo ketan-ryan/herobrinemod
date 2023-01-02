@@ -78,7 +78,7 @@ public class HerobrineItems {
 			() -> new HardArmor(HerobrineUtils.HerobrineArmorMaterial.HARDEST, EquipmentSlot.FEET, new Item.Properties()));
 
 	public static final RegistryObject<ForgeSpawnEggItem> HEROBRINE_SPAWN_EGG =
-			ITEMS.register("herobrine_spawn_egg", () -> new ForgeSpawnEggItem(HerobrineEntities.HEROBRINE, 0xFFFFFF, 0x000000, new Item.Properties()));
+			ITEMS.register("herobrine_spawn_egg", () -> new ForgeSpawnEggItem(HerobrineEntities.BASE_HEROBRINE, 0xFFFFFF, 0x000000, new Item.Properties()));
 
 
 	public static void register(IEventBus eventBus) {

@@ -11,6 +11,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
+import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -87,10 +88,10 @@ public class FireballShoot extends Behavior<BaseHerobrine> {
                 if (!herobrine.isSilent()) {
                     level.levelEvent(null, 1016, herobrine.blockPosition(), 0);
                 }
-//
-//                LargeFireball largefireball = new LargeFireball(level, herobrine, d2, d3, d4, 1);
-//                largefireball.setPos(xPos, yPos, zPos);
-//                level.addFreshEntity(largefireball);
+
+                LargeFireball largefireball = new LargeFireball(level, herobrine, d2, d3, d4, 1);
+                largefireball.setPos(xPos, yPos, zPos);
+                level.addFreshEntity(largefireball);
             });
         }
     }
