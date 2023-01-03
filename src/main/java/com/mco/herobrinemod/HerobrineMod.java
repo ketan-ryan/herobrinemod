@@ -1,14 +1,12 @@
 package com.mco.herobrinemod;
 
 import com.mco.herobrinemod.capabilities.AnimationInfoProvider;
-import com.mco.herobrinemod.entities.herobrine.base.BaseHerobrine;
 import com.mco.herobrinemod.entities.herobrine.phase1.Herobrine;
 import com.mco.herobrinemod.entities.herobrine.phase1.HerobrineRenderer;
-import com.mco.herobrinemod.entities.herobrine.base.BaseHerobrineRenderer;
-import com.mco.herobrinemod.main.HerobrineSensors;
 import com.mco.herobrinemod.main.HerobrineEntities;
 import com.mco.herobrinemod.main.HerobrineItems;
 import com.mco.herobrinemod.main.HerobrineMemoryModules;
+import com.mco.herobrinemod.main.HerobrineSensors;
 import com.mco.herobrinemod.network.PacketHandler;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
@@ -73,8 +71,6 @@ public class HerobrineMod
 
     public void entityAttributes(EntityAttributeCreationEvent event) {
         event.put(HerobrineEntities.HEROBRINE.get(), Herobrine.createAttributes().build());
-        event.put(HerobrineEntities.BASE_HEROBRINE.get(), BaseHerobrine.createAttributes().build());
-
     }
 
     @SubscribeEvent
@@ -135,8 +131,6 @@ public class HerobrineMod
         @SubscribeEvent
         public static void entityRenderers(EntityRenderersEvent.RegisterRenderers event) {
             event.registerEntityRenderer(HerobrineEntities.HEROBRINE.get(), HerobrineRenderer::new);
-            event.registerEntityRenderer(HerobrineEntities.BASE_HEROBRINE.get(), BaseHerobrineRenderer::new);
-
         }
     }
 }

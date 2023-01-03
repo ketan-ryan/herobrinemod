@@ -1,8 +1,8 @@
-package com.mco.herobrinemod.entities.herobrine.base.ai;
+package com.mco.herobrinemod.entities.herobrine.phase1.ai;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import com.mco.herobrinemod.entities.herobrine.base.BaseHerobrine;
+import com.mco.herobrinemod.entities.herobrine.phase1.Herobrine;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,12 +16,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public class HerobrineEntitySensor extends NearestLivingEntitySensor<BaseHerobrine> {
+public class HerobrineEntitySensor extends NearestLivingEntitySensor<Herobrine> {
     public @NotNull Set<MemoryModuleType<?>> requires() {
         return ImmutableSet.copyOf(Iterables.concat(super.requires(), List.of(MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.ATTACK_TARGET)));
     }
 
-    protected void doTick(@NotNull ServerLevel level, @NotNull BaseHerobrine herobrine) {
+    protected void doTick(@NotNull ServerLevel level, @NotNull Herobrine herobrine) {
         super.doTick(level, herobrine);
         getClosest(herobrine, (closestPlayer) -> closestPlayer.getType() == EntityType.PLAYER).or(() -> {
             return getClosest(herobrine, (closestEntity) -> {
@@ -34,7 +34,7 @@ public class HerobrineEntitySensor extends NearestLivingEntitySensor<BaseHerobri
         });
     }
 
-    private static Optional<LivingEntity> getClosest(BaseHerobrine herobrine, Predicate<LivingEntity> predicate) {
+    private static Optional<LivingEntity> getClosest(Herobrine herobrine, Predicate<LivingEntity> predicate) {
         return herobrine.getBrain().getMemory(MemoryModuleType.NEAREST_LIVING_ENTITIES).stream().flatMap(Collection::stream).filter(herobrine::canTargetEntity).filter(predicate).findFirst();
     }
 

@@ -1,8 +1,8 @@
-package com.mco.herobrinemod.entities.herobrine.base.ai;
+package com.mco.herobrinemod.entities.herobrine.phase1.ai;
 
 import com.google.common.collect.ImmutableMap;
 import com.mco.herobrinemod.client.ClientAnimationInfoData;
-import com.mco.herobrinemod.entities.herobrine.base.BaseHerobrine;
+import com.mco.herobrinemod.entities.herobrine.phase1.Herobrine;
 import com.mco.herobrinemod.main.HerobrineMemoryModules;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -15,7 +15,7 @@ import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-public class FireballShoot extends Behavior<BaseHerobrine> {
+public class FireballShoot extends Behavior<Herobrine> {
     private static final int DURATION = Mth.ceil(60.0F);
     private static final int ATTACK_DELAY = Mth.ceil(10.0D);
 
@@ -28,16 +28,16 @@ public class FireballShoot extends Behavior<BaseHerobrine> {
             ), DURATION);
     }
 
-    protected boolean checkExtraStartConditions(@NotNull ServerLevel level, BaseHerobrine herobrine) {
+    protected boolean checkExtraStartConditions(@NotNull ServerLevel level, Herobrine herobrine) {
                                                                                                                 // length       height
         return herobrine.closerThan(herobrine.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).get(), 15.0D, 20.0D);
     }
 
-    protected boolean canStillUse(@NotNull ServerLevel level, @NotNull BaseHerobrine herobrine, long l) {
+    protected boolean canStillUse(@NotNull ServerLevel level, @NotNull Herobrine herobrine, long l) {
         return true;
     }
 
-    protected void start(@NotNull ServerLevel level, BaseHerobrine herobrine, long l) {
+    protected void start(@NotNull ServerLevel level, Herobrine herobrine, long l) {
         herobrine.getBrain().setMemoryWithExpiry(MemoryModuleType.ATTACK_COOLING_DOWN, true, DURATION);
         herobrine.getBrain().setMemoryWithExpiry(HerobrineMemoryModules.FIREBALL_SHOOT_DELAY.get(), Unit.INSTANCE, ATTACK_DELAY);
         herobrine.triggerAnim("Fireball", "herobrine_shoot");
@@ -45,7 +45,7 @@ public class FireballShoot extends Behavior<BaseHerobrine> {
         ClientAnimationInfoData.setAnimationTicks(60);
     }
 
-    protected void tick(@NotNull ServerLevel level, BaseHerobrine herobrine, long l) {
+    protected void tick(@NotNull ServerLevel level, Herobrine herobrine, long l) {
         herobrine.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).ifPresent((target) -> herobrine.getLookControl().setLookAt(target.position()));
         if (!herobrine.getBrain().hasMemoryValue(HerobrineMemoryModules.FIREBALL_SHOOT_DELAY.get()) && !herobrine.getBrain().hasMemoryValue(HerobrineMemoryModules.FIREBALL_SHOOT_INTERVAL.get())) {
             herobrine.getBrain().setMemoryWithExpiry(HerobrineMemoryModules.FIREBALL_SHOOT_INTERVAL.get(), Unit.INSTANCE, 5);
@@ -96,7 +96,7 @@ public class FireballShoot extends Behavior<BaseHerobrine> {
         }
     }
 
-    protected void stop(@NotNull ServerLevel level, @NotNull BaseHerobrine herobrine, long l) {
+    protected void stop(@NotNull ServerLevel level, @NotNull Herobrine herobrine, long l) {
         setCooldown(herobrine, 50 + herobrine.getRandom().nextInt(120));
     }
 

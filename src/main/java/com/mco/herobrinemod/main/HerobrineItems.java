@@ -9,13 +9,11 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SpawnEggItem;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import software.bernie.example.registry.EntityRegistry;
 
 import static com.mco.herobrinemod.main.HerobrineUtils.HerobrineItemTier;
 
@@ -78,7 +76,7 @@ public class HerobrineItems {
 			() -> new HardArmor(HerobrineUtils.HerobrineArmorMaterial.HARDEST, EquipmentSlot.FEET, new Item.Properties()));
 
 	public static final RegistryObject<ForgeSpawnEggItem> HEROBRINE_SPAWN_EGG =
-			ITEMS.register("herobrine_spawn_egg", () -> new ForgeSpawnEggItem(HerobrineEntities.BASE_HEROBRINE, 0xFFFFFF, 0x000000, new Item.Properties()));
+			ITEMS.register("herobrine_spawn_egg", () -> new ForgeSpawnEggItem(HerobrineEntities.HEROBRINE, 0xFFFFFF, 0x000000, new Item.Properties()));
 
 
 	public static void register(IEventBus eventBus) {

@@ -1,13 +1,16 @@
 package com.mco.herobrinemod.entities.herobrine.phase1;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.ShieldItem;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.AutoGlowingGeoLayer;
@@ -57,4 +60,15 @@ public class HerobrineRenderer extends GeoEntityRenderer<Herobrine> {
 		});
 	}
 
+	@Override
+	protected float getDeathMaxRotation(Herobrine animatable) {
+		return 0;
+	}
+
+	@Override
+	public void actuallyRender(PoseStack poseStack, Herobrine animatable, BakedGeoModel model, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		// Only render the red flash if hurt, so it doesn't last the whole death animation
+		super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, OverlayTexture.pack(0,
+				OverlayTexture.v(animatable.hurtTime > 0)), red, green, blue, alpha);
+	}
 }

@@ -1,8 +1,8 @@
-package com.mco.herobrinemod.entities.herobrine.base.ai;
+package com.mco.herobrinemod.entities.herobrine.phase1.ai;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.mco.herobrinemod.entities.herobrine.base.BaseHerobrine;
+import com.mco.herobrinemod.entities.herobrine.phase1.Herobrine;
 import com.mco.herobrinemod.main.HerobrineMemoryModules;
 import com.mco.herobrinemod.main.HerobrineSensors;
 import com.mojang.datafixers.util.Pair;
@@ -19,9 +19,9 @@ import net.minecraft.world.entity.schedule.Activity;
 
 import java.util.List;
 
-public class BaseHerobrineAi {
+public class HerobrineAi {
     private static final float SPEED_MULTIPLIER_WHEN_FIGHTING = 1.75F;
-    private static final List<SensorType<? extends Sensor<? super BaseHerobrine>>> SENSOR_TYPES = ImmutableList.of(
+    private static final List<SensorType<? extends Sensor<? super Herobrine>>> SENSOR_TYPES = ImmutableList.of(
             SensorType.NEAREST_PLAYERS, SensorType.NEAREST_LIVING_ENTITIES, SensorType.HURT_BY,
             HerobrineSensors.HEROBRINE_ENTITY_SENSOR.get());
 
@@ -36,13 +36,13 @@ public class BaseHerobrineAi {
             HerobrineMemoryModules.FIREBALL_SHOOT_DELAY.get()
     );
 
-    public static void updateActivity(BaseHerobrine herobrine) {
+    public static void updateActivity(Herobrine herobrine) {
         herobrine.getBrain().setActiveActivityToFirstValid(ImmutableList.of(Activity.FIGHT, Activity.IDLE));
     }
 
-    public static Brain<?> makeBrain(BaseHerobrine herobrine, Dynamic<?> dynamic) {
-        Brain.Provider<BaseHerobrine> provider = Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
-        Brain<BaseHerobrine> brain = provider.makeBrain(dynamic);
+    public static Brain<?> makeBrain(Herobrine herobrine, Dynamic<?> dynamic) {
+        Brain.Provider<Herobrine> provider = Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
+        Brain<Herobrine> brain = provider.makeBrain(dynamic);
         initCoreActivity(brain);
         initFightActivity(herobrine, brain);
         initIdleActivity(brain);
@@ -52,11 +52,11 @@ public class BaseHerobrineAi {
         return brain;
     }
 
-    private static void initCoreActivity(Brain<BaseHerobrine> herobrine) {
+    private static void initCoreActivity(Brain<Herobrine> herobrine) {
         herobrine.addActivity(Activity.CORE, 0, ImmutableList.of(new LookAtTargetSink(45, 90), new MoveToTargetSink()));
     }
 
-    private static void initIdleActivity(Brain<BaseHerobrine> herobrine) {
+    private static void initIdleActivity(Brain<Herobrine> herobrine) {
         herobrine.addActivity(Activity.IDLE, 10, ImmutableList.of(
                                                 //          Distance                    min, max for ticker to start
                 SetEntityLookTargetSometimes.create(8.0F, UniformInt.of(30, 60)),
@@ -69,7 +69,7 @@ public class BaseHerobrineAi {
                         Pair.of(new DoNothing(30, 60), 1)))));
     }
 
-    private static void initFightActivity(BaseHerobrine herobrine, Brain<BaseHerobrine> brain) {
+    private static void initFightActivity(Herobrine herobrine, Brain<Herobrine> brain) {
         brain.addActivityAndRemoveMemoryWhenStopped(Activity.FIGHT, 10,
                 ImmutableList.of(
                         StopAttackingIfTargetInvalid.create(),
@@ -79,7 +79,7 @@ public class BaseHerobrineAi {
                 MemoryModuleType.ATTACK_TARGET);
     }
 
-    private static boolean isTarget(BaseHerobrine herobrine, LivingEntity entity) {
+    private static boolean isTarget(Herobrine herobrine, LivingEntity entity) {
         return herobrine.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).filter((targets) -> targets == entity).isPresent();
     }
 
