@@ -24,13 +24,14 @@ import static net.minecraft.client.model.geom.PartNames.RIGHT_HAND;
 public class HerobrineRenderer extends GeoEntityRenderer<Herobrine> {
 	public HerobrineRenderer(EntityRendererProvider.Context renderManager) {
 		super(renderManager, new HerobrineModel<>());
+
 		this.addRenderLayer(new AutoGlowingGeoLayer<>(this));
 		this.addRenderLayer(new BlockAndItemGeoLayer<>(this) {
 			@Nullable
 			@Override
 			protected ItemStack getStackForBone(GeoBone bone, Herobrine animatable) {
 				// Retrieve the items in the entity's hands for the relevant bone
-				ItemStack stack = new ItemStack(Items.AIR);
+				ItemStack stack = null;
 				if ("leftArm2".equals(bone.getName()))
 					stack = new ItemStack(Items.DIAMOND_SWORD);
 				return stack;

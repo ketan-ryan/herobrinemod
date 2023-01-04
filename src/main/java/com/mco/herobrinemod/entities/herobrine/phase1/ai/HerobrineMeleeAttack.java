@@ -26,7 +26,8 @@ public class HerobrineMeleeAttack extends Behavior<Herobrine> {
 
     protected boolean checkExtraStartConditions(@NotNull ServerLevel level, Herobrine herobrine) {
         // length       height
-        return herobrine.isWithinMeleeAttackRange(herobrine.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).get());
+        return herobrine.isWithinMeleeAttackRange(herobrine.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).get())
+                && (ClientAnimationInfoData.getAnimation() == null || ClientAnimationInfoData.getAnimation().equals("finished"));
     }
 
     protected boolean canStillUse(@NotNull ServerLevel level, @NotNull Herobrine herobrine, long l) {

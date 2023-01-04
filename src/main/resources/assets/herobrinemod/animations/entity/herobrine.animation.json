@@ -804,6 +804,61 @@
 					}
 				}
 			}
+		},
+		"attack.breathe": {
+			"animation_length": 4.5,
+			"bones": {
+				"torso": {
+					"rotation": [10, 0, 0]
+				},
+				"head": {
+					"rotation": {
+						"0.0": [10, 0, 0],
+						"1.0": {
+							"pre": [10.47479, 17.22575, 3.13388],
+							"post": [10.47479, 17.22575, 3.13388],
+							"lerp_mode": "catmullrom"
+						},
+						"2.0": {
+							"post": [10.34527, -14.76689, -2.66399],
+							"lerp_mode": "catmullrom"
+						},
+						"3.0": {
+							"post": [10.47479, 17.22575, 3.13388],
+							"lerp_mode": "catmullrom"
+						},
+						"4.0": {
+							"post": [10.34527, -14.76689, -2.66399],
+							"lerp_mode": "catmullrom"
+						},
+						"4.5": [10, 0, 0]
+					}
+				},
+				"leftArm": {
+					"rotation": [7.49294, -0.32621, 2.47864]
+				},
+				"leftArm2": {
+					"rotation": [-10, 0, 0]
+				},
+				"rightArm": {
+					"rotation": [7.49294, 0.32621, -2.47864]
+				},
+				"rightArm2": {
+					"rotation": [-10, 0, 0]
+				},
+				"leftLeg": {
+					"rotation": [-19.99294, 0.32621, 2.47864]
+				},
+				"leftLeg2": {
+					"rotation": [10, 0, 0]
+				},
+				"rightLeg": {
+					"rotation": [-20, 0, -2.5]
+				},
+				"rightLeg2": {
+					"rotation": [10, 0, 0]
+				}
+			}
 		}
 	}
 }

@@ -29,6 +29,8 @@
 
 "item.herobrinemod.hard_spawner": "Herobrine Spawn Item",
 "item.herobrinemod.herobrine_spawn_egg": "Spawn Herobrine (Phase 1)",
+"item.herobrinemod.hard_herobrine_spawn_egg": "Spawn Herobrine (Phase 2)",
+
 
 "death.attack.hard_herobrine": "%1$s was slain by the bane of Minecraft",
 "death.attack.hard_laser": "%1$s was vaporized",

@@ -78,6 +78,8 @@ public class HerobrineItems {
 	public static final RegistryObject<ForgeSpawnEggItem> HEROBRINE_SPAWN_EGG =
 			ITEMS.register("herobrine_spawn_egg", () -> new ForgeSpawnEggItem(HerobrineEntities.HEROBRINE, 0xFFFFFF, 0x000000, new Item.Properties()));
 
+	public static final RegistryObject<ForgeSpawnEggItem> HARD_HEROBRINE_SPAWN_EGG =
+			ITEMS.register("hard_herobrine_spawn_egg", () -> new ForgeSpawnEggItem(HerobrineEntities.HARD_HEROBRINE, 0x000000, 0xFFFFFF, new Item.Properties()));
 
 	public static void register(IEventBus eventBus) {
 		ITEMS.register(eventBus);

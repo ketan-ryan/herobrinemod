@@ -3,6 +3,8 @@ package com.mco.herobrinemod;
 import com.mco.herobrinemod.capabilities.AnimationInfoProvider;
 import com.mco.herobrinemod.entities.herobrine.phase1.Herobrine;
 import com.mco.herobrinemod.entities.herobrine.phase1.HerobrineRenderer;
+import com.mco.herobrinemod.entities.herobrine.phase2.HardHerobrine;
+import com.mco.herobrinemod.entities.herobrine.phase2.HardHerobrineRenderer;
 import com.mco.herobrinemod.main.HerobrineEntities;
 import com.mco.herobrinemod.main.HerobrineItems;
 import com.mco.herobrinemod.main.HerobrineMemoryModules;
@@ -71,6 +73,7 @@ public class HerobrineMod
 
     public void entityAttributes(EntityAttributeCreationEvent event) {
         event.put(HerobrineEntities.HEROBRINE.get(), Herobrine.createAttributes().build());
+        event.put(HerobrineEntities.HARD_HEROBRINE.get(), HardHerobrine.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -112,6 +115,7 @@ public class HerobrineMod
                             populator.accept(HerobrineItems.HARDEST_LEGGINGS.get());
                             populator.accept(HerobrineItems.HARDEST_BOOTS.get());
                             populator.accept(HerobrineItems.HEROBRINE_SPAWN_EGG.get());
+                            populator.accept(HerobrineItems.HARD_HEROBRINE_SPAWN_EGG.get());
                         }).build()
         );
     }
@@ -131,6 +135,8 @@ public class HerobrineMod
         @SubscribeEvent
         public static void entityRenderers(EntityRenderersEvent.RegisterRenderers event) {
             event.registerEntityRenderer(HerobrineEntities.HEROBRINE.get(), HerobrineRenderer::new);
+            event.registerEntityRenderer(HerobrineEntities.HARD_HEROBRINE.get(), HardHerobrineRenderer::new);
+
         }
     }
 }

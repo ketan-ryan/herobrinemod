@@ -3,6 +3,8 @@ package com.mco.herobrinemod.entities.herobrine.phase1;
 import com.mco.herobrinemod.client.ClientAnimationInfoData;
 import com.mco.herobrinemod.entities.herobrine.phase1.ai.FireballShoot;
 import com.mco.herobrinemod.entities.herobrine.phase1.ai.HerobrineAi;
+import com.mco.herobrinemod.entities.herobrine.phase2.HardHerobrine;
+import com.mco.herobrinemod.main.HerobrineEntities;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -47,6 +49,8 @@ public class Herobrine extends Monster implements GeoEntity {
 	public Herobrine(EntityType<? extends Monster> type, Level level) {
 		super(type, level);
 	}
+
+	public final int EXPLOSION_POWER = 1;
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return Monster.createMobAttributes()
@@ -123,7 +127,8 @@ public class Herobrine extends Monster implements GeoEntity {
 			setSprinting(false);
 		} else if(brain.isActive(Activity.FIGHT)) {
 			setSprinting((getDeltaMovement().length() - Math.abs(getDeltaMovement().y)) > 0.0);
-			if(ClientAnimationInfoData.getAnimation() != null && ClientAnimationInfoData.getAnimation().equals("fireball")) {
+			if(ClientAnimationInfoData.getAnimation() != null &&
+					(ClientAnimationInfoData.getAnimation().equals("fireball") || ClientAnimationInfoData.getAnimation().equals("breathe"))) {
 				setDeltaMovement(0, 0, 0);
 				setSprinting(false);
 			}
@@ -146,6 +151,9 @@ public class Herobrine extends Monster implements GeoEntity {
 			}
 		}
 		if (this.deathTime >= 200 && !this.level.isClientSide() && !this.isRemoved()) {
+			HardHerobrine phase = new HardHerobrine(HerobrineEntities.HARD_HEROBRINE.get(), this.getLevel());
+			phase.setPos(this.position());
+			this.getLevel().addFreshEntity(phase);
 			this.remove(Entity.RemovalReason.KILLED);
 		}
 

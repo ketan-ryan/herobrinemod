@@ -39,10 +39,10 @@ public class HerobrineEntitySensor extends NearestLivingEntitySensor<Herobrine> 
     }
 
     protected int radiusXZ() {
-        return 24;
+        return 66;
     }
 
     protected int radiusY() {
-        return 24;
+        return 66;
     }
 }
