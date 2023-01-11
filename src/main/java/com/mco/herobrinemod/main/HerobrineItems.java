@@ -4,6 +4,7 @@ import com.mco.herobrinemod.HerobrineMod;
 import com.mco.herobrinemod.armor.HardArmor;
 import com.mco.herobrinemod.items.HardSpawner;
 import com.mco.herobrinemod.items.HardSword;
+import com.mco.herobrinemod.util.HerobrineUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.CreativeModeTab;
@@ -15,7 +16,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import static com.mco.herobrinemod.main.HerobrineUtils.HerobrineItemTier;
+import static com.mco.herobrinemod.util.HerobrineUtils.HerobrineItemTier;
 
 public class HerobrineItems {
 	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, HerobrineMod.MODID);

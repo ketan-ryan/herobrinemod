@@ -1,8 +1,7 @@
 package com.mco.herobrinemod.entities.herobrine.phase1.ai;
 
 import com.google.common.collect.ImmutableMap;
-import com.mco.herobrinemod.client.ClientAnimationInfoData;
-import com.mco.herobrinemod.entities.herobrine.phase1.Herobrine;
+import com.mco.herobrinemod.entities.herobrine.AbstractHerobrine;
 import com.mco.herobrinemod.entities.herobrine.phase2.HardHerobrine;
 import com.mco.herobrinemod.main.HerobrineMemoryModules;
 import net.minecraft.server.level.ServerLevel;
@@ -16,7 +15,7 @@ import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-public class FireballShoot extends Behavior<Herobrine> {
+public class FireballShoot extends Behavior<AbstractHerobrine> {
     private static final int DURATION = Mth.ceil(60.0F);
     private static final int ATTACK_DELAY = Mth.ceil(10.0D);
 
@@ -30,23 +29,23 @@ public class FireballShoot extends Behavior<Herobrine> {
     }
 
     @Override
-    protected boolean checkExtraStartConditions(@NotNull ServerLevel level, @NotNull Herobrine herobrine) {
-        return ClientAnimationInfoData.getAnimation() == null || ClientAnimationInfoData.getAnimation().equals("finished");
+    protected boolean checkExtraStartConditions(@NotNull ServerLevel level, @NotNull AbstractHerobrine herobrine) {
+        return herobrine.getState().equals("finished");
     }
 
-    protected boolean canStillUse(@NotNull ServerLevel level, @NotNull Herobrine herobrine, long l) {
+    protected boolean canStillUse(@NotNull ServerLevel level, @NotNull AbstractHerobrine herobrine, long l) {
         return true;
     }
 
-    protected void start(@NotNull ServerLevel level, Herobrine herobrine, long l) {
+    protected void start(@NotNull ServerLevel level, AbstractHerobrine herobrine, long l) {
         herobrine.getBrain().setMemoryWithExpiry(MemoryModuleType.ATTACK_COOLING_DOWN, true, DURATION);
         herobrine.getBrain().setMemoryWithExpiry(HerobrineMemoryModules.FIREBALL_SHOOT_DELAY.get(), Unit.INSTANCE, ATTACK_DELAY);
-        herobrine.triggerAnim("Fireball", "herobrine_shoot");
-        ClientAnimationInfoData.setAnimation("fireball");
-        ClientAnimationInfoData.setAnimationTicks(60);
+        herobrine.triggerAnim("Attack", "herobrine_shoot");
+        herobrine.setState("fireball");
+        herobrine.setAnimationTicks(60);
     }
 
-    protected void tick(@NotNull ServerLevel level, Herobrine herobrine, long l) {
+    protected void tick(@NotNull ServerLevel level, AbstractHerobrine herobrine, long l) {
         herobrine.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).ifPresent((target) -> herobrine.getLookControl().setLookAt(target.position()));
         if (!herobrine.getBrain().hasMemoryValue(HerobrineMemoryModules.FIREBALL_SHOOT_DELAY.get()) && !herobrine.getBrain().hasMemoryValue(HerobrineMemoryModules.FIREBALL_SHOOT_INTERVAL.get())) {
             herobrine.getBrain().setMemoryWithExpiry(HerobrineMemoryModules.FIREBALL_SHOOT_INTERVAL.get(), Unit.INSTANCE, 5);
@@ -83,21 +82,21 @@ public class FireballShoot extends Behavior<Herobrine> {
 
                 Vec3 vec3 = herobrine.getViewVector(1.0F);
                 double d2 = target.getX() - (herobrine.getX() + vec3.x);
-                double d3 = target.getY(0.5D) - (herobrine.getY(0.5D) + target.getBbHeight());
+                double d3 = target.getY(0.5D) - (herobrine.getY(0.5D) + ((herobrine instanceof HardHerobrine h && h.getScale() == 6) ? target.getBbHeight() / 2 : 0));
                 double d4 = target.getZ() - (herobrine.getZ() + vec3.z);
 
                 if (!herobrine.isSilent()) {
                     level.levelEvent(null, 1016, herobrine.blockPosition(), 0);
                 }
 
-                LargeFireball largefireball = new LargeFireball(level, herobrine, d2, d3, d4, herobrine.EXPLOSION_POWER);
+                LargeFireball largefireball = new LargeFireball(level, herobrine, d2, d3, d4, herobrine.getExplosionPower());
                 largefireball.setPos(xPos, yPos, zPos);
                 level.addFreshEntity(largefireball);
             });
         }
     }
 
-    protected void stop(@NotNull ServerLevel level, @NotNull Herobrine herobrine, long l) {
+    protected void stop(@NotNull ServerLevel level, @NotNull AbstractHerobrine herobrine, long l) {
         int min = herobrine instanceof HardHerobrine ? 80 : 50;
         setCooldown(herobrine, min + herobrine.getRandom().nextInt(120));
     }

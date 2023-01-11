@@ -1,8 +1,7 @@
 package com.mco.herobrinemod.entities.herobrine.phase2.ai;
 
 import com.google.common.collect.ImmutableMap;
-import com.mco.herobrinemod.client.ClientAnimationInfoData;
-import com.mco.herobrinemod.entities.herobrine.phase1.Herobrine;
+import com.mco.herobrinemod.entities.herobrine.AbstractHerobrine;
 import com.mco.herobrinemod.main.HerobrineMemoryModules;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -15,7 +14,7 @@ import net.minecraft.world.entity.projectile.SmallFireball;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-public class BreatheFire extends Behavior<Herobrine> {
+public class BreatheFire extends Behavior<AbstractHerobrine> {
     private static final int DURATION = Mth.ceil(90.0F);
     private static final int ATTACK_DELAY = Mth.ceil(5.0D);
 
@@ -28,23 +27,23 @@ public class BreatheFire extends Behavior<Herobrine> {
     }
 
     @Override
-    protected boolean checkExtraStartConditions(@NotNull ServerLevel level, @NotNull Herobrine herobrine) {
-        return ClientAnimationInfoData.getAnimation() == null || ClientAnimationInfoData.getAnimation().equals("finished");
+    protected boolean checkExtraStartConditions(@NotNull ServerLevel level, @NotNull AbstractHerobrine herobrine) {
+        return herobrine.getState().equals("finished");
     }
 
-    protected boolean canStillUse(@NotNull ServerLevel level, @NotNull Herobrine herobrine, long l) {
+    protected boolean canStillUse(@NotNull ServerLevel level, @NotNull AbstractHerobrine herobrine, long l) {
         return true;
     }
 
-    protected void start(@NotNull ServerLevel level, Herobrine herobrine, long l) {
+    protected void start(@NotNull ServerLevel level, AbstractHerobrine herobrine, long l) {
         herobrine.getBrain().setMemoryWithExpiry(MemoryModuleType.ATTACK_COOLING_DOWN, true, DURATION);
         herobrine.getBrain().setMemoryWithExpiry(HerobrineMemoryModules.BREATHE_FIRE_DELAY.get(), Unit.INSTANCE, ATTACK_DELAY);
         herobrine.triggerAnim("Breathe", "herobrine_breathe");
-        ClientAnimationInfoData.setAnimation("breathe");
-        ClientAnimationInfoData.setAnimationTicks(DURATION);
+        herobrine.setState("breathe");
+        herobrine.setAnimationTicks(DURATION);
     }
 
-    protected void tick(@NotNull ServerLevel level, Herobrine herobrine, long l) {
+    protected void tick(@NotNull ServerLevel level, AbstractHerobrine herobrine, long l) {
         herobrine.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).ifPresent((target) -> herobrine.getLookControl().setLookAt(target.position()));
         if (!herobrine.getBrain().hasMemoryValue(HerobrineMemoryModules.BREATHE_FIRE_DELAY.get())) {
             herobrine.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).filter(herobrine::canTargetEntity).ifPresent((target) -> {
@@ -61,14 +60,14 @@ public class BreatheFire extends Behavior<Herobrine> {
                 if (!herobrine.isSilent()) {
                     level.levelEvent(null, 1018, herobrine.blockPosition(), 0);
                 }
-                SmallFireball largefireball = new SmallFireball(level, herobrine, d2, d3, d4);
-                largefireball.setPos(xPos, bb.minY + herobrine.getEyeHeight(), zPos);
-                level.addFreshEntity(largefireball);
+                SmallFireball smallFireball = new SmallFireball(level, herobrine, d2, d3, d4);
+                smallFireball.setPos(xPos, bb.minY + herobrine.getEyeHeight(), zPos);
+                level.addFreshEntity(smallFireball);
             });
         }
     }
 
-    protected void stop(@NotNull ServerLevel level, @NotNull Herobrine herobrine, long l) {
+    protected void stop(@NotNull ServerLevel level, @NotNull AbstractHerobrine herobrine, long l) {
         setCooldown(herobrine, 80 + herobrine.getRandom().nextInt(120));
     }
 

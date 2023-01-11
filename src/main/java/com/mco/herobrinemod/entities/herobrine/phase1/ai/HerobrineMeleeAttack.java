@@ -1,8 +1,7 @@
 package com.mco.herobrinemod.entities.herobrine.phase1.ai;
 
 import com.google.common.collect.ImmutableMap;
-import com.mco.herobrinemod.client.ClientAnimationInfoData;
-import com.mco.herobrinemod.entities.herobrine.phase1.Herobrine;
+import com.mco.herobrinemod.entities.herobrine.AbstractHerobrine;
 import com.mco.herobrinemod.main.HerobrineMemoryModules;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -13,7 +12,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import org.jetbrains.annotations.NotNull;
 
-public class HerobrineMeleeAttack extends Behavior<Herobrine> {
+public class HerobrineMeleeAttack extends Behavior<AbstractHerobrine> {
     private static final int DURATION = Mth.ceil(14.0F);
     private static final int ATTACK_DELAY = Mth.ceil(7.0D);
 
@@ -24,30 +23,30 @@ public class HerobrineMeleeAttack extends Behavior<Herobrine> {
         ), DURATION);
     }
 
-    protected boolean checkExtraStartConditions(@NotNull ServerLevel level, Herobrine herobrine) {
+    protected boolean checkExtraStartConditions(@NotNull ServerLevel level, AbstractHerobrine herobrine) {
         // length       height
         return herobrine.isWithinMeleeAttackRange(herobrine.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).get())
-                && (ClientAnimationInfoData.getAnimation() == null || ClientAnimationInfoData.getAnimation().equals("finished"));
+                && herobrine.getState().equals("finished");
     }
 
-    protected boolean canStillUse(@NotNull ServerLevel level, @NotNull Herobrine herobrine, long l) {
+    protected boolean canStillUse(@NotNull ServerLevel level, @NotNull AbstractHerobrine herobrine, long l) {
         return true;
     }
 
-    protected void start(@NotNull ServerLevel level, Herobrine herobrine, long l) {
+    protected void start(@NotNull ServerLevel level, AbstractHerobrine herobrine, long l) {
         herobrine.getBrain().setMemoryWithExpiry(MemoryModuleType.ATTACK_COOLING_DOWN, true, DURATION);
         herobrine.getBrain().setMemoryWithExpiry(HerobrineMemoryModules.ATTACK_DELAY.get(), Unit.INSTANCE, ATTACK_DELAY);
         herobrine.triggerAnim("Strike", "herobrine_strike");
-        if(ClientAnimationInfoData.getAnimationTicks() == 0) {
-            ClientAnimationInfoData.setAnimation("swing");
-            ClientAnimationInfoData.setAnimationTicks(14);
+        if(herobrine.getAnimationTicks() == 0) {
+            herobrine.setAnimationTicks(14);
+            herobrine.setState("swing");
         }
     }
 
-    protected void tick(@NotNull ServerLevel level, Herobrine herobrine, long l) {
+    protected void tick(@NotNull ServerLevel level, AbstractHerobrine herobrine, long l) {
         herobrine.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).ifPresent((target) -> herobrine.getLookControl().setLookAt(target.position()));
         if (!herobrine.getBrain().hasMemoryValue(HerobrineMemoryModules.ATTACK_DELAY.get())) {
-            herobrine.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).filter(herobrine::canTargetEntity).ifPresent((target) -> {
+            herobrine.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).ifPresent((target) -> {
                 if(herobrine.isWithinMeleeAttackRange(target)) {
                     herobrine.swing(InteractionHand.MAIN_HAND);
                     herobrine.doHurtTarget(target);
@@ -56,6 +55,6 @@ public class HerobrineMeleeAttack extends Behavior<Herobrine> {
         }
     }
 
-    protected void stop(@NotNull ServerLevel level, @NotNull Herobrine herobrine, long l) {
+    protected void stop(@NotNull ServerLevel level, @NotNull AbstractHerobrine herobrine, long l) {
     }
 }
